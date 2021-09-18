@@ -18,3 +18,11 @@ Function include:
 * Stopping clocks without std.env.stop causing the source window to cover the wave window in ModelSim.
 * Clock alignment
 * Random 'wiggle' for 'data valid' lines to check logic has no dependency on any mark space ratio.
+
+## Compilation
+
+Run the [modelsim_compile.cmd](modelsim_compile.cmd) Windows batch file. Assumes the following directory already exists and hence will fail to compile if it does not. Amend to suit your needs.
+
+```batch
+set SIM=%USERPROFILE%\ModelSim
+```

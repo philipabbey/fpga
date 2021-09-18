@@ -11,3 +11,14 @@ Please read the blog post [Adder Trees Pipelined Efficiently by Recursion](http:
 The whole point of creating the automatically self-constructing pipelined adder tree component was to instantiate FIR filters by just specifying VHDL generic parameters. In order to decide if the component has merit, it is necessary to compare it with other implementations. I compare three different implementations of a FIR filter, the "traditional" with the adder tree, the "transpose" and "systolic" variants that are simple iterative pipelined arrays.
 
 Please read the blog post [FIR Filter Implementation Comparisons](http://blog.abbey1.org.uk/index.php/technology/fir-filter-implementation-comparisons) to explain how the code works in detail.
+
+## Compilation
+
+1. Compile VHDL library [local](../Local) if you have not already done so.
+2. Run the [modelsim_compile.cmd](modelsim_compile.cmd) Windows batch file.
+
+Assumes the following directory already exists and hence will fail to compile if it does not. Amend to suit your needs.
+
+```batch
+set SIM=%USERPROFILE%\ModelSim
+```

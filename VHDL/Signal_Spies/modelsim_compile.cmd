@@ -23,7 +23,7 @@ if exist work (
 
 vmap local D:/Users/Philip/ModelSim/libraries/local
 vlib work
-vcom -2008 -work work %SRC%/dut_register.vhdl %SRC%/external_signals_pkg.vhdl %SRC%/test_external_signals_process.vhdl %SRC%/test_external_signals_procedure.vhdl %SRC%/util_commands_pkg.vhdl %SRC%/test_force.vhdl %SRC%/test_util_comands.vhdl %SRC%/signal_spies_pkg.vhdl %SRC%/test_signal_spies.vhdl
+vcom -2008 %SRC%/dut_register.vhdl %SRC%/external_signals_pkg.vhdl %SRC%/test_external_signals_process.vhdl %SRC%/test_external_signals_procedure.vhdl %SRC%/util_commands_pkg.vhdl %SRC%/test_force.vhdl %SRC%/test_util_comands.vhdl %SRC%/signal_spies_pkg.vhdl %SRC%/test_signal_spies.vhdl
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
 if not "%TERM_PROGRAM%"=="vscode" pause
