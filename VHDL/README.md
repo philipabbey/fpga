@@ -4,7 +4,7 @@ The source code for various investigations.
 
 ## Adder Tree
 
-*Theme:* Recursive structures in hardware description languages
+**Theme:** Recursive structures in hardware description languages
 
 See blog post [Adder Trees Pipelined Efficiently by Recursion](http://blog.abbey1.org.uk/index.php/technology/adder-trees-pipelined-efficiently-by-recursion)
 
@@ -18,7 +18,7 @@ See blog post [Cascade Block RAMs for Larger Memories](http://blog.abbey1.org.uk
 
 ## Comparator
 
-*Theme:* Recursive structures in hardware description languages
+**Theme:** Recursive structures in hardware description languages
 
 See blog post [Large Comparators Pipelined Efficiently by Recursion](http://blog.abbey1.org.uk/index.php/technology/large-comparator-pipelined-efficiently-by-recursion)
 

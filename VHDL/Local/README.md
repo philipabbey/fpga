@@ -1,0 +1,20 @@
+# Local Library
+
+A library of testing functions with which to build test benches for VHDL projects. This is required to be compiled before using any other VHDL sources in this repository.
+
+## lfsr.vhdl
+
+Functions required for automatically selecting LFSR polynomials and determining their terminal value for a given maximal count.
+
+## math.vhdl
+
+Functions typically used for initialising constants, e.g. from generics, in RTL code when constructing data types and structures.
+
+## testbench.vhdl
+
+Function include:
+
+* Setting up clocks
+* Stopping clocks without std.env.stop causing the source window to cover the wave window in ModelSim.
+* Clock alignment
+* Random 'wiggle' for 'data valid' lines to check logic has no dependency on any mark space ratio.
