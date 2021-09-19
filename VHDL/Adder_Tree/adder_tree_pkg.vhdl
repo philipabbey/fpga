@@ -118,7 +118,7 @@ package adder_tree_pkg is
 
 
   -- Given an adder with a pair of input operands, calculate the number of coefficients to recurse with on the first input, with the remainder recurse on for the second input. The first half will be the larger half for an odd number of coefficients.
-  function first_adder_coeffs(
+  function first_adder_operands(
     constant num_operands : positive
   ) return positive;
 
@@ -223,7 +223,7 @@ package body adder_tree_pkg is
 
 
   -- Use ceil not floor otherwise not all bits will get used
-  function first_adder_coeffs(
+  function first_adder_operands(
     constant num_operands : positive
   ) return positive is
   begin

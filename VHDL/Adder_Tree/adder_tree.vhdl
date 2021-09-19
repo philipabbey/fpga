@@ -64,7 +64,7 @@ begin
 
   else generate
 
-    constant num_coeffs1_c : natural := first_adder_coeffs(num_operands_g);
+    constant num_coeffs1_c : natural := first_adder_operands(num_operands_g);
 
     signal o1 : signed(output_bits(input_width_g, num_coeffs1_c)-1 downto 0);
     signal o2 : signed(output_bits(input_width_g, num_operands_g - num_coeffs1_c)-1 downto 0);
