@@ -1,4 +1,10 @@
 @echo off
+rem ---------------------------------------------------------------------------------
+rem 
+rem  Distributed under MIT Licence
+rem    See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+rem 
+rem ---------------------------------------------------------------------------------
 
 set SIM=%USERPROFILE%/ModelSim
 rem Batch file's directory where the source code is
@@ -23,7 +29,7 @@ if exist work (
 
 vmap local D:/Users/Philip/ModelSim/libraries/local
 vlib work
-vcom -2008 %SRC%/polybitdiv.vhdl %SRC%/polydiv.vhdl %SRC%/polydiv_wrapper.vhdl %SRC%/test_polybitdiv.vhdl %SRC%/test_polydiv.vhdl
+vcom -2008 %SRC%\polybitdiv.vhdl %SRC%\polydiv.vhdl %SRC%\polydiv_wrapper.vhdl %SRC%\test_polybitdiv.vhdl %SRC%\test_polydiv.vhdl
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
 if not "%TERM_PROGRAM%"=="vscode" pause

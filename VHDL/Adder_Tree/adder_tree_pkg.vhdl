@@ -1,3 +1,16 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- The package required for efficient construction of the recursive adder tree.
+--
+-- P A Abbey, 28 August 2021
+--
+-------------------------------------------------------------------------------------
+
 library ieee;
 use ieee.numeric_std.all;
 
@@ -6,18 +19,37 @@ package adder_tree_pkg is
   -- Defaults to "to" range
   type input_arr_t is array (natural range <>) of signed;
 
+  -- Return the minimum of 'a' and 'b'.
+  --
+  -- This function has not been implemented for 'positive' in some tools! Where it
+  -- has been implemented, the function's presence causes ambiguity. Helpful...
+  --
+  -- Quartus Prime:
+  -- Error (10482): VHDL error at file.vhdl(xx): object "minimum" is used but not declared
+  -- Error: Quartus Prime Analysis & Synthesis was unsuccessful. 1 error, 0 warnings
+  --
+  -- ModelSim: ** Error: file.vhdl(xx): Subprogram "minimum" is ambiguous.
+  --
+  -- Therefore qualification by full path name might be required,
+  --   e.g. 'local.math_pkg.minimum(..)'.
+  --
+  -- Usage:
+  --   constant min : positive := minimum(4, width_g);
+  --
   function minimum(a, b : positive) return positive;
 
+
+  -- Return the ceil(log(n, base)), i.e. round up the result of log(n, b), log to
+  -- base b of v.
+  --
   -- Made public as it can be used to configure the pipelined adder tree depth.
   -- E.g.
   --   adder_tree_pipe_i : entity work.adder_tree_pipe
   --     generic map (
-  --       depth_g       => ceil_log(coeffs'length, 2),
-  --       num_coeffs_g  => coeffs'length,
-  --       input_width_g => mult_arr(0)'length
+  --       depth_g        => ceil_log(coeffs'length, 2),
+  --       num_operands_g => coeffs'length,
+  --       input_width_g  => mult_arr(0)'length
   --     )...
-  --
-  -- log to base b of v
   --
   -- Example results:
   --
@@ -37,11 +69,15 @@ package adder_tree_pkg is
   function ceil_log(
     constant v : positive;
     constant b : positive
-  ) return natural;
+  ) return positive;
 
+
+  -- Return the ceil(root'th root of n), i.e. round up the result of taking the root.
+  -- This version only allows positive integer roots.
+  --
   -- Made public as it can be used to verify construction in the test bench.
   --
-  -- bth root of v
+  -- b'th root of v
   --
   -- Example results:
   --
@@ -63,36 +99,44 @@ package adder_tree_pkg is
     constant b : positive
   ) return positive;
 
+
   -- The amount to divide and recurse on now for a minimum depth of logic between registers.
   --
   -- Parameters:
-  --  * num_coeffs - The number of coefficients left to service.
+  --  * num_operands - The number of coefficients left to service.
   --  * depth      - The pipeline depth left in which to service the ocefficients.
   --
   -- The basic calculation provides a macro value for the remaining amount of work over all depths.
   -- Then a test is done to see if doing less work now does not increase the adder depth later. If
   -- not, do less now and ensure the tree is bottom heavy for the purposes of minimising logic
   -- utilisation.
+  --
   function recurse_divide(
-    constant num_coeffs : positive;
-    constant depth      : positive
+    constant num_operands : positive;
+    constant depth        : positive
   ) return positive;
 
+
+  -- Given an adder with a pair of input operands, calculate the number of coefficients to recurse with on the first input, with the remainder recurse on for the second input. The first half will be the larger half for an odd number of coefficients.
   function first_adder_coeffs(
-    constant num_coeffs : positive
+    constant num_operands : positive
   ) return positive;
+
 
   function output_bits(
-    constant input_width : positive;
-    constant num_coeffs  : positive
+    constant input_width  : positive;
+    constant num_operands : positive
   ) return positive;
+
 
   function to_input_arr_t (
     i : integer_vector;
     w : positive
   ) return input_arr_t;
 
+
   function reverse(i : input_arr_t) return input_arr_t;
+
 
   function calc_sum_width(
     c           : input_arr_t;
@@ -125,6 +169,7 @@ package body adder_tree_pkg is
     end if;
   end function;
 
+
   function ceil_log(
     constant v : positive;
     constant b : positive
@@ -132,6 +177,7 @@ package body adder_tree_pkg is
   begin
     return natural(ceil(log(real(v), real(b))));
   end function;
+
 
   function ceil_root(
     constant v : positive;
@@ -145,22 +191,23 @@ package body adder_tree_pkg is
     return ret; -- ceil(v**(1/b))
   end function;
 
+
   function recurse_divide(
-    constant num_coeffs : positive;
-    constant depth      : positive
+    constant num_operands : positive;
+    constant depth        : positive
   ) return positive is
     -- Warning (10542): VHDL Variable Declaration warning at adder_tree_pkg.vhdl(145): used initial value expression
     -- for variable "divide" because variable was never assigned a value
     -- Variable assignment moved below to solve this Quartus Prime warning.
-    variable divide : positive; -- := ceil_root(num_coeffs, depth);
+    variable divide : positive; -- := ceil_root(num_operands, depth);
     variable ncl    : positive;
   begin
-    divide := ceil_root(num_coeffs, depth);
+    divide := ceil_root(num_operands, depth);
     if depth > 1 then
       -- Try to divide by less the 'divide'
       for i in 1 to divide-1 loop
         -- Divide by 'i' now and do the remainder 'ncl' in 'depth-1' levels.
-        ncl := positive(ceil(real(num_coeffs) / real(i)));
+        ncl := positive(ceil(real(num_operands) / real(i)));
         if ceil_root(ncl, depth-1) = divide then
           -- Trial division found a better answer
           return i;
@@ -174,21 +221,24 @@ package body adder_tree_pkg is
     end if;
   end function;
 
+
   -- Use ceil not floor otherwise not all bits will get used
   function first_adder_coeffs(
-    constant num_coeffs : positive
+    constant num_operands : positive
   ) return positive is
   begin
-    return positive(ceil(real(num_coeffs) / 2.0));
+    return positive(ceil(real(num_operands) / 2.0));
   end function;
 
+
   function output_bits(
-    constant input_width : positive;
-    constant num_coeffs  : positive
+    constant input_width  : positive;
+    constant num_operands : positive
   ) return positive is
   begin
-    return input_width + ceil_log(num_coeffs, 2);
+    return input_width + ceil_log(num_operands, 2);
   end function;
+
 
   function to_input_arr_t (
     i : integer_vector;
@@ -202,6 +252,7 @@ package body adder_tree_pkg is
     return ret;
   end function;
 
+
   function reverse(i : input_arr_t) return input_arr_t is
     variable ret : input_arr_t(i'range)(i(0)'range);
   begin
@@ -210,6 +261,7 @@ package body adder_tree_pkg is
     end loop;
     return ret;
   end reverse;
+
 
   function calc_sum_width(
     c           : input_arr_t;

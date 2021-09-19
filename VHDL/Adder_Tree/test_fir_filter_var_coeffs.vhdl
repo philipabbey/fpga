@@ -1,3 +1,16 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Test bench for the FIR filter with variable coefficients.
+--
+-- P A Abbey, 28 August 2021
+--
+-------------------------------------------------------------------------------------
+
 entity test_fir_filter_var_coeffs is
 end entity;
 
@@ -5,9 +18,8 @@ end entity;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-library std;
 library local;
-use local.testbench.all;
+use local.testbench_pkg.all;
 use work.adder_tree_pkg.all;
 
 architecture rtl of test_fir_filter_var_coeffs is
@@ -115,7 +127,7 @@ begin
     end loop;
     wait_nr_ticks(clk, 10);
 
-    std.env.stop;
+    stop_clocks;
     wait;
   end process;
 

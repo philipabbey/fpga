@@ -1,11 +1,24 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Test bench for ModelSim's "Signal Spies" with procedures from 'signal_spies_pkg'.
+--
+-- P A Abbey, 11 July 2021
+--
+-------------------------------------------------------------------------------------
+
 entity test_signal_spies is
 end entity;
 
+
 library ieee;
 use ieee.std_logic_1164.all;
-library std;
 library local;
-use local.testbench.all;
+use local.testbench_pkg.all;
 library modelsim_lib;
 
 architecture behav of test_signal_spies is

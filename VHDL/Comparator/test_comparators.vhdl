@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
 -- Test the generic "comparator" to check it scales gracefully for any bus width, any
 -- pipeline depth and any LUT size. The self checking testbench makes sure each bit
 -- of each comparator effects the final result, proving the tree has been correctly
@@ -9,6 +15,7 @@
 -- verified and included as part of the overall self-test of success.
 --
 -- P A Abbey, 23 August 2019
+--
 -------------------------------------------------------------------------------------
 
 -- ModelSim output for 'vsim work.test_comparators; run -all'.
@@ -214,7 +221,7 @@ use ieee.math_real.all;
 library std;
 use std.textio.all;
 library local;
-use local.testbench.all;
+use local.testbench_pkg.all;
 use work.comp_pkg.all;
 
 architecture behav of test_comparators is
@@ -276,7 +283,7 @@ architecture behav of test_comparators is
   -- dimensions. Always include an example for the precise comparator you need for your design here and run the
   -- testbench. If pipelining for a depth > 6, you will need to amend the code in the "probe" process to include
   -- more globally static hierarchical path references.
-  constant compare_array : compare_array_t := (
+  constant compare_array_c : compare_array_t := (
     -- (depth, data_width, lutsize)
     (2,    23, 4),
     (5,    49, 6), -- Example pathological case where depth is specified larger than required, so divide by 1 at top level
@@ -294,33 +301,33 @@ architecture behav of test_comparators is
   -- Common signal declarations
   signal clk          : std_ulogic := '0';
   signal reset        : std_ulogic := '0';
-  signal equal        : std_ulogic_vector(compare_array'range);
-  signal finished     : std_ulogic_vector(compare_array'range) := (others => '0');
+  signal equal        : std_ulogic_vector(compare_array_c'range);
+  signal finished     : std_ulogic_vector(compare_array_c'range) := (others => '0');
   signal finished_all : std_ulogic := '0';
 
 begin
 
   clkgen : clock(clk, 10 ns);
 
-  duts : for i in compare_array'range generate
+  duts : for i in compare_array_c'range generate
 
-    subtype comp_bus_t is std_ulogic_vector(compare_array(i).data_width-1 downto 0);
+    subtype comp_bus_t is std_ulogic_vector(compare_array_c(i).data_width-1 downto 0);
 
     -- Local signal declarations
     signal data_a        : comp_bus_t;
     signal data_b        : comp_bus_t;
     signal expected_i    : std_ulogic := '1';
-    signal expected      : std_ulogic_vector(compare_array(i).depth-1 downto 0) := (others => '1');
+    signal expected      : std_ulogic_vector(compare_array_c(i).depth-1 downto 0) := (others => '1');
     signal equal_valid_i : std_ulogic := '0';
-    signal equal_valid   : std_ulogic_vector(compare_array(i).depth-1 downto 0) := (others => '0');
+    signal equal_valid   : std_ulogic_vector(compare_array_c(i).depth-1 downto 0) := (others => '0');
 
   begin
 
     comparators_c : entity work.comparator
       generic map (
-        depth      => compare_array(i).depth,
-        data_width => compare_array(i).data_width,
-        lutsize    => compare_array(i).lutsize
+        depth_g      => compare_array_c(i).depth,
+        data_width_g => compare_array_c(i).data_width,
+        lutsize_g    => compare_array_c(i).lutsize
       )
       port map (
         clk    => clk,
@@ -376,7 +383,7 @@ begin
       expected_i <= '1';
       wait_nr_ticks(clk, 1);
       equal_valid_i <= '0';
-      wait_nr_ticks(clk, compare_array(i).depth+2);
+      wait_nr_ticks(clk, compare_array_c(i).depth+2);
       finished(i) <= '1';
       wait;
     end process;
@@ -407,7 +414,7 @@ begin
   end generate;
 
   finished_check : process(finished)
-    constant all_ones : std_ulogic_vector(compare_array'range) := (others => '1');
+    constant all_ones : std_ulogic_vector(compare_array_c'range) := (others => '1');
   begin
     for i in finished'range loop
       if finished = all_ones then
@@ -437,9 +444,9 @@ begin
 
   -- Use VHDL-2008 "external names" to extract statistics about the generated hierarchies to avoid needing to
   -- expand (and collapse) the tree structure to verify the division amounts chosen at each level.
-  probe : for i in compare_array'reverse_range generate
+  probe : for i in compare_array_c'reverse_range generate
 
-    signal li : level_array_t(1 to compare_array(i).depth) := (
+    signal li : level_array_t(1 to compare_array_c(i).depth) := (
       others => (
         positive'high,
         divide_item_t'(
@@ -450,8 +457,8 @@ begin
     );
 
   begin
-    assert compare_array(i).depth <= 6
-      report "Not enough conditional generate statments for a DUT of pipeline depth " & positive'image(compare_array(i).depth)
+    assert compare_array_c(i).depth <= 6
+      report "Not enough conditional generate statments for a DUT of pipeline depth " & positive'image(compare_array_c(i).depth)
       severity failure;
 
     -- Hierarchical references need to be "globally static" so:
@@ -459,34 +466,34 @@ begin
     --   2) Hope that you have catered for enough depth/levels of hierarchy
     di_g : for p in li'range generate
 
-      di_g1 : if p = 1 and p <= compare_array(i).depth generate
-        li(p).di    <= <<constant .test_comparators.duts(i).comparators_c.rc    : divide_item_t>>;
-        li(p).depth <= <<constant .test_comparators.duts(i).comparators_c.depth : positive>>;
+      di_g1 : if p = 1 and p <= compare_array_c(i).depth generate
+        li(p).di    <= <<constant .test_comparators.duts(i).comparators_c.rc_c    : divide_item_t>>;
+        li(p).depth <= <<constant .test_comparators.duts(i).comparators_c.depth_g : positive>>;
       end generate;
 
-      di_g2 : if p = 2 and p <= compare_array(i).depth generate
-        li(p).di    <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.rc    : divide_item_t>>;
-        li(p).depth <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.depth : positive>>;
+      di_g2 : if p = 2 and p <= compare_array_c(i).depth generate
+        li(p).di    <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.rc_c    : divide_item_t>>;
+        li(p).depth <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.depth_g : positive>>;
       end generate;
 
-      di_g3 : if p = 3 and p <= compare_array(i).depth generate
-        li(p).di    <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.rc    : divide_item_t>>;
-        li(p).depth <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.depth : positive>>;
+      di_g3 : if p = 3 and p <= compare_array_c(i).depth generate
+        li(p).di    <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.rc_c    : divide_item_t>>;
+        li(p).depth <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.depth_g : positive>>;
       end generate;
 
-      di_g4 : if p = 4 and p <= compare_array(i).depth generate
-        li(p).di    <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.rc    : divide_item_t>>;
-        li(p).depth <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.depth : positive>>;
+      di_g4 : if p = 4 and p <= compare_array_c(i).depth generate
+        li(p).di    <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.rc_c    : divide_item_t>>;
+        li(p).depth <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.depth_g : positive>>;
       end generate;
 
-      di_g5 : if p = 5 and p <= compare_array(i).depth generate
-        li(p).di    <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.rc    : divide_item_t>>;
-        li(p).depth <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.depth : positive>>;
+      di_g5 : if p = 5 and p <= compare_array_c(i).depth generate
+        li(p).di    <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.rc_c    : divide_item_t>>;
+        li(p).depth <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.depth_g : positive>>;
       end generate;
 
-      di_g6 : if p = 6 and p <= compare_array(i).depth generate
-        li(p).di    <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.rc    : divide_item_t>>;
-        li(p).depth <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.depth : positive>>;
+      di_g6 : if p = 6 and p <= compare_array_c(i).depth generate
+        li(p).di    <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.rc_c    : divide_item_t>>;
+        li(p).depth <= <<constant .test_comparators.duts(i).comparators_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.g.recurse(0).comparator_c.depth_g : positive>>;
       end generate;
 
     end generate;
@@ -503,7 +510,7 @@ begin
       -- the one constructed has not exceeded the value at any level of hierarchy. This is a basic check
       -- for even construction between flops. A separate check is made later for erring on the side of
       -- bottom-heavy.
-      variable expdepth : natural := lut_depth(compare_array(i));
+      variable expdepth : natural := lut_depth(compare_array_c(i));
       variable l        : line;
     begin
       wait until li'event;
@@ -513,13 +520,13 @@ begin
       write(l, i);
       writeline(OUTPUT, l);
       swrite(l, " Pipeline depth:     ");
-      write(l, compare_array(i).depth, right, 5);
+      write(l, compare_array_c(i).depth, right, 5);
       writeline(OUTPUT, l);
       swrite(l, " Compare Width:      ");
-      write(l, compare_array(i).data_width, right, 5);
+      write(l, compare_array_c(i).data_width, right, 5);
       writeline(OUTPUT, l);
       swrite(l, " LUT Size:           ");
-      write(l, compare_array(i).lutsize, right, 5);
+      write(l, compare_array_c(i).lutsize, right, 5);
       writeline(OUTPUT, l);
       swrite(l, " Max LUT Depth:      ");
       maxdepth := max_lut_depth(li);
@@ -543,7 +550,7 @@ begin
       swrite(l, "Statistics for top path of recursion of the tree where logic is most densely packed.");
       writeline(OUTPUT, l);
       for d in li'range loop
-        if li(d).depth <= compare_array(i).depth then
+        if li(d).depth <= compare_array_c(i).depth then
           swrite(l, "Depth: ");
           write(l, li(d).depth);
           swrite(l, ", Divide: ");

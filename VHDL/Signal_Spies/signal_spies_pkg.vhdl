@@ -1,8 +1,18 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Package used by 'test_signal_spies'.
+--
+-- P A Abbey, 11 July 2021
+--
+-------------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
-library modelsim_lib;
-library local;
-use local.testbench.all;
 
 package signal_spies_pkg is
 
@@ -10,7 +20,13 @@ package signal_spies_pkg is
 
   type force_state is (RELEASED, FORCE1, FORCE2, FORCE3, FORCE4);
 
+  -- Setup the connections between internal signals and the external destination
+  -- signals.
+  --
   procedure init_spies;
+
+  -- Perform a sequence of forces to affect the simulation.
+  --
 
   procedure force_tests (
     signal clk   : in std_logic;
@@ -18,6 +34,11 @@ package signal_spies_pkg is
   );
 
 end package;
+
+
+library modelsim_lib;
+library local;
+use local.testbench_pkg.wait_nr_ticks;
 
 package body signal_spies_pkg is
 
@@ -39,6 +60,7 @@ package body signal_spies_pkg is
     );
 
   end procedure;
+
 
   procedure force_tests (
     signal clk   : in std_logic;

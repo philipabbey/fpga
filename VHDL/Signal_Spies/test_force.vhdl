@@ -1,11 +1,25 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Test bench for ModelSim's "Signal Spies" verifying the operation of the force
+-- drive types.
+--
+-- P A Abbey, 11 July 2021
+--
+-------------------------------------------------------------------------------------
+
 entity test_force is
 end entity;
 
+
 library ieee;
 use ieee.std_logic_1164.all;
-library std;
 library local;
-use local.testbench.all;
+use local.testbench_pkg.all;
 library modelsim_lib;
 
 architecture test of test_force is

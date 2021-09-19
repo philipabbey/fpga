@@ -1,11 +1,24 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Testing ModelSim's "Signal Spies" with procedures from 'util_commands_pkg'.
+--
+-- P A Abbey, 11 July 2021
+--
+-------------------------------------------------------------------------------------
+
 entity test_util_comands is
 end entity;
 
+
 library ieee;
 use ieee.std_logic_1164.all;
-library std;
 library local;
-use local.testbench.all;
+use local.testbench_pkg.all;
 library modelsim_lib;
 
 architecture test of test_util_comands is

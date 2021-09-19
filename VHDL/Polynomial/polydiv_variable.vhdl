@@ -1,19 +1,35 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Polynomial division performing multiple bits of work per clock cycle. The
+-- polynomial is provided on an input port, so is runtime configurable. Synthesis of
+-- this design does not optimise away logic because the polynomial is variable.
+--
+-- P A Abbey, 12 August 2019
+--
+-------------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 
 entity polydiv_variable is
   generic(
-    len : positive := 5
+    len_g : positive := 5
   );
   port(
     clk           : in  std_ulogic;
     reset         : in  std_ulogic;
-    poly          : in  std_ulogic_vector(len-1 downto 0);
-    data_in       : in  std_ulogic_vector(2 downto 0); -- bus width independent of 'poly', direction 'to' or 'downto' does not matter.
+    poly          : in  std_ulogic_vector(len_g-1 downto 0);
+    data_in       : in  std_ulogic_vector; -- bus width independent of 'poly', direction 'to' or 'downto' does not matter.
     data_valid_in : in  std_ulogic;
-    data_out      : out std_ulogic_vector(len-2 downto 0)
+    data_out      : out std_ulogic_vector(len_g-2 downto 0)
   );
 end entity;
+
 
 architecture rtl of polydiv_variable is
 

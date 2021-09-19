@@ -1,33 +1,65 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Originally generated from a Xilinx RAM template, but amended in several ways:
+--  1) Function 'clogb2' has been removed as it is neater to avoid needing it in the
+--     first place by specifying the address width.
+--  2) RAM initialisation has been stripped out.
+--  3) The generate statement used for the output register has been made VHDL-2008
+--     using an 'else generate' clause.
+--
+-- Note:
+-- -----
+--
+-- (vcom-1236) Shared variables must be of a protected type.
+-- [Synth 8-4747] shared variables must be of a protected type
+--
+-- The shared variable usage cannot be replace by a protected type as Vivado
+-- complains during synthesis.
+--
+-- [Synth 8-6750] Unsupported VHDL type protected. This is not suited for Synthesis
+--
+-- Therefore this aspect of the VHDL code cannot be updated to VHDL-2008.
+--
+-------------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
 
 entity my_ram is
     generic (
         -- Note: If the chosen data and address width values are low, Synthesis will infer Distributed RAM.
-        ram_width_g       : integer := 36;                        -- Specify RAM data width
-        ram_addr_g        : integer := 10;                        -- Specify RAM address width (number of entries = 2**ram_addr_g)
-        output_register_g : boolean := true                       -- True for higher clock speed or false for lower latency
+        ram_width_g       : integer := 36;                     -- Specify RAM data width
+        ram_addr_g        : integer := 10;                     -- Specify RAM address width (number of entries = 2**ram_addr_g)
+        output_register_g : boolean := true                    -- True for higher clock speed or false for lower latency
     );
     port (
-        addra     : in  std_logic_vector(ram_addr_g-1 downto 0);  -- Port A Address bus, width determined from RAM_DEPTH
-        addrb     : in  std_logic_vector(ram_addr_g-1 downto 0);  -- Port B Address bus, width determined from RAM_DEPTH
-        dina      : in  std_logic_vector(ram_width_g-1 downto 0); -- Port A RAM input data
-        dinb      : in  std_logic_vector(ram_width_g-1 downto 0); -- Port B RAM input data
-        clka      : in  std_logic;                                -- Port A Clock
-        clkb      : in  std_logic;                                -- Port B Clock
-        wea       : in  std_logic;                                -- Port A Write enable
-        web       : in  std_logic;                                -- Port B Write enable
-        ena       : in  std_logic;                                -- Port A RAM Enable, for additional power savings, disable port when not in use
-        enb       : in  std_logic;                                -- Port B RAM Enable, for additional power savings, disable port when not in use
-        rsta      : in  std_logic;                                -- Port A Output reset (does not affect memory contents)
-        rstb      : in  std_logic;                                -- Port B Output reset (does not affect memory contents)
-        regcea    : in  std_logic;                                -- Port A Output register enable
-        regceb    : in  std_logic;                                -- Port B Output register enable
-        douta     : out std_logic_vector(ram_width_g-1 downto 0); -- Port A RAM output data
-        doutb     : out std_logic_vector(ram_width_g-1 downto 0)  -- Port B RAM output data
+        addra  : in  std_logic_vector(ram_addr_g-1 downto 0);  -- Port A Address bus, width determined from RAM_DEPTH
+        addrb  : in  std_logic_vector(ram_addr_g-1 downto 0);  -- Port B Address bus, width determined from RAM_DEPTH
+        dina   : in  std_logic_vector(ram_width_g-1 downto 0); -- Port A RAM input data
+        dinb   : in  std_logic_vector(ram_width_g-1 downto 0); -- Port B RAM input data
+        clka   : in  std_logic;                                -- Port A Clock
+        clkb   : in  std_logic;                                -- Port B Clock
+        wea    : in  std_logic;                                -- Port A Write enable
+        web    : in  std_logic;                                -- Port B Write enable
+        ena    : in  std_logic;                                -- Port A RAM Enable, for additional power savings, disable port when not in use
+        enb    : in  std_logic;                                -- Port B RAM Enable, for additional power savings, disable port when not in use
+        rsta   : in  std_logic;                                -- Port A Output reset (does not affect memory contents)
+        rstb   : in  std_logic;                                -- Port B Output reset (does not affect memory contents)
+        regcea : in  std_logic;                                -- Port A Output register enable
+        regceb : in  std_logic;                                -- Port B Output register enable
+        douta  : out std_logic_vector(ram_width_g-1 downto 0); -- Port A RAM output data
+        doutb  : out std_logic_vector(ram_width_g-1 downto 0)  -- Port B RAM output data
     );
 end entity;
+
+
+library ieee;
+use ieee.numeric_std.all;
 
 architecture inferred of my_ram is
 
@@ -43,8 +75,8 @@ architecture inferred of my_ram is
     -- 2D Array Declaration for RAM
     type ram_type is array((2**ram_addr_g)-1 downto 0) of std_logic_vector(ram_width_g-1 downto 0);
     -- Define RAM - Do not use VHDL Protected types for synthesis!
-    -- ERROR: [Synth 8-6750] Unsupported VHDL type protected. This is not suited for Synthesis [A:/Philip/Work/VHDL/BRAM/inferred_ram.vhdl:xx]
-    -- WARNING: [Synth 8-4747] shared variables must be of a protected type [A:/Philip/Work/VHDL/BRAM/inferred_ram.vhdl:xx]
+    -- ERROR: [Synth 8-6750] Unsupported VHDL type protected. This is not suited for Synthesis [.../VHDL/BRAM/inferred_ram.vhdl:xx]
+    -- WARNING: [Synth 8-4747] shared variables must be of a protected type [.../VHDL/BRAM/inferred_ram.vhdl:xx]
     shared variable ram : ram_type := (others => (others => '0'));
 
 begin

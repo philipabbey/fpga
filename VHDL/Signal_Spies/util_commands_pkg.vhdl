@@ -1,8 +1,20 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Package used by 'test_util_comands'. The purpose of this code is to explore the
+-- differences between 'init_signal_spy' and 'init_signal_driver', and how
+-- 'enable_signal_spy' and 'disable_signal_spy' are used with the former.
+--
+-- P A Abbey, 11 July 2021
+--
+-------------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
-library modelsim_lib;
-library local;
-use local.testbench.all;
 
 package util_commands_pkg is
 
@@ -10,14 +22,25 @@ package util_commands_pkg is
 
   type spy_state is (ENABLED, DISABLED);
 
+  -- Setup the connections between internal signals and the external destination
+  -- signals.
+  --
   procedure init_spies;
 
+
+  -- Perform a sequence of forces to affect the simulation.
+  --
   procedure force_tests (
     signal clk   : in std_logic;
     signal state : out spy_state
   );
 
 end package;
+
+
+library modelsim_lib;
+library local;
+use local.testbench_pkg.wait_nr_ticks;
 
 package body util_commands_pkg is
 
@@ -86,6 +109,7 @@ package body util_commands_pkg is
     );
 
   end procedure;
+
 
   procedure force_tests (
     signal clk   : in std_logic;

@@ -1,9 +1,23 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- The wrapper code for a synchronous counter used for synthesis where I/O is
+-- registered.
+--
+-- P A Abbey, 11 August 2019
+--
+-------------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 
 entity sync_counter_wrapper is
   generic(
-    max : positive range 3 TO positive'high
+    max_g : positive range 2 TO positive'high
   );
   port(
     clk      : in  std_ulogic;
@@ -13,24 +27,13 @@ entity sync_counter_wrapper is
   );
 end entity;
 
+
 architecture rtl of sync_counter_wrapper is
 
-  component sync_counter is
-    generic(
-      max : positive range 3 TO positive'high
-    );
-    port(
-      clk      : in  std_ulogic;
-      reset    : in  std_ulogic;
-      enable   : in  std_ulogic;
-      finished : out std_ulogic
-    );
-  end component;
-  
   -- Double retime inputs to new clock domain
-  signal enable_reg   : std_ulogic_vector(1 downto 0);
-  signal reset_reg    : std_ulogic_vector(1 downto 0);
-  signal finished_i   : std_ulogic;
+  signal enable_reg : std_ulogic_vector(1 downto 0);
+  signal reset_reg  : std_ulogic_vector(1 downto 0);
+  signal finished_i : std_ulogic;
 
 begin
 
@@ -49,6 +52,17 @@ begin
     end if;
   end process;
 
+  comp_sync_counter : entity work.counter(sync)
+    generic map (
+      max_g => max_g
+    )
+    port map (
+      clk      => clk,
+      reset    => reset_reg(1),
+      enable   => enable_reg(1),
+      finished => finished_i
+    );
+
   process(clk)
   begin
     if rising_edge(clk) then
@@ -59,16 +73,5 @@ begin
       end if;
     end if;
   end process;
-
-  comp_sync_counter : sync_counter
-    generic map (
-      max => max
-    )
-    port map (
-      clk      => clk,
-      reset    => reset_reg(1),
-      enable   => enable_reg(1),
-      finished => finished_i
-    );
 
 end architecture;

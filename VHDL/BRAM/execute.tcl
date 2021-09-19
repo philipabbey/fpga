@@ -1,4 +1,17 @@
-# source -notrace {execute.tcl}
+#####################################################################################
+#
+#  Distributed under MIT Licence
+#    See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+#
+#####################################################################################
+#
+# TCL script to vary the cascade height used during synthesis of the RAM component
+# and measure the results.
+#
+# Usage:
+#   source -notrace {execute.tcl}
+#
+#####################################################################################
 
 proc reportClkSpeed {} {
   # Check for setup violations (-delay_type max)

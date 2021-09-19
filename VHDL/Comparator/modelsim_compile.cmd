@@ -1,4 +1,10 @@
 @echo off
+rem ---------------------------------------------------------------------------------
+rem 
+rem  Distributed under MIT Licence
+rem    See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+rem 
+rem ---------------------------------------------------------------------------------
 
 set SIM=%USERPROFILE%/ModelSim
 rem Batch file's directory where the source code is

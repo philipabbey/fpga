@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
 -- Input-Output logic required in order to instantiate a generic comparator component
 -- in a device and verify synthesis and timing results are as expected. Due to the
 -- need for precise bus widths and placed pins in Quartus Prime, the bus width can
@@ -19,6 +25,7 @@
 --   F Max: 426.44 Mhz
 --
 -- P A Abbey, 23 August 2019
+--
 -------------------------------------------------------------------------------------
 
 -- # *************************** ModelSim construction report ***************************
@@ -186,9 +193,9 @@ begin
 
   comparator_c : entity work.comparator
     generic map (
-     depth      => 3,
-     data_width => data_a'length,
-     lutsize    => 6
+     depth_g      => 3,
+     data_width_g => data_a'length,
+     lutsize_g    => 6
     )
     port map (
      clk    => clk,

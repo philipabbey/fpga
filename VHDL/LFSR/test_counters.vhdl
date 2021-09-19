@@ -1,31 +1,34 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Test a number of different pairs of synchronous and LFSR counters. For each
+-- element of 'compare_array', instantiate a 'compare_counters' component which will
+-- autonomously compare the outputs of one each of a synchronous and LFSR counter.
+--
+-- P A Abbey, 11 August 2019
+--
+-------------------------------------------------------------------------------------
+
 entity test_counters is
 end entity;
+
 
 library ieee;
 use ieee.std_logic_1164.all;
 library std;
 use std.textio.all;
 library local;
-use local.testbench.all;
+use local.testbench_pkg.all;
 
 architecture behav of test_counters is
 
-  component compare_counters is
-    generic(
-      max : positive range 3 TO positive'high
-    );
-    port(
-      clk      : in  std_ulogic;
-      reset    : in  std_ulogic;
-      enable   : in  std_ulogic;
-      finished : out std_ulogic;
-      compare  : out std_ulogic
-    );
-  end component;
-
-  type compare_array_t is array(natural range <>) of positive range 3 TO positive'high;
-  constant compare_array : compare_array_t := (
-    3,
+  type compare_array_t is array(natural range <>) of positive range 2 TO positive'high;
+  constant compare_array_c : compare_array_t := (
+    2,
     2**2+1,
     2**3+3,
     2**4+7,
@@ -42,8 +45,8 @@ architecture behav of test_counters is
   signal clk      : std_ulogic := '0';
   signal reset    : std_ulogic := '0';
   signal enable   : std_ulogic := '0';
-  signal finished : std_ulogic_vector(compare_array'range);
-  signal compare  : std_ulogic_vector(compare_array'range);
+  signal finished : std_ulogic_vector(compare_array_c'range);
+  signal compare  : std_ulogic_vector(compare_array_c'range);
   signal compall  : std_ulogic := '0';
   signal fail     : std_ulogic := '0';
 
@@ -60,14 +63,14 @@ architecture behav of test_counters is
     return ret;
   end function;
 
-  constant longest : natural := array_max(compare_array);
-  
+  constant longest_c : natural := array_max(compare_array_c);
+
 begin
 
-  duts: for com in compare_array'range generate
-   comp_compare_counters : compare_counters
+  duts: for com in compare_array_c'range generate
+   comp_compare_counters : entity work.compare_counters
      generic map (
-       max => compare_array(com)
+       max_g => compare_array_c(com)
      )
      port map (
        clk      => clk,
@@ -77,10 +80,10 @@ begin
        compare  => compare(com)
      );
   end generate;
-  
+
   clock(clk, 5 ns, 5 ns);
   wiggle_r(enable, clk, 0.75);
-  
+
   process
     variable res : line;
   begin
@@ -91,8 +94,8 @@ begin
     toggle_r(reset, clk, 2);
 
     wait until rising_edge(clk);
-    wait until finished(longest) = '1';
-    wait until finished(longest) = '1';
+    wait until finished(longest_c) = '1';
+    wait until finished(longest_c) = '1';
     write(res, string'("End of simulation."));
     writeline(OUTPUT, res);
     if fail = '1' then
@@ -108,7 +111,7 @@ begin
     -- Prevent the process repeating after the simulation time has been manually extended.
     wait;
   end process;
-  
+
   process(compare)
     variable ca : std_ulogic := '1';
   begin
@@ -121,7 +124,7 @@ begin
     end if;
     compall <= ca;
   end process;
-  
+
   -- But remember the failure:
   process(clk)
   begin

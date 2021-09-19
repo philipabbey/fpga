@@ -1,3 +1,18 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- RTL code for a FIR filter with constant coefficients instantiated with registered
+-- I/O for use in synthesis to extract timing information of the inner FIR filter
+-- instantiation.
+--
+-- P A Abbey, 28 August 2021
+--
+-------------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -28,77 +43,6 @@ architecture rtl of fir_filter_const_coeffs_io is
 
 begin
 
-  -- Slow 1100mV 85C Model Only
-  -- FAMILY "Cyclone V"
-  -- DEVICE 5CGXFC7C7F23C8 (156 DSP Blocks)
-  --
-  -- Coefficients:  6 defined in (1, 2, -2, 2, -2, -1)
-  -- input_width_g: 8
-  -- Constraint:    275 MHz
-  --
-  -- Fmax Results:
-  --
-  -- Traditional: 312.60 MHz
-  -- Transpose:   300.39 MHz
-  -- Systolic:    269.25 MHz
-  --
-  --
-  -- Coefficients:  21 defined in (-659, -1915, -2005, -358, 1679, 1089, -1853, -2807, 2077, 10186, 14235,
-  --                 10186, 2077, -2807, -1853, 1089, 1679, -358, -2005, -1915, -659)
-  -- input_width_g: 14
-  -- Constraint:    275 MHz
-  --
-  -- Fmax Results:
-  --
-  -- Traditional: 155.16 MHz
-  -- Transpose:   155.76 MHz
-  -- Systolic:    154.70 MHz
-  --
-  --
-  -- Coefficients:  41 defined in (29, -136, -397, -422, -15, 379, 160, -423, -405, 382, 727, -183, -1091, -257, 1452, 1089, -1757, -2827, 1962, 10205, 14350,
-  --                 10205, 1962, -2827, -1757, 1089, 1452, -257, -1091, -183, 727, 382, -405, -423, 160, 379, -15, -422, -397, -136, 29)
-  -- input_width_g: 14
-  -- Constraint:    275 MHz
-  --
-  -- Fmax Results:
-  --
-  -- Traditional: 151.08 MHz
-  -- Transpose:   150.88 MHz
-  -- Systolic:    151.19 MHz
-  --
-  --
-  -- "Cyclone V"
-  -- 5CEFA2U19C6 (25 DSP Blocks) - Too small a device on purpose.
-  --
-  -- Coefficients:  41 defined in (29, -136, -397, -422, -15, 379, 160, -423, -405, 382, 727, -183, -1091, -257, 1452, 1089, -1757, -2827, 1962, 10205, 14350,
-  --                 10205, 1962, -2827, -1757, 1089, 1452, -257, -1091, -183, 727, 382, -405, -423, 160, 379, -15, -422, -397, -136, 29)
-  -- input_width_g: 14
-  -- Constraint:    275 MHz
-  --
-  -- Fmax Results:
-  --
-  --             | Clock (MHz) | Registers | ALMs | DSP Blocks
-  -- ------------+-------------+-----------+------+------------
-  -- Traditional |    174.40   |           |      |     25
-  -- Transpose   |    206.36   |           |      |     17 (Symmetric coefficients lead to an immediate optimisation of multiplers)
-  -- Systolic    |    172.95   |           |      |     25
-  --
-  --
-  -- "Cyclone V"
-  -- XxXxXxXxXxXxX (66 DSP Blocks) - Lost the device name
-  --
-  -- Coefficients:  41 defined in (29, -136, -397, -422, -15, 379, 160, -423, -405, 382, 727, -183, -1091, -257, 1452, 1089, -1757, -2827, 1962, 10205, 14350,
-  --                 10205, 1962, -2827, -1757, 1089, 1452, -257, -1091, -183, 727, 382, -405, -423, 160, 379, -15, -422, -397, -136, 29)
-  -- input_width_g: 14
-  -- Constraint:    275 MHz
-  --
-  -- Fmax Results:
-  --             | Clock (MHz) | Registers | ALMs | DSP Blocks
-  -- ------------+-------------+-----------+------+------------
-  -- Traditional |             |           |      |       
-  -- Transpose   |             |           |      |        (Symmetric coefficients lead to an immediate optimisation of multiplers)
-  -- Systolic    |             |           |      |       
-  --
   fir_filter_i : entity work.fir_filter_const_coeffs(Systolic)
     generic map (
       coeffs_g      => to_input_arr_t(coeffs_g, input_width_g), -- Assume same range of values for both data_in and coefficient values.

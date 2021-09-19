@@ -1,24 +1,38 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Test bench for the non-pipelined adder tree.
+--
+-- P A Abbey, 28 August 2021
+--
+-------------------------------------------------------------------------------------
+
 entity test_adder_tree is
 end entity;
+
 
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 library local;
-use local.testbench.all;
+use local.testbench_pkg.all;
 use work.adder_tree_pkg.all;
 
 architecture test of test_adder_tree is
 
   type adder_tree_item_t is record
-    num_coeffs  : positive;
-    input_width : positive;
+    num_operands : positive;
+    input_width  : positive;
   end record;
 
   type adder_tree_array_t is array(natural range <>) of adder_tree_item_t;
 
-  constant adder_tree_array : adder_tree_array_t := (
-    -- (num_coeffs, input_width)
+  constant adder_tree_array_c : adder_tree_array_t := (
+    -- (num_operands, input_width)
     (2,  8),
     (3,  9),
     (4, 10),
@@ -27,7 +41,7 @@ architecture test of test_adder_tree is
     (7, 13)
   );
 
-  constant ones : std_logic_vector(adder_tree_array'range) := (others => '1');
+  constant ones : std_logic_vector(adder_tree_array_c'range) := (others => '1');
 
   function sum_inputs(i : input_arr_t) return signed is
     variable sum : signed(i(0)'range) := (others => '0');
@@ -39,21 +53,21 @@ architecture test of test_adder_tree is
   end function;
 
   signal finished : std_logic := '0';
-  signal passed   : std_logic_vector(adder_tree_array'range) := (others => '1');
+  signal passed   : std_logic_vector(adder_tree_array_c'range) := (others => '1');
 
 begin
 
-  duts : for l in adder_tree_array'range generate
+  duts : for l in adder_tree_array_c'range generate
 
-    signal i : input_arr_t(0 to adder_tree_array(l).num_coeffs-1)(adder_tree_array(l).input_width-1 downto 0);
-    signal o : signed(output_bits(adder_tree_array(l).input_width, adder_tree_array(l).num_coeffs)-1 downto 0);
+    signal i : input_arr_t(0 to adder_tree_array_c(l).num_operands-1)(adder_tree_array_c(l).input_width-1 downto 0);
+    signal o : signed(output_bits(adder_tree_array_c(l).input_width, adder_tree_array_c(l).num_operands)-1 downto 0);
 
   begin
 
     adder_tree_i : entity work.adder_tree
       generic map (
-        num_coeffs_g  => adder_tree_array(l).num_coeffs,
-        input_width_g => adder_tree_array(l).input_width
+        num_operands_g => adder_tree_array_c(l).num_operands,
+        input_width_g  => adder_tree_array_c(l).input_width
       )
       port map (
         i => i,
@@ -65,8 +79,8 @@ begin
       variable exp : integer := 0;
 
     begin
-      for j in 0 to adder_tree_array(l).num_coeffs-1 loop
-        i(j) <= to_signed(j+1, adder_tree_array(l).input_width);
+      for j in 0 to adder_tree_array_c(l).num_operands-1 loop
+        i(j) <= to_signed(j+1, adder_tree_array_c(l).input_width);
       end loop;
 
       wait for 20 ns;
@@ -80,10 +94,10 @@ begin
       end if;
 
       -- Add maximum values: +(2**(n-1))-1
-      for j in 0 to adder_tree_array(l).num_coeffs-1 loop
-        i(j) <= to_signed(2**(i(j)'length-1)-1, adder_tree_array(l).input_width);
+      for j in 0 to adder_tree_array_c(l).num_operands-1 loop
+        i(j) <= to_signed(2**(i(j)'length-1)-1, adder_tree_array_c(l).input_width);
       end loop;
-      exp := (2**(i(0)'length-1)-1)*adder_tree_array(l).num_coeffs;
+      exp := (2**(i(0)'length-1)-1)*adder_tree_array_c(l).num_operands;
 
       wait for 20 ns;
 
@@ -96,10 +110,10 @@ begin
       end if;
 
       -- Add minimum values: -2**(n-1)
-      for j in 0 to adder_tree_array(l).num_coeffs-1 loop
-        i(j) <= to_signed(-2**(i(j)'length-1), adder_tree_array(l).input_width);
+      for j in 0 to adder_tree_array_c(l).num_operands-1 loop
+        i(j) <= to_signed(-2**(i(j)'length-1), adder_tree_array_c(l).input_width);
       end loop;
-      exp := (-2**(i(0)'length-1))*adder_tree_array(l).num_coeffs;
+      exp := (-2**(i(0)'length-1))*adder_tree_array_c(l).num_operands;
 
       wait for 20 ns;
 

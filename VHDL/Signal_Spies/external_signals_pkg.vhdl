@@ -1,18 +1,35 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Package used by 'test_external_signals'.
+--
+-- P A Abbey, 11 July 2021
+--
+-------------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
-library local;
-use local.testbench.all;
 
 package external_signals_pkg is
 
   type force_state is (RELEASED, FORCE1, FORCE2, FORCE3, FORCE4);
 
+  -- Perform a sequence of forces to affect the simulation.
+  --
   procedure force_tests (
     signal clk   : in std_logic;
     signal state : out force_state
   );
 
 end package;
+
+
+library local;
+use local.testbench_pkg.wait_nr_ticks;
 
 package body external_signals_pkg is
 

@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
 -- Generic "comparator" to that scales gracefully for any bus width, any pipeline
 -- depth and any LUT size. The VHDL constructs a tree, where each level of the tree
 -- adds a pipeline stage, making large comparisons automatically pipelined. The logic
@@ -34,6 +40,7 @@
 -- does not support n-ary trees. Use Quartus Prime or Synplify Pro.
 --
 -- P A Abbey, 23 August 2019
+--
 -------------------------------------------------------------------------------------
 
 library ieee;
@@ -41,17 +48,17 @@ use ieee.std_logic_1164.all;
 
 entity comparator is
   generic(
-    depth      : positive := 3;  -- pipeline depth required
-    data_width : positive := 32; -- data bus width required for data_a and data_b.
+    depth_g      : positive := 3;  -- pipeline depth required
+    data_width_g : positive := 32; -- data bus width required for data_a and data_b.
     -- number of inputs to a LUT in an FPGA, or for an ASIC, how many bits it is
     -- reasonable to operate on in a single clock cycle. Can be odd number.
-    lutsize    : positive range 2 to positive'high := 4
+    lutsize_g    : positive range 2 to positive'high := 4
   );
   port(
     clk    : in  std_ulogic;
     reset  : in  std_ulogic;
-    data_a : in  std_ulogic_vector(data_width-1 downto 0);
-    data_b : in  std_ulogic_vector(data_width-1 downto 0);
+    data_a : in  std_ulogic_vector(data_width_g-1 downto 0);
+    data_b : in  std_ulogic_vector(data_width_g-1 downto 0);
     equal  : out std_ulogic
   );
 end entity;
@@ -62,14 +69,14 @@ architecture rtl of comparator is
 
   -- Not used in the building of the leaf node, more for visibility, and consistency with
   -- the 'else' part. The testbench can extract the values from this constant.
-  constant rc : divide_item_t := recurse_divide(depth, data_width, lutsize);
+  constant rc_c : divide_item_t := recurse_divide(depth_g, data_width_g, lutsize_g);
 
 begin
 
-  -- 'depth' is descending from its top level (initial) value down to 1. When depth = 1 we
+  -- 'depth_g' is descending from its top level (initial) value down to 1. When depth_g = 1 we
   -- terminate the recursion and implementing a 'leaf node' to implement the comparison
   -- logic.
-  g : if depth = 1 generate
+  g : if depth_g = 1 generate
   begin
 
     leaf : process(clk)
@@ -89,7 +96,7 @@ begin
 
   else generate
 
-    subtype equal_t is std_ulogic_vector(0 to rc.divide-1);
+    subtype equal_t is std_ulogic_vector(0 to rc_c.divide-1);
     signal equal_in : equal_t;
 
   begin
@@ -117,24 +124,24 @@ begin
 
       -- Divide up the data buses for the i'th sibling of recursion and setup the generic
       -- values for the next level in the hierarchy.
-      constant upper    : positive := work.comp_pkg.minimum((i+1)*rc.maxwidth, data_width);
-      constant buslow   : natural  := rc.maxwidth*i;
-      constant bushigh  : natural  := upper-1;
-      constant recwidth : positive := upper-buslow;
+      constant upper_c    : positive := work.comp_pkg.minimum((i+1)*rc_c.maxwidth, data_width_g);
+      constant buslow_c   : natural  := rc_c.maxwidth*i;
+      constant bushigh_c  : natural  := upper_c-1;
+      constant recwidth_c : positive := upper_c-buslow_c;
 
     begin
 
       comparator_c : entity work.comparator
         generic map(
-          depth      => depth-1,
-          data_width => recwidth,
-          lutsize    => lutsize
+          depth_g      => depth_g-1,
+          data_width_g => recwidth_c,
+          lutsize_g    => lutsize_g
         )
         port map(
           clk    => clk,
           reset  => reset,
-          data_a => data_a(bushigh downto buslow),
-          data_b => data_b(bushigh downto buslow),
+          data_a => data_a(bushigh_c downto buslow_c),
+          data_b => data_b(bushigh_c downto buslow_c),
           equal  => equal_in(i)
         );
 
@@ -146,7 +153,7 @@ begin
         if reset = '1' then
           equal <= '0';
         else
-          -- 'rc.divide' input AND gate.
+          -- 'rc_c.divide' input AND gate.
           if equal_in = equal_t'(others => '1') then
             equal <= '1';
           else

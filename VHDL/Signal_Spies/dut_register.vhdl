@@ -1,3 +1,16 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- A very simple component on which to experiment with signal spies.
+--
+-- P A Abbey, 11 July 2021
+--
+-------------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -11,6 +24,7 @@ entity dut_register is
     vec_out : out std_logic_vector(3 downto 0)
   );
 end entity;
+
 
 architecture rtl of dut_register is
 

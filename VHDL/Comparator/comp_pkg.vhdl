@@ -1,4 +1,10 @@
 -------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
 -- Package used to provide the tricky calculations for how to divide the logic tree
 -- at each level or recursion, calculating top-down as the layers are logic are
 -- created. Challenges to take into consideration.
@@ -12,6 +18,7 @@
 --     or UltraScale devices, Intel Stratix 10 devices).
 --
 -- P A Abbey, 23 August 2019
+--
 -------------------------------------------------------------------------------------
 
 package comp_pkg is
@@ -22,44 +29,26 @@ package comp_pkg is
     lutdepth : natural;
   end record;
 
-  function minimum(a, b : positive) return positive;
-  
-  function lut_depth(
-    constant depth   : positive;
-    constant width   : positive;
-    constant lutsize : positive := 4
-  ) return natural;
-  
-  function recurse_divide(
-    constant depth   : positive;
-    constant width   : positive;
-    constant lutsize : positive := 4
-  ) return divide_item_t;
 
-end package;
-
-library ieee;
-use ieee.math_real.all;
-
-package body comp_pkg is
-
-  -- Not been implemented for 'positive' in some tools! Where it has been implemented, the function's
-  -- presence causes ambiguity. Helpful...
+  -- Return the minimum of 'a' and 'b'.
+  --
+  -- This function has not been implemented for 'positive' in some tools! Where it
+  -- has been implemented, the function's presence causes ambiguity. Helpful...
   --
   -- Quartus Prime:
-  -- Error (10482): VHDL error at comparator.vhdl(85): object "minimum" is used but not declared
+  -- Error (10482): VHDL error at file.vhdl(xx): object "minimum" is used but not declared
   -- Error: Quartus Prime Analysis & Synthesis was unsuccessful. 1 error, 0 warnings
   --
-  -- ModelSim: ** Error: A:/Philip/Work/VHDL/Comparator/comparator.vhdl(89): Subprogram "minimum" is ambiguous.
+  -- ModelSim: ** Error: file.vhdl(xx): Subprogram "minimum" is ambiguous.
   --
-  function minimum(a, b : positive) return positive is
-  begin
-    if a < b then
-      return a;
-    else
-      return b;
-    end if;
-  end function;
+  -- Therefore qualification by full path name might be required,
+  --   e.g. 'local.math_pkg.minimum(..)'.
+  --
+  -- Usage:
+  --   constant min : positive := minimum(4, width_g);
+  --
+  function minimum(a, b : positive) return positive;
+
 
   -- For the height in the hierarchy given by 'depth', what is the expected depth of LUTs between
   -- flops for the tree below?
@@ -112,19 +101,15 @@ package body comp_pkg is
   --
   -- With even lutsize, '2 * lutsize / (lutsize - (lutsize mod 2))' reduces to '2'.
   --
+  -- Usage:
+  --   variable expdepth : natural := lut_depth(compare_array_t'(2, 23, 4));
+  --
   function lut_depth(
     constant depth   : positive;
     constant width   : positive;
     constant lutsize : positive := 4
-  ) return natural is
-  begin
-    return natural(ceil(
-      log(
-        real(width * 2 * lutsize / (lutsize - (lutsize mod 2))),
-        real(lutsize)
-      ) / real(depth)
-    ));
-  end function;
+  ) return natural;
+
 
   -- Decide how much to divide the work with 'depth' levels of hierarchy to go.
   --
@@ -171,6 +156,48 @@ package body comp_pkg is
   -- For calculation efficiency, return multiple values from this function call. Otherwise
   -- the same calculations are made repeatedly and unnecessarily in the separate functions.
   --
+  -- Usage:
+  --   constant rc : divide_item_t := recurse_divide(depth, data_width, lutsize);
+  --
+  function recurse_divide(
+    constant depth   : positive;
+    constant width   : positive;
+    constant lutsize : positive := 4
+  ) return divide_item_t;
+
+end package;
+
+
+library ieee;
+use ieee.math_real.all;
+
+package body comp_pkg is
+
+  function minimum(a, b : positive) return positive is
+  begin
+    if a < b then
+      return a;
+    else
+      return b;
+    end if;
+  end function;
+
+
+  function lut_depth(
+    constant depth   : positive;
+    constant width   : positive;
+    constant lutsize : positive := 4
+  ) return natural is
+  begin
+    return natural(ceil(
+      log(
+        real(width * 2 * lutsize / (lutsize - (lutsize mod 2))),
+        real(lutsize)
+      ) / real(depth)
+    ));
+  end function;
+
+
   function recurse_divide(
     constant depth   : positive;
     constant width   : positive;

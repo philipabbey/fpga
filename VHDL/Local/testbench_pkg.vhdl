@@ -1,11 +1,34 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Provide a number of general functions required for stimulus generation in test
+-- benches. These functions are for (clock) cycle-based rather than bus-based test
+-- benches.
 --
 -- Compile as VHDL-2008
 --
+-- P A Abbey, 11 August 2019
+--
+-------------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 
-package testbench is
+package testbench_pkg is
 
+  -- Create a clock whose name is indicated by the 'clk' parameter with a period of
+  -- 'highperiod' + 'lowperiod', which allows for the setting of a non-symmetric
+  -- clock waveform. 'offset' can be used to shift the phase of the clock relative to
+  -- 0 ns. 'maxtime' > 0 ns can be used to turn the clock off after a specified time
+  -- has elapsed. The clock can also be stopped by calling 'stop_clocks'.
+  --
+  -- Usage:
+  --   clock(my_clk, 5 ns, 5 ns, 70 us);
+  --
   procedure clock(
     signal   clk        : out std_ulogic;
     constant highperiod :     time;
@@ -14,6 +37,17 @@ package testbench is
     constant maxtime    :     time := 0 ns -- Stop the clock after this time limit
   );
 
+
+  -- Create a clock whose name is indicated by the 'clk' parameter with the specified
+  -- 'period'. The duty cycle can be altered using the 'dutycycle' parameter to make
+  -- a non-symmetric clock signal. 'offset' can be used to shift the phase of the
+  -- clock relative to 0 ns. 'maxtime' > 0 ns can be used to turn the clock off after
+  -- a specified time has elapsed. The clock can also be stopped by calling
+  -- 'stop_clocks'.
+  --
+  -- Usage:
+  --   clock(mem_clk, 12 ns, 0.6);
+  --
   procedure clock(
     signal   clk       : out std_ulogic;
     constant period    :     time;
@@ -22,67 +56,149 @@ package testbench is
     constant maxtime   :     time := 0 ns
   );
 
+  -- Stop all clocks created with 'clock' procedure calls above. This call is an
+  -- alternative to 'std.env.stop' which has the irritating habit of bringing up a
+  -- source window to cover the wave window in ModelSim.
   procedure stop_clocks;
 
+
+  -- Wait for 'num' rising edges of 'sig'.
+  --
+  -- Usage:
+  --   wait_nr_ticks(clk, 4);
+  --
   procedure wait_nr_ticks(
     signal   sig : in std_ulogic;
     constant num : in positive
   );
 
+
+  -- Wait for 'num' falling edges of 'sig'.
+  --
+  -- Usage:
+  --   wait_nf_ticks(clk, 4);
+  --
   procedure wait_nf_ticks(
     signal   sig : in std_ulogic;
     constant num : in positive
   );
 
-  -- Non edge-triggered wait for condition
+
+  -- Non event-triggered 'wait for' condition. If 'sig' is not currently 'val', then
+  -- wait until it is and then return.
+  --
+  -- Usage:
+  --   wait_until(data_valid, '1');
+  --
   procedure wait_until(
     signal sig : in std_ulogic;
            val : in std_ulogic
   );
 
+
+  -- Invert the state of 'sig', wait for 'num' rising edges of 'clk' and invert the
+  -- 'sig' back.
+  --
+  -- Usage:
+  --   toggle_r(reset, clk, 2);
+  --
   procedure toggle_r(
     signal   sig : inout std_ulogic;
     signal   clk : in    std_ulogic;
     constant num : in    positive := 1
   );
 
+
+  -- Invert the state of 'sig', wait for 'num' falling edges of 'clk' and invert the
+  -- 'sig' back.
+  --
+  -- Usage:
+  --   toggle_f(reset, clk, 2);
+  --
   procedure toggle_f(
     signal   sig : inout std_ulogic;
     signal   clk : in    std_ulogic;
     constant num : in    positive := 1
   );
 
+
+  -- Create a random wiggle on 'sig', typically a data valid input. The transitions
+  -- are aligned with rising edges on the signal specified by 'clk', and the aim is
+  -- to achieve a waveform that has a ratio of high to low states close to
+  -- 'dutycycle'. The signal can remain high for multiple clock cycles and low for
+  -- multiple clock cycles such that the speed with which valid data is clocked in
+  -- is governed by 'dutycycle', without having a constant mark space ratio. This is
+  -- intended to avoid designs inadvertently only working for a 1 in n cycle data
+  -- valid signal because the designer did not realise the logic exploited some form
+  -- of periodicity of the stimulus.
+  --
+  -- Usage:
+  --   wiggle_r(data_valid_in, clk, 0.8);
+  --
   procedure wiggle_r(
     signal   sig       : out std_ulogic;
     signal   clk       : in  std_ulogic;
     constant dutycycle :     real range 0.0 to 1.0 := 0.5 -- ratio = high / low
   );
 
+
+  -- Create a random wiggle on 'sig', typically a data valid input. The transitions
+  -- are aligned with falling edges on the signal specified by 'clk', and the aim is
+  -- to achieve a waveform that has a ratio of high to low states close to
+  -- 'dutycycle'. The signal can remain high for multiple clock cycles and low for
+  -- multiple clock cycles such that the speed with which valid data is clocked in
+  -- is governed by 'dutycycle', without having a constant mark space ratio. This is
+  -- intended to avoid designs inadvertently only working for a 1 in n cycle data
+  -- valid signal because the designer did not realise the logic exploited some form
+  -- of periodicity of the stimulus.
+  --
+  -- Usage:
+  --   wiggle_f(data_valid_in, clk, 0.2);
+  --
   procedure wiggle_f(
     signal   sig       : out std_ulogic;
     signal   clk       : in  std_ulogic;
     constant dutycycle :     real range 0.0 to 1.0 := 0.5 -- ratio = high / low
   );
 
+
+  -- Generate a vector with randomly allocated '0's and '1's returning a
+  -- std_ulogic_vector.
+  --
+  -- Usage:
+  --   data_random <= random_vector(data_random'length);
+  --
   impure function random_vector(width : natural) return std_ulogic_vector;
 
+
+  -- The seed for the current state of the random number generator.
   type seeds_t is array(0 to 1) of positive;
 
+
+  -- The type for the "shared variable" used to provide a sequence of pseudo-random
+  -- numbers.
   type rndgen_t is protected
+
+    -- Set the current seed values for the random number generator.
     procedure set(val : seeds_t);
+
+    -- Get the current seed values for the random number generator.
     impure function get return seeds_t;
-    -- random real-number value in range 0 to 1.0 (not including 1.0?)
+
+    -- Get a random real-number value in range 0 to 1.0.
     impure function random return real;
+
   end protected;
 
 end package;
+
 
 library ieee;
 use ieee.math_real.all;
 library std;
 use std.textio.all;
 
-package body testbench is
+package body testbench_pkg is
 
   type rndgen_t is protected body
 
@@ -112,11 +228,18 @@ package body testbench is
   -- This declaration is still required even though it is private to this package.
   -- Feels entirely unnecessary!
   type clk_en_t is protected
+
+    -- Set the clock enable to true.
     procedure start;
-    -- NB. Stop all clocks
+
+    -- Set the clock enable to false.
     procedure stop;
+
+    -- Get the current state of the clock enable.
     impure function get return boolean;
+
   end protected;
+
 
   type clk_en_t is protected body
 
@@ -127,7 +250,6 @@ package body testbench is
       enable := true;
     end procedure;
 
-    -- NB. Stop all clocks
     procedure stop is
     begin
       enable := false;
@@ -178,6 +300,7 @@ package body testbench is
     wait;
   end procedure;
 
+
   procedure clock(
     signal   clk       : out std_ulogic;
     constant period    :     time;
@@ -212,11 +335,13 @@ package body testbench is
     end loop;
     wait;
   end procedure;
-  
+
+
   procedure stop_clocks is
   begin
     clk_en.stop;
   end procedure;
+
 
   procedure wait_nr_ticks(
     signal   sig : in std_ulogic;
@@ -228,6 +353,7 @@ package body testbench is
     end loop;
   end procedure;
 
+
   procedure wait_nf_ticks(
     signal   sig : in std_ulogic;
     constant num : in positive
@@ -238,7 +364,7 @@ package body testbench is
     end loop;
   end procedure;
 
-  -- Non edge-triggered wait for condition
+
   procedure wait_until(
     signal sig : in std_ulogic;
            val : in std_ulogic
@@ -248,6 +374,7 @@ package body testbench is
       wait until sig = val;
     end if;
   end procedure;
+
 
   procedure toggle_r(
     signal   sig : inout std_ulogic;
@@ -260,6 +387,7 @@ package body testbench is
     sig <= not sig;
   end procedure;
 
+
   procedure toggle_f(
     signal   sig : inout std_ulogic;
     signal   clk : in    std_ulogic;
@@ -271,7 +399,7 @@ package body testbench is
     sig <= not sig;
   end procedure;
 
-  -- Randomly wiggle 'sig' on a rising clock edge
+
   procedure wiggle_r(
     signal   sig       : out std_ulogic;
     signal   clk       : in  std_ulogic;
@@ -290,7 +418,7 @@ package body testbench is
     wait;
   end procedure;
 
-  -- Randomly wiggle 'sig' on a rising clock edge
+
   procedure wiggle_f(
     signal   sig       : out std_ulogic;
     signal   clk       : in  std_ulogic;
@@ -308,6 +436,7 @@ package body testbench is
     end loop;
     wait;
   end procedure;
+
 
   impure function random_vector(width : natural) return std_ulogic_vector is
     variable ret : std_ulogic_vector(width-1 downto 0) := (others => '0');

@@ -1,26 +1,28 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Test the wrapper code used for 'lfsr_counter_wrapper' component.
+--
+-- P A Abbey, 11 August 2019
+--
+-------------------------------------------------------------------------------------
+
 entity test_counter_wrapper is
 end entity;
+
 
 library ieee;
 use ieee.std_logic_1164.all;
 library std;
 use std.textio.all;
 library local;
-use local.testbench.all;
+use local.testbench_pkg.all;
 
 architecture behav of test_counter_wrapper is
-
-  component lfsr_counter_wrapper is
-    generic(
-      max : positive range 3 TO positive'high
-    );
-    port(
-      clk      : in  std_ulogic;
-      reset    : in  std_ulogic;
-      enable   : in  std_ulogic;
-      finished : out std_ulogic
-    );
-  end component;
 
   -- Signal declarations
   signal clk      : std_ulogic := '0';
@@ -28,13 +30,13 @@ architecture behav of test_counter_wrapper is
   signal enable   : std_ulogic := '0';
   signal finished : std_ulogic;
 
-  constant max : natural := 250;
+  constant max_c : natural := 250;
 
 begin
 
-  dut : lfsr_counter_wrapper
+  dut : entity work.lfsr_counter_wrapper
     generic map (
-      max => max
+      max_g => max_c
     )
     port map (
       clk      => clk,

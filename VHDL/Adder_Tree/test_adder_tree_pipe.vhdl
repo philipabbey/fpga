@@ -1,3 +1,16 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Test bench for the pipelined adder tree.
+--
+-- P A Abbey, 28 August 2021
+--
+-------------------------------------------------------------------------------------
+--
 -- # ************************************************************************************
 -- # DUT: 0
 -- #  Pipeline depth:         1
@@ -181,27 +194,28 @@
 entity test_adder_tree_pipe is
 end entity;
 
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 library std;
 use std.textio.all;
 library local;
-use local.testbench.all;
+use local.testbench_pkg.all;
 use work.adder_tree_pkg.all;
 
 architecture test of test_adder_tree_pipe is
 
   type adder_tree_pipe_item_t is record
-    depth       : positive;
-    num_coeffs  : positive;
-    input_width : positive;
+    depth        : positive;
+    num_operands : positive;
+    input_width  : positive;
   end record;
 
   type adder_tree_pipe_array_t is array(natural range <>) of adder_tree_pipe_item_t;
 
   constant adder_tree_pipe_array_c : adder_tree_pipe_array_t := (
-    -- (depth, num_coeffs, input_width)
+    -- (depth, num_operands, input_width)
     (1,  2,  8), -- Needs depth = 1
     (2,  2,  8), -- Needs depth = 1
     (2,  3,  9), -- Needs depth = 2
@@ -213,7 +227,7 @@ architecture test of test_adder_tree_pipe is
     (3, 80,  8)  -- Needs depth = 7 -- Compromise timing
   );
 
-  constant ones : std_logic_vector(adder_tree_pipe_array_c'range) := (others => '1');
+  constant ones_c : std_logic_vector(adder_tree_pipe_array_c'range) := (others => '1');
 
   function sum_inputs(i : input_arr_t) return integer is
     variable sum : integer := 0;
@@ -256,7 +270,7 @@ architecture test of test_adder_tree_pipe is
 
   type level_item_t is record
     depth        : positive;
-    num_coeffs   : positive;
+    num_operands : positive;
     divide       : positive;
     output_width : positive;
   end record;
@@ -290,16 +304,16 @@ begin
 
   duts : for l in adder_tree_pipe_array_c'range generate
 
-    signal i : input_arr_t(0 to adder_tree_pipe_array_c(l).num_coeffs-1)(adder_tree_pipe_array_c(l).input_width-1 downto 0);
-    signal o : signed(output_bits(adder_tree_pipe_array_c(l).input_width, adder_tree_pipe_array_c(l).num_coeffs)-1 downto 0);
+    signal i : input_arr_t(0 to adder_tree_pipe_array_c(l).num_operands-1)(adder_tree_pipe_array_c(l).input_width-1 downto 0);
+    signal o : signed(output_bits(adder_tree_pipe_array_c(l).input_width, adder_tree_pipe_array_c(l).num_operands)-1 downto 0);
 
   begin
 
     adder_tree_pipe_i : entity work.adder_tree_pipe
       generic map (
-        depth_g       => adder_tree_pipe_array_c(l).depth,
-        num_coeffs_g  => adder_tree_pipe_array_c(l).num_coeffs,
-        input_width_g => adder_tree_pipe_array_c(l).input_width
+        depth_g        => adder_tree_pipe_array_c(l).depth,
+        num_operands_g => adder_tree_pipe_array_c(l).num_operands,
+        input_width_g  => adder_tree_pipe_array_c(l).input_width
       )
       port map (
         clk   => clk,
@@ -314,7 +328,7 @@ begin
 
     begin
       -- Add differenrt values
-      for j in 0 to adder_tree_pipe_array_c(l).num_coeffs-1 loop
+      for j in 0 to adder_tree_pipe_array_c(l).num_operands-1 loop
         if (j+1 < 2**i(j)'length-1) then
           i(j) <= to_signed(j+1, adder_tree_pipe_array_c(l).input_width);
         else
@@ -335,10 +349,10 @@ begin
       end if;
 
       -- Add maximum values: +(2**(n-1))-1
-      for j in 0 to adder_tree_pipe_array_c(l).num_coeffs-1 loop
+      for j in 0 to adder_tree_pipe_array_c(l).num_operands-1 loop
         i(j) <= to_signed(2**(i(j)'length-1)-1, adder_tree_pipe_array_c(l).input_width);
       end loop;
-      exp := (2**(i(0)'length-1)-1)*adder_tree_pipe_array_c(l).num_coeffs;
+      exp := (2**(i(0)'length-1)-1)*adder_tree_pipe_array_c(l).num_operands;
       wait_nr_ticks(clk, adder_tree_pipe_array_c(l).depth+2);
 
       if to_integer(o) = exp then
@@ -350,10 +364,10 @@ begin
       end if;
 
       -- Add minimum values: -2**(n-1)
-      for j in 0 to adder_tree_pipe_array_c(l).num_coeffs-1 loop
+      for j in 0 to adder_tree_pipe_array_c(l).num_operands-1 loop
         i(j) <= to_signed(-2**(i(j)'length-1), adder_tree_pipe_array_c(l).input_width);
       end loop;
-      exp := (-2**(i(0)'length-1))*adder_tree_pipe_array_c(l).num_coeffs;
+      exp := (-2**(i(0)'length-1))*adder_tree_pipe_array_c(l).num_operands;
       wait_nr_ticks(clk, adder_tree_pipe_array_c(l).depth+2);
 
       if to_integer(o) = exp then
@@ -378,7 +392,7 @@ begin
     signal la : level_array_t(1 to adder_tree_pipe_array_c(i).depth) := (
       others => (
         depth        => positive'high,
-        num_coeffs   => positive'high,
+        num_operands => positive'high,
         divide       => positive'high,
         output_width => positive'high
       )
@@ -396,42 +410,42 @@ begin
 
       di_g1 : if p = 1 and p <= adder_tree_pipe_array_c(i).depth generate 
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.depth_g        : positive>>;
-        la(p).num_coeffs   <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.num_coeffs_g   : positive>>;
+        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.num_operands_g   : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.divide_c       : positive>>;
         la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g2 : if p = 2 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
-        la(p).num_coeffs   <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_coeffs_g   : positive>>;
+        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g   : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
         la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g3 : if p = 3 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
-        la(p).num_coeffs   <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_coeffs_g   : positive>>;
+        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g   : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
         la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g4 : if p = 4 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
-        la(p).num_coeffs   <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_coeffs_g   : positive>>;
+        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g   : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
         la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g5 : if p = 5 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
-        la(p).num_coeffs   <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_coeffs_g   : positive>>;
+        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g   : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
         la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g6 : if p = 6 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
-        la(p).num_coeffs   <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_coeffs_g   : positive>>;
+        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g   : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
         la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
@@ -444,7 +458,7 @@ begin
       -- parameters to check that the one constructed has not exceeded the value at any level of
       -- hierarchy. This is a basic check for even construction between flops. A separate check is made
       -- later for erring on the side of bottom-heavy.
-      variable expdepth : positive := ceil_root(adder_tree_pipe_array_c(i).num_coeffs, adder_tree_pipe_array_c(i).depth);
+      variable expdepth : positive := ceil_root(adder_tree_pipe_array_c(i).num_operands, adder_tree_pipe_array_c(i).depth);
       variable l        : line;
     begin
       wait until la'event;
@@ -457,7 +471,7 @@ begin
       write(l, adder_tree_pipe_array_c(i).depth, right, 5);
       writeline(OUTPUT, l);
       swrite(l, " Coefficients:       ");
-      write(l, adder_tree_pipe_array_c(i).num_coeffs, right, 5);
+      write(l, adder_tree_pipe_array_c(i).num_operands, right, 5);
       writeline(OUTPUT, l);
       swrite(l, " Input Width:        ");
       write(l, adder_tree_pipe_array_c(i).input_width, right, 5);
@@ -485,7 +499,7 @@ begin
           swrite(l, "Depth: ");
           write(l, la(d).depth);
           swrite(l, ", Number Coefficients: ");
-          write(l, la(d).num_coeffs, right, 3);
+          write(l, la(d).num_operands, right, 3);
           swrite(l, ", Divide: ");
           write(l, la(d).divide, right, 4);
           swrite(l, ", Output Width: ");
@@ -514,8 +528,8 @@ begin
   halt : process(finished)
     variable l : line;
   begin
-    if finished = ones then
-      if passed = ones then
+    if finished = ones_c then
+      if passed = ones_c then
         swrite(l, "Functional tests PASSED");
         writeline(OUTPUT, l);
       else
@@ -530,7 +544,7 @@ begin
         swrite(l, "Construction tests FAILED - See transcript for fault reports.");
         writeline(OUTPUT, l);
       end if;
-      std.env.stop;
+      stop_clocks;
     end if;
   end process;
 

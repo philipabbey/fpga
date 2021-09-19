@@ -1,3 +1,20 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- RTL code for a FIR filter with constant coefficients. There are three different
+-- architectures for three different constructions:
+--  * Traditional adder tree
+--  * Transpose
+--  * Systolic
+--
+-- P A Abbey, 28 August 2021
+--
+-------------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -49,9 +66,9 @@ begin
 
   adder_tree_pipe_i : entity work.adder_tree_pipe
     generic map (
-      depth_g       => ceil_log(coeffs_c'length, 2), -- Best attempt at a binary tree with single adder between register stages
-      num_coeffs_g  => coeffs_c'length,
-      input_width_g => mult_arr(0)'length
+      depth_g        => ceil_log(coeffs_c'length, 2), -- Best attempt at a binary tree with single adder between register stages
+      num_operands_g => coeffs_c'length,
+      input_width_g  => mult_arr(0)'length
     )
     port map (
       clk   => clk,
@@ -61,7 +78,6 @@ begin
     );
 
 end architecture;
-
 
 
 architecture transpose of fir_filter_const_coeffs is

@@ -1,6 +1,16 @@
+-------------------------------------------------------------------------------------
 --
--- Wrapper to provide a specific vector length and polynomial to data_in for RTL elaboration.
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
 --
+-------------------------------------------------------------------------------------
+--
+-- Wrapper to provide a specific vector length and polynomial to data_in for RTL
+-- elaboration and registered I/O.
+--
+-- P A Abbey, 12 August 2019
+--
+-------------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -15,6 +25,7 @@ entity polydiv_wrapper is
   );
 end entity;
 
+
 architecture rtl of polydiv_wrapper is
 
   signal data_in_i  : std_ulogic_vector(data_in'range);
@@ -24,7 +35,7 @@ begin
 
   polydiv_c : entity work.polydiv
     generic map(
-      poly => "100000100110000010001110110110111"
+      poly_g => "100000100110000010001110110110111"
     )
     port map(
       clk           => clk,
