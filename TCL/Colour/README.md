@@ -16,10 +16,10 @@ Please read the blog post [Visualising Clock Domain Crossings in Vivado](http://
 ## Execution
 
 1. Open a design in Vivado and view a schematic
-2. Source the [color.tcl](color.tcl) TCL script in the Vivado TCL shell
+2. Source the [colour.tcl](colour.tcl) TCL script in the Vivado TCL shell
 
 ```tcl
-source {color.tcl}
+source {colour.tcl}
 ```
 
 3. Use either of these two methods to perform colouration:
