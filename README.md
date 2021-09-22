@@ -4,7 +4,7 @@ These projects are typically explained through a [personal blog site](http://blo
 
 ## VHDL
 
-Ideas explored for creating VLSI logic with VHSL.
+Ideas explored for creating VLSI logic with VHDL.
 
 ## TCL
 
