@@ -1,3 +1,17 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Example clock domain crossing to demonstrate Vivado register colouring by clock
+-- source.
+--
+-- P A Abbey, 21 May 2021
+--
+-------------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 library local;

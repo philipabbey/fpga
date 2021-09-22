@@ -1,3 +1,20 @@
+#####################################################################################
+#
+#  Distributed under MIT Licence
+#    See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+#
+#####################################################################################
+#
+# TCL script to colour clocked primitives by clock source for visualisation.
+#
+# Usage:
+#   source -notrace {colour.tcl}
+#
+# Reference:
+#   http://blog.abbey1.org.uk/index.php/technology/visualising-clock-domain-crossings-in-vivado
+#
+#####################################################################################
+
 # Remove all highlighted colourings and marks for a blank canvas.
 #
 proc uncolor_registers {} {
