@@ -12,4 +12,4 @@ Ideas for driving FPGA tools which typically use TCL for automation, E.g. Siemen
 
 ## Operating Systems
 
-Intended for any code relating to shells. Presently just a Cygwin installation methods.
+Intended for any code relating to shells. Presently just automated Cygwin installation methods.
