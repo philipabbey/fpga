@@ -1,15 +1,27 @@
 @echo off
+rem ---------------------------------------------------------------------------------
 rem
-rem Reference: https://superuser.com/questions/40545/upgrading-and-installing-packages-through-the-cygwin-command-line/301026#301026
-rem Setup command-line arguments: https://cygwin.com/faq/faq.html#faq.setup.cli
+rem  Distributed under MIT Licence
+rem    See https://github.com/philipabbey/fpga/blob/main/LICENCE.
 rem
-rem Full mirror created by this script is 96GB and took ~2 hours to rsync.
-rem Subsequent updates took seconds and after 2 days < 100 MB changes packages.
+rem ---------------------------------------------------------------------------------
 rem
-rem Check the script setup:
+rem  Explanation: Cygwin Mirror and Installation
+rem    * http://blog.abbey1.org.uk/index.php/technology/cygwin-mirror-and-installation
 rem
-
-rem ***************************************************************************
+rem  References:
+rem    * https://superuser.com/questions/40545/upgrading-and-installing-packages-through-the-cygwin-command-line/301026#301026
+rem    * Setup command-line arguments: https://cygwin.com/faq/faq.html#faq.setup.cli
+rem
+rem  Full mirror created by this script is 96GB and took ~2 hours to rsync.
+rem  Subsequent updates took seconds and after 2 days < 100 MB changes packages.
+rem
+rem  P A Abbey, 31 July 2021
+rem
+rem ---------------------------------------------------------------------------------
+rem
+rem  Check the script setup:
+rem
 rem Choose the dated mirror to install from
 set DATEDMIRROR=2021-07-08-14-03-58
 rem Choose the location on your local disk to install to
@@ -28,7 +40,7 @@ rem 1 for install using local path names and mapped drives
 rem If the Cygwin mirror has no webserver, you must use local.
 rem If you use the "install from mirror" option, the package files get downloaded locally and take additional space.
 set LOCAL=1
-rem ***************************************************************************
+rem ---------------------------------------------------------------------------------
 
 rem derived variables
 set SETUPPATH=%MIRRORPATH%\%DATEDMIRROR%
@@ -41,7 +53,7 @@ set PACKAGES=bc,cygutils-extra,nc,procps,psmisc,rhash,zip
 rem Cygwin setup 2.905
 rem `
 rem Command Line Options:
-rem 
+rem
 rem     --allow-unsupported-windows    Allow old, unsupported Windows versions
 rem  -a --arch                         Architecture to install (x86_64 or x86)
 rem  -C --categories                   Specify entire categories to install

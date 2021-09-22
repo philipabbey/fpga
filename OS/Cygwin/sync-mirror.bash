@@ -1,7 +1,22 @@
 #!/bin/bash
+#####################################################################################
+#
+#  Distributed under MIT Licence
+#    See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+#
+#####################################################################################
 #
 # Create a Cygwin mirror for offline installation
-# Ref: https://www.cygwin.com/package-server.html
+#
+#  Explanation: Cygwin Mirror and Installation
+#    * http://blog.abbey1.org.uk/index.php/technology/cygwin-mirror-and-installation
+#
+#  References:
+#    * https://www.cygwin.com/package-server.html
+#
+#  P A Abbey, 31 July 2021
+#
+#####################################################################################
 #
 # CAREFUL! Delete mess with:
 #  cd ${MIRRORLOC}
@@ -21,6 +36,7 @@ MIRRORSITE="rsync://cygwin.mirror.constant.com/cygwin-ftp"
 MIRRORLOC="/data/website/cygwin-mirror"
 # Number of dated mirrors to retain, anything older will be deleted
 KEEP=3
+#####################################################################################
 
 THIS=$(realpath ${0})
 SCRIPT=$(basename ${THIS})
