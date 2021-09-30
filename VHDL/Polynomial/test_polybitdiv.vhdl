@@ -21,7 +21,7 @@ library std;
 library local;
 use local.testbench_pkg.all;
 
-architecture behav of test_polybitdiv is
+architecture test of test_polybitdiv is
 
   -- Example from https://en.wikipedia.org/wiki/Cyclic_redundancy_check
   -- constant message_c    : std_ulogic_vector := "11010011101100" & "000"; -- message padded by 3 bits

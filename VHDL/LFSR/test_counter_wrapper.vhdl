@@ -22,7 +22,7 @@ use std.textio.all;
 library local;
 use local.testbench_pkg.all;
 
-architecture behav of test_counter_wrapper is
+architecture test of test_counter_wrapper is
 
   -- Signal declarations
   signal clk      : std_ulogic := '0';

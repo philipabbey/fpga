@@ -22,7 +22,7 @@ library local;
 use local.testbench_pkg.all;
 use work.adder_tree_pkg.all;
 
-architecture rtl of test_fir_filter_var_coeffs is
+architecture test of test_fir_filter_var_coeffs is
 
   signal clk     : std_logic;
   signal reset   : std_logic;

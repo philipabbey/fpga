@@ -21,7 +21,7 @@ use ieee.std_logic_1164.all;
 library local;
 use local.testbench_pkg.all;
 
-architecture behav of test_external_signals_procedure is
+architecture test of test_external_signals_procedure is
 
   signal clk     : std_logic;
   signal reset   : std_logic;

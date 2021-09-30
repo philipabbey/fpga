@@ -224,7 +224,7 @@ library local;
 use local.testbench_pkg.all;
 use work.comp_pkg.all;
 
-architecture behav of test_comparators is
+architecture test of test_comparators is
 
   type compare_item_t is record
     depth      : positive;

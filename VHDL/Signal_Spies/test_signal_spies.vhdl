@@ -21,7 +21,7 @@ library local;
 use local.testbench_pkg.all;
 library modelsim_lib;
 
-architecture behav of test_signal_spies is
+architecture test of test_signal_spies is
 
   signal clk     : std_logic;
   signal reset   : std_logic;

@@ -22,7 +22,7 @@ use std.textio.all;
 library local;
 use local.testbench_pkg.all;
 
-architecture behav of test_testbench is
+architecture test of test_testbench is
 
   type test_cnt_t   is array (0 to 2) of natural;
   type test_ratio_t is array (test_cnt_t'range) of real;
