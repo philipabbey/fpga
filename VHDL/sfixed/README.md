@@ -16,3 +16,8 @@ Assumes the following directory already exists and hence will fail to compile if
 set SIM=%USERPROFILE%\ModelSim
 ```
 
+Additionally [modelsim_compile_sfixed.cmd](modelsim_compile_sfixed.cmd) requires you to supply the path to your local ModelSim installation.
+
+```batch
+set SRC=<quartus install path>\modelsim_ase\vhdl_src\floatfixlib
+```
