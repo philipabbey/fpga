@@ -29,7 +29,9 @@ if exist work (
 
 vmap local D:/Users/Philip/ModelSim/libraries/local
 vlib work
-vcom -2008 %SRC%\counter.vhdl %SRC%\sync_counter_wrapper.vhdl %SRC%\lfsr_counter_wrapper.vhdl %SRC%\compare_counters.vhdl %SRC%\test_counters.vhdl %SRC%\test_counter_wrapper.vhdl
+vcom -quiet -2008 %SRC%\counter.vhdl %SRC%\sync_counter_wrapper.vhdl %SRC%\lfsr_counter_wrapper.vhdl %SRC%\compare_counters.vhdl %SRC%\test_counters.vhdl %SRC%\test_counter_wrapper.vhdl
+set ec=%ERRORLEVEL%
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
 if not "%TERM_PROGRAM%"=="vscode" pause
+exit /b %ec%

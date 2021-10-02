@@ -29,7 +29,9 @@ if exist work (
 
 vmap local %SIM%\libraries\local
 vlib work
-vcom -2008 %SRC%\comp_pkg.vhdl %SRC%\comparator.vhdl %SRC%\test_comparators.vhdl %SRC%\comparator_io.vhdl
+vcom -quiet -2008 %SRC%\comp_pkg.vhdl %SRC%\comparator.vhdl %SRC%\test_comparators.vhdl %SRC%\comparator_io.vhdl
+set ec=%ERRORLEVEL%
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
 if not "%TERM_PROGRAM%"=="vscode" pause
+exit /b %ec%

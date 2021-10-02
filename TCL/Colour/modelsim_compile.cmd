@@ -30,7 +30,9 @@ if exist work (
 vmap local D:/Users/Philip/ModelSim/libraries/local
 vlib work
 vmap work ./work
-vcom -2008 -work work %SRC%/retime.vhdl %SRC%/transfer.vhdl %SRC%/test_transfer.vhdl %SRC%/multi_colour.vhdl
+vcom -quiet -2008 -work work %SRC%/retime.vhdl %SRC%/transfer.vhdl %SRC%/test_transfer.vhdl %SRC%/multi_colour.vhdl
+set ec=%ERRORLEVEL%
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
 if not "%TERM_PROGRAM%"=="vscode" pause
+exit /b %ec%

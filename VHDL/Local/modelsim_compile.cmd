@@ -29,7 +29,9 @@ if exist local (
 
 vlib local
 vmap local ./local
-vcom -2008 -work local %SRC%\math_pkg.vhdl %SRC%\lfsr_pkg.vhdl %SRC%\testbench_pkg.vhdl %SRC%\test_testbench.vhdl
+vcom -quiet -2008 -work local %SRC%\math_pkg.vhdl %SRC%\lfsr_pkg.vhdl %SRC%\testbench_pkg.vhdl %SRC%\test_testbench.vhdl
+set ec=%ERRORLEVEL%
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
 if not "%TERM_PROGRAM%"=="vscode" pause
+exit /b %ec%

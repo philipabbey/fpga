@@ -31,7 +31,9 @@ vmap floatfixlib %SIM%\libraries\floatfixlib
 vmap ieee_proposed %SIM%\libraries\ieee_proposed
 vmap local %SIM%\libraries\local
 vlib work
-vcom -2008 %SRC%\sfixed_mult.vhdl %SRC%\test_sfixed_mult.vhdl
+vcom -quiet -2008 %SRC%\sfixed_mult.vhdl %SRC%\test_sfixed_mult.vhdl
+set ec=%ERRORLEVEL%
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
 if not "%TERM_PROGRAM%"=="vscode" pause
+exit /b %ec%
