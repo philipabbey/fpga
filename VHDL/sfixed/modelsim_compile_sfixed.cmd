@@ -27,25 +27,8 @@ if not exist %DEST% (
 
 rem vlib needs to be execute from the local directory, limited command line switches.
 cd /d %DEST%
-if exist floatfixlib (
-  vdel -lib floatfixlib -modelsimini ./modelsim.ini -all
-)
 if exist ieee_proposed (
   vdel -lib ieee_proposed -modelsimini ./modelsim.ini -all
-)
-
-rem Must use VHDL-1993 not VHDL-2008
-vlib floatfixlib
-vmap floatfixlib ./floatfixlib
-vcom -quiet -93 -work floatfixlib %SRC%\fixed_float_types_c.vhd
-set ec=%ERRORLEVEL%
-
-if %ERRORLEVEL% neq 0 (
-  set ec=%ERRORLEVEL%
-
-  rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
-  if not "%TERM_PROGRAM%"=="vscode" pause
-  exit /b %ec%
 )
 
 rem $ verror 1907
@@ -71,8 +54,10 @@ rem  15 = SystemVerilog assertions using local variable (Verilog)
 
 rem Turn off the warning about null ranges as this is expected.
 vlib ieee_proposed
+vmap floatfixlib ./ieee_proposed
 vmap ieee_proposed ./ieee_proposed
-vcom -quiet -93 -nowarn 3 -work ieee_proposed %SRC%\fixed_pkg_c.vhd
+rem Must use VHDL-1993 not VHDL-2008
+vcom -quiet -93 -nowarn 3 -work ieee_proposed %SRC%\fixed_float_types_c.vhd %SRC%\fixed_pkg_c.vhd %SRC%\float_pkg_c.vhd
 set ec=%ERRORLEVEL%
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
