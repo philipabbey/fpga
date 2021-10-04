@@ -44,7 +44,7 @@ Produce both fast and efficient very large comparators of _n_-bit vectors.
 VHDL-2008 has added types `sfixed` and `ufixed` for fixed point arithmetic, but you may struggle to use them with older tools. Here's how to fix that.
 
 ### References:
- * [Compiling VHDL For The Missing Fixed Point Libraries](http://blog.abbey1.org.uk/index.php/technology/compiling-vhdl-for-the-missing-fixed-point-libraries)
+ * [Compiling VHDL For The Missing Fixed Point Libraries](http://blog.abbey1.org.uk/index.php/technology/compiling-vhdl-for-the-missing-fixed-and-floating)
 
 ## LFSR
 
