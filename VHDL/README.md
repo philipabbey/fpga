@@ -89,7 +89,7 @@ Familiarisation with VHDL-2008 "_External Signals_" and ModelSim "_Signal Spies_
  * [Comparison of ModelSim 'Signal Spies' and VHDL 'External Signals'](http://blog.abbey1.org.uk/index.php/technology/comparison-of-modelsim-signal-spies-and-vhdl-external)
 
 
-## `sfixed`
+## sfixed
 A guide on how to compile the `sfixed` and `float` libraries for older simulation and synthesis tools that do not include these latest types.
 
 ### References:
