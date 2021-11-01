@@ -76,7 +76,8 @@ begin
 
     test : process
 
-      variable exp : integer := 0;
+      variable exp  : integer := 0;
+      variable sexp : signed(i(0)'range);
 
     begin
       for j in 0 to adder_tree_array_c(l).num_operands-1 loop
@@ -85,10 +86,11 @@ begin
 
       wait for 20 ns;
 
+      sexp := sum_inputs(i);
       if o = sum_inputs(i) then
         report "DUT " & integer'image(l) & " PASSED";
       else
-        report "DUT " & integer'image(l) & " FAILED. Output sum is wrong for DUT " & integer'image(l) & " Expected: " & integer'image(to_integer(sum_inputs(i))) & " Read: " & integer'image(to_integer(o))
+        report "DUT " & integer'image(l) & " FAILED. Output sum is wrong for DUT " & integer'image(l) & " Expected: " & integer'image(to_integer(sexp)) & " Read: " & integer'image(to_integer(o))
           severity warning;
         passed(l) <= '0';
       end if;

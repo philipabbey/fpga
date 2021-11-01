@@ -18,11 +18,11 @@
 -- #  Input Width:            8
 -- #  Expected Division:      2 (calculated externally from the DUT's toplevel generics)
 -- #  Maximum Division:       2
--- # 
+-- #
 -- # ************************************************************************************
 -- # Statistics for top path of recursion of the tree where logic is most densely packed.
 -- # Depth: 1, Number Coefficients:   2, Divide:    2, Output Width: 9
--- # 
+-- #
 -- # ************************************************************************************
 -- # DUT: 1
 -- #  Pipeline depth:         2
@@ -30,12 +30,12 @@
 -- #  Input Width:            8
 -- #  Expected Division:      2 (calculated externally from the DUT's toplevel generics)
 -- #  Maximum Division:       2
--- # 
+-- #
 -- # ************************************************************************************
 -- # Statistics for top path of recursion of the tree where logic is most densely packed.
 -- # Depth: 2, Number Coefficients:   2, Divide:    1, Output Width: 9
 -- # Depth: 1, Number Coefficients:   2, Divide:    2, Output Width: 9
--- # 
+-- #
 -- # ************************************************************************************
 -- # DUT: 2
 -- #  Pipeline depth:         2
@@ -43,12 +43,12 @@
 -- #  Input Width:            9
 -- #  Expected Division:      2 (calculated externally from the DUT's toplevel generics)
 -- #  Maximum Division:       2
--- # 
+-- #
 -- # ************************************************************************************
 -- # Statistics for top path of recursion of the tree where logic is most densely packed.
 -- # Depth: 2, Number Coefficients:   3, Divide:    2, Output Width: 11
 -- # Depth: 1, Number Coefficients:   2, Divide:    2, Output Width: 10
--- # 
+-- #
 -- # ************************************************************************************
 -- # DUT: 3
 -- #  Pipeline depth:         2
@@ -56,12 +56,12 @@
 -- #  Input Width:           10
 -- #  Expected Division:      2 (calculated externally from the DUT's toplevel generics)
 -- #  Maximum Division:       2
--- # 
+-- #
 -- # ************************************************************************************
 -- # Statistics for top path of recursion of the tree where logic is most densely packed.
 -- # Depth: 2, Number Coefficients:   4, Divide:    2, Output Width: 12
 -- # Depth: 1, Number Coefficients:   2, Divide:    2, Output Width: 11
--- # 
+-- #
 -- # ************************************************************************************
 -- # DUT: 4
 -- #  Pipeline depth:         5
@@ -69,7 +69,7 @@
 -- #  Input Width:           11
 -- #  Expected Division:      2 (calculated externally from the DUT's toplevel generics)
 -- #  Maximum Division:       2
--- # 
+-- #
 -- # ************************************************************************************
 -- # Statistics for top path of recursion of the tree where logic is most densely packed.
 -- # Depth: 5, Number Coefficients:   5, Divide:    1, Output Width: 14
@@ -77,7 +77,7 @@
 -- # Depth: 3, Number Coefficients:   5, Divide:    2, Output Width: 14
 -- # Depth: 2, Number Coefficients:   3, Divide:    2, Output Width: 13
 -- # Depth: 1, Number Coefficients:   2, Divide:    2, Output Width: 12
--- # 
+-- #
 -- # ************************************************************************************
 -- # DUT: 5
 -- #  Pipeline depth:         2
@@ -85,12 +85,12 @@
 -- #  Input Width:           12
 -- #  Expected Division:      3 (calculated externally from the DUT's toplevel generics)
 -- #  Maximum Division:       3
--- # 
+-- #
 -- # ************************************************************************************
 -- # Statistics for top path of recursion of the tree where logic is most densely packed.
 -- # Depth: 2, Number Coefficients:   6, Divide:    2, Output Width: 15
 -- # Depth: 1, Number Coefficients:   3, Divide:    3, Output Width: 14
--- # 
+-- #
 -- # ************************************************************************************
 -- # DUT: 6
 -- #  Pipeline depth:         3
@@ -98,13 +98,13 @@
 -- #  Input Width:           13
 -- #  Expected Division:      2 (calculated externally from the DUT's toplevel generics)
 -- #  Maximum Division:       2
--- # 
+-- #
 -- # ************************************************************************************
 -- # Statistics for top path of recursion of the tree where logic is most densely packed.
 -- # Depth: 3, Number Coefficients:   7, Divide:    2, Output Width: 16
 -- # Depth: 2, Number Coefficients:   4, Divide:    2, Output Width: 15
 -- # Depth: 1, Number Coefficients:   2, Divide:    2, Output Width: 14
--- # 
+-- #
 -- # ************************************************************************************
 -- # DUT: 7
 -- #  Pipeline depth:         4
@@ -112,14 +112,14 @@
 -- #  Input Width:            8
 -- #  Expected Division:      3 (calculated externally from the DUT's toplevel generics)
 -- #  Maximum Division:       3
--- # 
+-- #
 -- # ************************************************************************************
 -- # Statistics for top path of recursion of the tree where logic is most densely packed.
 -- # Depth: 4, Number Coefficients:  40, Divide:    2, Output Width: 14
 -- # Depth: 3, Number Coefficients:  20, Divide:    3, Output Width: 13
 -- # Depth: 2, Number Coefficients:   7, Divide:    3, Output Width: 11
 -- # Depth: 1, Number Coefficients:   3, Divide:    3, Output Width: 10
--- # 
+-- #
 -- # ************************************************************************************
 -- # DUT: 8
 -- #  Pipeline depth:         3
@@ -127,13 +127,13 @@
 -- #  Input Width:            8
 -- #  Expected Division:      5 (calculated externally from the DUT's toplevel generics)
 -- #  Maximum Division:       5
--- # 
+-- #
 -- # ************************************************************************************
 -- # Statistics for top path of recursion of the tree where logic is most densely packed.
 -- # Depth: 3, Number Coefficients:  80, Divide:    4, Output Width: 15
 -- # Depth: 2, Number Coefficients:  20, Divide:    4, Output Width: 13
 -- # Depth: 1, Number Coefficients:   5, Divide:    5, Output Width: 11
--- # 
+-- #
 -- # ** Note: DUT 0 PASSED
 -- #    Time: 40 ns  Iteration: 1  Region: /test_adder_tree_pipe/duts(0)
 -- # ** Note: DUT 5 PASSED
@@ -327,7 +327,7 @@ begin
       variable exp : integer := 0;
 
     begin
-      -- Add differenrt values
+      -- Add different values
       for j in 0 to adder_tree_pipe_array_c(l).num_operands-1 loop
         if (j+1 < 2**i(j)'length-1) then
           i(j) <= to_signed(j+1, adder_tree_pipe_array_c(l).input_width);
@@ -340,10 +340,11 @@ begin
 
       wait_nr_ticks(clk, adder_tree_pipe_array_c(l).depth+2);
 
-      if to_integer(o) = sum_inputs(i) then
+      exp := sum_inputs(i);
+      if to_integer(o) = exp then
         report "DUT " & integer'image(l) & " PASSED";
       else
-        report "DUT " & integer'image(l) & " FAILED. Output sum is wrong for DUT " & integer'image(l) & " Expected: " & integer'image(sum_inputs(i)) & " Read: " & integer'image(to_integer(o))
+        report "DUT " & integer'image(l) & " FAILED. Output sum is wrong for DUT " & integer'image(l) & " Expected: " & integer'image(exp) & " Read: " & integer'image(to_integer(o))
           severity warning;
         passed(l) <= '0';
       end if;
@@ -408,44 +409,44 @@ begin
     --   2) Hope that you have catered for enough depth/levels of hierarchy
     di_g : for p in la'range generate
 
-      di_g1 : if p = 1 and p <= adder_tree_pipe_array_c(i).depth generate 
+      di_g1 : if p = 1 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.depth_g        : positive>>;
-        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.num_operands_g   : positive>>;
+        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.num_operands_g : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.divide_c       : positive>>;
         la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g2 : if p = 2 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
-        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g   : positive>>;
+        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
         la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g3 : if p = 3 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
-        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g   : positive>>;
+        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
         la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g4 : if p = 4 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
-        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g   : positive>>;
+        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
         la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g5 : if p = 5 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
-        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g   : positive>>;
+        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
         la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g6 : if p = 6 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
-        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g   : positive>>;
+        la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
         la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;

@@ -42,7 +42,6 @@ use ieee.math_real.all;
 architecture rtl of adder_tree_pipe is
 
   -- For debug only, extracted by VHDL-2008 signal spies.
-  constant output_width_c   : positive := o'length;
   constant divide_c         : positive := recurse_divide(num_operands_g, depth_g);
   constant part_length_c    : positive := positive(ceil(real(num_operands_g) / real(divide_c)));
   constant sum_input_bits_c : positive := output_bits(input_width_g, part_length_c);

@@ -31,7 +31,11 @@ vmap floatfixlib %SIM%\libraries\ieee_proposed
 vmap ieee_proposed %SIM%\libraries\ieee_proposed
 vmap local %SIM%\libraries\local
 vlib work
-vcom -quiet -2008 %SRC%\sfixed_mult.vhdl %SRC%\test_sfixed_mult.vhdl %SRC%\float_mult.vhdl %SRC%\test_float_mult.vhdl
+vcom -quiet -2008 ^
+  %SRC%\sfixed_mult.vhdl ^
+  %SRC%\test_sfixed_mult.vhdl ^
+  %SRC%\float_mult.vhdl ^
+  %SRC%\test_float_mult.vhdl
 set ec=%ERRORLEVEL%
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.

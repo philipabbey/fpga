@@ -11,7 +11,7 @@ rem Batch file's directory where the source code is
 set SRC=%~dp0
 rem drop last character '\'
 set SRC=%SRC:~0,-1%
-set DEST=%SIM%\projects\BRAM
+set DEST=%SIM%\projects\FFT
 
 echo Compile Source:   %SRC%\*
 echo Into Destination: %DEST%
@@ -27,11 +27,28 @@ if exist work (
   vdel -modelsimini .\modelsim.ini -all
 )
 
-vmap local D:/Users/Philip/ModelSim/libraries/local
-vmap unisim D:/Users/Philip/ModelSim/libraries/unisim
+vmap floatfixlib %SIM%\libraries\ieee_proposed
+vmap ieee_proposed %SIM%\libraries\ieee_proposed
+vmap local %SIM%\libraries\local
 vlib work
 vcom -quiet -2008 ^
-  %SRC%\my_ram.vhdl
+  %SRC%\fft_real_pkg.vhdl ^
+  %SRC%\fft_sfixed_pkg.vhdl ^
+  %SRC%\..\Adder_Tree\adder_tree_pkg.vhdl ^
+  %SRC%\test_fft_pkg.vhdl ^
+  %SRC%\test_data_fft_pkg.vhdl ^
+  %SRC%\adder_tree_complex.vhdl ^
+  %SRC%\adder_tree_complex_pipe.vhdl ^
+  %SRC%\fft_real.vhdl ^
+  %SRC%\fft_sfixed.vhdl ^
+  %SRC%\dft_multi_radix_real.vhdl ^
+  %SRC%\dft_multi_radix_sfixed.vhdl ^
+  %SRC%\test_adder_tree_complex.vhdl ^
+  %SRC%\test_adder_tree_complex_pipe.vhdl ^
+  %SRC%\test_fft_real.vhdl ^
+  %SRC%\test_fft_sfixed.vhdl ^
+  %SRC%\test_dft_multi_radix_real.vhdl ^
+  %SRC%\test_dft_multi_radix_sfixed.vhdl
 set ec=%ERRORLEVEL%
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.

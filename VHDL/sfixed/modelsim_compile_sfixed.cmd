@@ -57,7 +57,10 @@ vlib ieee_proposed
 vmap floatfixlib ./ieee_proposed
 vmap ieee_proposed ./ieee_proposed
 rem Must use VHDL-1993 not VHDL-2008
-vcom -quiet -93 -nowarn 3 -work ieee_proposed %SRC%\fixed_float_types_c.vhd %SRC%\fixed_pkg_c.vhd %SRC%\float_pkg_c.vhd
+vcom -quiet -93 -nowarn 3 -work ieee_proposed ^
+  %SRC%\fixed_float_types_c.vhd ^
+  %SRC%\fixed_pkg_c.vhd ^
+  %SRC%\float_pkg_c.vhd
 set ec=%ERRORLEVEL%
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.

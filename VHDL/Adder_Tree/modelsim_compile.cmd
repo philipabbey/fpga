@@ -29,7 +29,18 @@ if exist work (
 
 vmap local %SIM%\libraries\local
 vlib work
-vcom -quiet -2008 %SRC%\adder_tree_pkg.vhdl %SRC%\adder_tree.vhdl %SRC%\adder_tree_pipe.vhdl %SRC%\test_adder_tree.vhdl %SRC%\test_adder_tree_pipe.vhdl %SRC%\fir_filter_const_coeffs.vhdl %SRC%\fir_filter_var_coeffs.vhdl %SRC%\test_fir_filter_const_coeffs.vhdl %SRC%\test_fir_filter_var_coeffs.vhdl %SRC%\fir_filter_const_coeffs_io.vhdl %SRC%\fir_filter_var_coeffs_io.vhdl
+vcom -quiet -2008 ^
+  %SRC%\adder_tree_pkg.vhdl ^
+  %SRC%\adder_tree.vhdl ^
+  %SRC%\adder_tree_pipe.vhdl ^
+  %SRC%\test_adder_tree.vhdl ^
+  %SRC%\test_adder_tree_pipe.vhdl ^
+  %SRC%\fir_filter_const_coeffs.vhdl ^
+  %SRC%\fir_filter_var_coeffs.vhdl ^
+  %SRC%\test_fir_filter_const_coeffs.vhdl ^
+  %SRC%\test_fir_filter_var_coeffs.vhdl ^
+  %SRC%\fir_filter_const_coeffs_io.vhdl ^
+  %SRC%\fir_filter_var_coeffs_io.vhdl
 set ec=%ERRORLEVEL%
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
