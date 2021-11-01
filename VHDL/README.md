@@ -35,7 +35,19 @@ Produce both fast and efficient very large comparators of _n_-bit vectors.
 ### References:
  * [Large Comparators Pipelined Efficiently by Recursion](http://blog.abbey1.org.uk/index.php/technology/large-comparator-pipelined-efficiently-by-recursion)
 
-## Fixed Point Arithmetic Libraries
+## Fast Fourier Transform (FFT)
+
+### Themes:
+ * Automatic scaling
+ * Recursive structures in hardware description languages
+
+### Description
+Generalise the VHDL implementation to a multi-radix 'Radix-*n*' *p*-Point FFT where '*n*' and '*p*' are positive integer generics to the entity.
+
+### References:
+ * [Large Comparators Pipelined Efficiently by Recursion](http://blog.abbey1.org.uk/index.php/technology/radix-n-fast-fourier-transforms)
+
+## Fixed Point Arithmetic Libraries (`sfixed`)
 
 ### Themes:
  * Libraries
@@ -87,10 +99,3 @@ Familiarisation with VHDL-2008 "_External Signals_" and ModelSim "_Signal Spies_
 
 ### References:
  * [Comparison of ModelSim 'Signal Spies' and VHDL 'External Signals'](http://blog.abbey1.org.uk/index.php/technology/comparison-of-modelsim-signal-spies-and-vhdl-external)
-
-
-## sfixed
-A guide on how to compile the `sfixed` and `float` libraries for older simulation and synthesis tools that do not include these latest types.
-
-### References:
- * [Compiling VHDL For The Missing Fixed And Floating Point Libraries](http://blog.abbey1.org.uk/index.php/technology/compiling-vhdl-for-the-missing-fixed-and-floating)
