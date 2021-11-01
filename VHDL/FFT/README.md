@@ -14,7 +14,8 @@ Please read the blog post [Large Comparators Pipelined Efficiently by Recursion]
 ## Compilation
 
 1. Compile VHDL library [local](../Local) if you have not already done so.
-2. Run the [modelsim_compile.cmd](modelsim_compile.cmd) Windows batch file.
+2. Compile VHDL library [sfixed](../sfixed) if you have not already done so.
+3. Run the [modelsim_compile.cmd](modelsim_compile.cmd) Windows batch file.
 
 Assumes the following directory already exists and hence will fail to compile if it does not. Amend to suit your needs.
 
