@@ -31,3 +31,10 @@ colour_selected_primitives_by_clock_source [get_cells ...]
 ```
 
 The routine is slow, so selecting all gates in a large design will take a long time. Each new invocation of the TCL proc will uncolour the previously coloured gates.
+
+
+# Verification of Cross Clock Domain Timing Constraints and Exceptions
+
+Intended to be part of a tutorial for those new to FPGA design, this blog is specific to Xilinx's Synthesis tool "Vivado", and a refresher as someone returning to FPGA design having used different tools (Synplify Pro) over a decade ago. The principles are the same, but the method of application has changed for the better so that it is simpler to get right.
+
+Please read the blog post [Verification of Cross Clock Domain Timing Constraints and Exceptions](http://blog.abbey1.org.uk/index.php/technology/verification-of-clock-domain-crossing-timing-constraints-and-exceptions) to explain how the code works in detail.
