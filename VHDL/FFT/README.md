@@ -9,7 +9,7 @@ Twiddle Factors given by:
 
 <img width="106" alt="Twiddle Factor Fourmula" src="./media/Twiddle_Factors.png?raw=true">
 
-Please read the blog post [Large Comparators Pipelined Efficiently by Recursion](http://blog.abbey1.org.uk/index.php/technology/radix-n-fast-fourier-transforms) to explain how the code works in detail.
+Please read the blog post [Large Comparators Pipelined Efficiently by Recursion](http://blog.abbey1.org.uk/index.php/technology/radix-n-fast-fourier-transforms) for an explanation of how the code works in detail.
 
 ## Compilation
 
