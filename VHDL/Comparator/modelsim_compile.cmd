@@ -6,7 +6,7 @@ rem    See https://github.com/philipabbey/fpga/blob/main/LICENCE.
 rem 
 rem ---------------------------------------------------------------------------------
 
-set SIM=%USERPROFILE%/ModelSim
+set SIM=%USERPROFILE%\ModelSim
 rem Batch file's directory where the source code is
 set SRC=%~dp0
 rem drop last character '\'
