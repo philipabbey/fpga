@@ -234,29 +234,6 @@ architecture test of test_comparators is
 
   type compare_array_t is array(natural range <>) of compare_item_t;
 
-  -- Shared variables need to be protected since VHDL-2000. This one is the global variable to track
-  -- overall success from all devices under test.
-  type success_t is protected
-    procedure set(val : boolean);
-    impure function get return boolean;
-  end protected;
-
-  type success_t is protected body
-
-    variable success : boolean := true;
-
-    procedure set(val : boolean) is
-    begin
-      success := val;
-    end procedure;
-
-    impure function get return boolean is
-    begin
-      return success;
-    end function;
-
-  end protected body;
-
   type level_item_t is record
     depth : positive;
     di    : divide_item_t;
@@ -277,7 +254,7 @@ architecture test of test_comparators is
     return ret;
   end function;
 
-  shared variable success : success_t;
+  shared variable success : bool_t;
 
   -- Create multiple instances of the comparison components to test, with a range of values across the different
   -- dimensions. Always include an example for the precise comparator you need for your design here and run the

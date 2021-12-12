@@ -243,30 +243,7 @@ architecture test of test_adder_tree_pipe is
   signal finished : std_logic_vector(adder_tree_pipe_array_c'range) := (others => '0');
   signal passed   : std_logic_vector(adder_tree_pipe_array_c'range) := (others => '1');
 
-  -- Shared variables need to be protected since VHDL-2000. This one is the global variable to track
-  -- overall success from all devices under test.
-  type success_t is protected
-    procedure set(val : boolean);
-    impure function get return boolean;
-  end protected;
-
-  type success_t is protected body
-
-    variable success : boolean := true;
-
-    procedure set(val : boolean) is
-    begin
-      success := val;
-    end procedure;
-
-    impure function get return boolean is
-    begin
-      return success;
-    end function;
-
-  end protected body;
-
-  shared variable success : success_t;
+  shared variable success : bool_t;
 
   type level_item_t is record
     depth        : positive;

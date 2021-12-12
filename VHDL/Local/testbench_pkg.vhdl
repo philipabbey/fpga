@@ -122,6 +122,60 @@ package testbench_pkg is
   );
 
 
+  -- Wait for a random number, between 'l' and 'h', of rising edges of 'sig'.
+  --
+  -- Usage:
+  --   wait_rndr_ticks(clk, 1, 3);
+  --
+  procedure wait_rndr_ticks(
+    signal   sig : in std_ulogic;
+    constant l   : in natural;
+    constant h   : in positive
+  );
+
+
+  -- Wait for a random number, between 'l' and 'h', of falling edges of 'sig'.
+  --
+  -- Usage:
+  --   wait_rndf_ticks(clk, 1, 3);
+  --
+  procedure wait_rndf_ticks(
+    signal   sig : in std_ulogic;
+    constant l   : in natural;
+    constant h   : in positive
+  );
+
+
+  -- Wait for a 0 or 1 rising edges of 'sig' where 'probability' indicates the liklihood of waiting.
+  --
+  -- probability 0.0 - 1.0
+  --  * 0.0 wait one clock cycle never
+  --  * 1.0 wait one clock cycle every time
+  --
+  -- Usage:
+  --   wait_rndr_ticks(clk, 0.25);
+  --
+  procedure wait_rndr_ticks(
+    signal   sig         : in std_ulogic;
+    constant probability :    real range 0.0 to 1.0 := 0.5 -- ratio = high / low
+  );
+
+
+  -- Wait for a 0 or 1 falling edges of 'sig' where 'probability' indicates the liklihood of waiting.
+  --
+  -- probability 0.0 - 1.0
+  --  * 0.0 wait one clock cycle never
+  --  * 1.0 wait one clock cycle every time
+  --
+  -- Usage:
+  --   wait_rndf_ticks(clk, 0.8);
+  --
+  procedure wait_rndf_ticks(
+    signal   sig         : in std_ulogic;
+    constant probability :    real range 0.0 to 1.0 := 0.5 -- ratio = high / low
+  );
+
+
   -- Create a random wiggle on 'sig', typically a data valid input. The transitions
   -- are aligned with rising edges on the signal specified by 'clk', and the aim is
   -- to achieve a waveform that has a ratio of high to low states close to
@@ -187,6 +241,16 @@ package testbench_pkg is
 
     -- Get a random real-number value in range 0 to 1.0.
     impure function random return real;
+
+  end protected;
+
+
+  -- Simple boolean that can be used to track success over multiple processes.
+  type bool_t is protected
+
+    procedure set(val : boolean);
+
+    impure function get return boolean;
 
   end protected;
 
@@ -400,6 +464,60 @@ package body testbench_pkg is
   end procedure;
 
 
+  procedure wait_rndr_ticks(
+    signal   sig : in std_ulogic;
+    constant l   : in natural;
+    constant h   : in positive
+  ) is
+    variable rand : natural; -- random real-number value in range 0 to 1.0
+  begin
+    rand := l + integer(rndgen.random * real(h - l));
+    if rand > 0 then
+      wait_nr_ticks(sig, rand);
+    end if;
+  end procedure;
+
+
+  procedure wait_rndf_ticks(
+    signal   sig : in std_ulogic;
+    constant l   : in natural;
+    constant h   : in positive
+  ) is
+    variable rand : natural; -- random real-number value in range 0 to 1.0
+  begin
+    rand := l + integer(rndgen.random * real(h - l));
+    if rand > 0 then
+      wait_nf_ticks(sig, rand);
+    end if;
+  end procedure;
+
+
+  procedure wait_rndr_ticks(
+    signal   sig         : in std_ulogic;
+    constant probability :    real range 0.0 to 1.0 := 0.5 -- ratio = high / low
+  ) is
+    variable rand : real; -- random real-number value in range 0 to 1.0
+  begin
+    rand := rndgen.random;
+    if rand < probability then
+      wait_nr_ticks(sig, 1);
+    end if;
+  end procedure;
+
+
+  procedure wait_rndf_ticks(
+    signal   sig         : in std_ulogic;
+    constant probability :    real range 0.0 to 1.0 := 0.5 -- ratio = high / low
+  ) is
+    variable rand : real; -- random real-number value in range 0 to 1.0
+  begin
+    rand := rndgen.random;
+    if rand < probability then
+      wait_nf_ticks(sig, 1);
+    end if;
+  end procedure;
+
+
   procedure wiggle_r(
     signal   sig       : out std_ulogic;
     signal   clk       : in  std_ulogic;
@@ -450,5 +568,22 @@ package body testbench_pkg is
     end loop;
     return ret;
   end function;
+
+
+  type bool_t is protected body
+
+    variable bool : boolean := true;
+
+    procedure set(val : boolean) is
+    begin
+      bool := val;
+    end procedure;
+
+    impure function get return boolean is
+    begin
+      return bool;
+    end function;
+
+  end protected body;
 
 end package body;
