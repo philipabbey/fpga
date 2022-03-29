@@ -27,10 +27,11 @@ architecture test of test_testbench is
   type test_cnt_t   is array (0 to 2) of natural;
   type test_ratio_t is array (test_cnt_t'range) of real;
 
-  constant exp_ratio       : test_ratio_t := (0.333, 0.5, 0.75);
-  constant r1              : real         := local.math_pkg.trunc_ceil(1.2345, 1);
-  constant r2              : integer      := local.math_pkg.trunc_ceil(1.2345, 2);
-  constant r3              : real         := local.math_pkg.trunc(1.2345, 3);
+  constant exp_ratio     : test_ratio_t := (0.333, 0.5, 0.75);
+  constant r1            : real         := local.math_pkg.trunc_ceil(1.2345, 1);
+  constant r2            : integer      := local.math_pkg.trunc_ceil(1.2345, 2);
+  constant r3            : real         := local.math_pkg.trunc(1.2345, 3);
+  constant terminal_time : time         := 140 us;
 
   signal clk           : std_ulogic                     := '0';
   signal clk2          : std_ulogic                     := '0';
@@ -91,7 +92,7 @@ begin
 
 
   test1 : process
-    constant ratio_tolerance : real := 0.01;
+    constant ratio_tolerance : real := 0.02;
     variable res             : line;
   begin
     -- Expect to see 'X's from before the reset
@@ -110,10 +111,20 @@ begin
     wait_nr_ticks(clk, 1);
     data_random <= random_vector(data_random'length);
 
-    wait for 70 us;
-    swrite(res, "End of simulation at ");
-    write(res, now, right, 0, us);
-    writeline(OUTPUT, res);
+    wait_absolute_time(terminal_time);
+    if (now = terminal_time) then
+      swrite(res, "Wait until simulation time ");
+      write(res, now, right, 0, us);
+      swrite(res, " - PASS");
+      writeline(OUTPUT, res);
+    else
+      swrite(res, "Wait until simulation time ");
+      write(res, terminal_time, right, 0, us);
+      swrite(res, " - FAIL, time is ");
+      write(res, now, right, 0, us);
+      writeline(OUTPUT, res);
+      success.set(false);
+    end if;
 
     for i in test_ratio'range loop
       swrite(res, "Test 1: test_sig(");
@@ -147,7 +158,7 @@ begin
       swrite(res, "At least one test FAILED");
       writeline(OUTPUT, res);
     end if;
-
+    
     stop_clocks;
     wait;
   end process;

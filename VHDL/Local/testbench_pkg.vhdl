@@ -96,6 +96,14 @@ package testbench_pkg is
   );
 
 
+  -- Wait until absolute time 't' by using relative wait time.
+  --
+  -- NB. Safe way to wait until an absolute simulation time discussed here:
+  -- https://groups.google.com/g/comp.lang.vhdl/c/zstXjWVAckU
+  --
+  procedure wait_absolute_time(t : time);
+
+
   -- Invert the state of 'sig', wait for 'num' rising edges of 'clk' and invert the
   -- 'sig' back.
   --
@@ -436,6 +444,14 @@ package body testbench_pkg is
   begin
     if sig /= val then
       wait until sig = val;
+    end if;
+  end procedure;
+
+
+  procedure wait_absolute_time(t : time) is
+  begin
+    if now < t then
+      wait for t - now;
     end if;
   end procedure;
 
