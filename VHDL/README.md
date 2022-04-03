@@ -2,7 +2,7 @@
 
 The source code for various investigations.
 
-## Adder Tree
+## AXI Delay
  * Working with AXI data streams, buffering and pausing.
 
 ### References:
