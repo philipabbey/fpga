@@ -8,6 +8,10 @@
 ## Out of Context constraints for transfer.vhd in order to experiment with false path
 ## specification methods.
 ##
+## References:
+##  * Specifying Boundary Timing Constraints in Vivado
+##    https://blog.abbey1.org.uk/index.php/technology/specifying-boundary-timing-constraints-in-vivado
+##
 ## P A Abbey, 5 December 2021
 ##
 #####################################################################################
