@@ -3,6 +3,12 @@
 The source code for various investigations.
 
 ## Adder Tree
+ * Working with AXI data streams, buffering and pausing.
+
+### References:
+ * [Working With AXI Streaming Data](http://blog.abbey1.org.uk/index.php/technology/working-with-axi-streaming-data#references)
+
+## Adder Tree
 
 ### Themes:
  * Automatic scaling
