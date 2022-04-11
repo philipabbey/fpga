@@ -120,7 +120,6 @@ proc get_problem_cdc_issues {{verbose 0}} {
 
 
 # Display a summary of the identified design issues we care about chastising designer for.
-# Dictated by Andy, but created here to show the art of the possible.
 #
 # Usage: design_policy_checks
 #
@@ -129,13 +128,9 @@ proc design_policy_checks {} {
     if {$arr > 0} {
         puts "Warning - [llength $arr] with asynchronous reset. Run 'get_async_reset_registers 1' for details."
     }
-    set nrr [get_no_reset_registers]
-    if {$nrr > 0} {
-        puts "Warning - [llength $nrr] tied to '0' or '1'. Indicates a missing reset clause in a clocked process. Run 'get_no_reset_registers 1' for details."
-    }
-    set tt [get_transparent_latches]
-    if {$tt > 0} {
-        puts "Warning - [llength $tt] transparent latches. Run 'get_transparent_latches 1' for details. Sack the code author."
+    set tl [get_transparent_latches]
+    if {$tl > 0} {
+        puts "Warning - [llength $tl] transparent latches. Run 'get_transparent_latches 1' for details. Sack the code author."
     }
     set cdc [get_problem_cdc_issues]
     if {$cdc > 0} {
