@@ -125,15 +125,15 @@ proc get_problem_cdc_issues {{verbose 0}} {
 #
 proc design_policy_checks {} {
     set arr [get_async_reset_registers]
-    if {$arr > 0} {
+    if {[llength $arr] > 0} {
         puts "Warning - [llength $arr] with asynchronous reset. Run 'get_async_reset_registers 1' for details."
     }
     set tl [get_transparent_latches]
-    if {$tl > 0} {
+    if {[llength $tl] > 0} {
         puts "Warning - [llength $tl] transparent latches. Run 'get_transparent_latches 1' for details. Sack the code author."
     }
     set cdc [get_problem_cdc_issues]
-    if {$cdc > 0} {
+    if {[llength $cdc] > 0} {
         puts "Warning - [llength $cdc] Critical clock domain crossing (CDC) issues. Run 'get_problem_cdc_issues 1' or 'report_cdc' for details."
     }
 }
