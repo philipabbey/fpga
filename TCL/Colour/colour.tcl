@@ -41,7 +41,7 @@ proc colour_selected_primitives_by_clock_source {{cells {}}} {
   foreach c $cells {
     set cond [get_property -quiet IS_SEQUENTIAL $c]
     if {[llength $cond] == 0} {
-        set cond 0
+      set cond 0
     }
     if {$cond} {
       set clkpins [get_pins -of_objects $c -filter {IS_CLOCK}]
@@ -49,33 +49,39 @@ proc colour_selected_primitives_by_clock_source {{cells {}}} {
       # BlockRAM: $clkpins => <inst>/CLKARDCLK <inst>/CLKBWRCLK
       # i.e. clkpins will be a list
       #
-      foreach p $clkpins {
+      foreach cp $clkpins {
         # Some arithmetic primitives have a CLK pin but it can be tied to '0'.
-        if {[get_property IS_TIED $p] == 0} {
+        if {[get_property IS_TIED $cp] == 0} {
           # Take the top level name.
-          set clksrc [lindex [all_fanin -flat $p] end]
+          set clksrc [lindex [all_fanin -flat $cp] end]
           if {![info exists clksrcarr($clksrc)]} {
-            # Add a new clock & color
-            set clksrcarr($clksrc) $nextcol
-            puts "Clock = $clksrc, Color Index = $clksrcarr($clksrc)"
-            highlight_objects -color_index $nextcol $clksrc
-            if {[get_property CLASS $clksrc] == "port"} {
-              highlight_objects -color_index $nextcol [get_nets -of_objects $clksrc]
-            }
-            incr nextcol
             if {$nextcol >=  21} {
               error "Run out of colours"
             }
+            # Add a new clock & color
+            set clksrcarr($clksrc) $nextcol
+            puts "Clock = $clksrc, Color Index = $clksrcarr($clksrc)"
+            incr nextcol
           }
+          # Colour Nets
+          foreach f [all_fanin $cp] {
+            foreach p [get_pins $f -quiet] {
+              # First item is a pin, second and subsequent are nets, often elsewhere in the design
+              set n [lindex [get_nets -of_objects $p -quiet] 0]
+              if {[llength $n] > 0} {
+                highlight_objects -color_index $clksrcarr($clksrc) $n
+              }
+            }
+          }
+          # Colour Cells
           if {[llength $clkpins] == 1} {
             highlight_objects -color_index $clksrcarr($clksrc) $c
           } else {
             lappend unhighlightable $c
-          }
+         }
         }
       }
     }
   }
   return $unhighlightable
 }
-
