@@ -15,7 +15,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 library local;
-use local.testbench.all;
+use local.testbench_pkg.all;
 library std;
 use std.env.all;
 
@@ -24,8 +24,8 @@ end entity;
 
 architecture test of test_transfer is
 
-  constant num_bits1_c : positive := 2;
-  constant num_bits2_c : positive := 4;
+  constant num_bits1_c : integer := 2;
+  constant num_bits2_c : integer := 4;
 
   signal clk_src1   : std_logic;
   signal reset_src1 : std_logic;

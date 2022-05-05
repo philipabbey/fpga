@@ -18,8 +18,8 @@ use ieee.std_logic_1164.all;
 
 entity transfer is
   generic (
-    num_bits1 : positive := 2;
-    num_bits2 : positive := 4
+    num_bits1 : integer := 2;
+    num_bits2 : integer := 4
   );
   port (
     clk_src1   : in  std_logic;
@@ -43,7 +43,6 @@ architecture rtl of transfer is
   signal conf_src1_r2 : std_logic_vector(flags_src1'range);
   signal conf_src2_r1 : std_logic_vector(flags_src2'range);
   signal conf_src2_r2 : std_logic_vector(flags_src2'range);
-  signal conf_dest    : std_logic_vector(num_bits1+num_bits2-1 downto 0);
 
   -- Could be placed in a constraints file
   attribute ASYNC_REG : string;
