@@ -36,7 +36,7 @@ proc colour_selected_primitives_by_clock_source {{cells {}}} {
     error "No cells selected or passed as a parameter."
   }
   uncolor_registers
-  set nextcol 3
+  set nextcol 1
   set unhighlightable {}
   foreach c $cells {
     set cond [get_property -quiet IS_SEQUENTIAL $c]
@@ -62,6 +62,10 @@ proc colour_selected_primitives_by_clock_source {{cells {}}} {
             set clksrcarr($clksrc) $nextcol
             puts "Clock = $clksrc, Color Index = $clksrcarr($clksrc)"
             incr nextcol
+            if {$nextcol == 2 || $nextcol == 5} {
+                # Skip these colours (yellow and blue)
+                incr nextcol
+            }
           }
           # Colour Nets
           foreach f [all_fanin $cp] {
@@ -78,7 +82,7 @@ proc colour_selected_primitives_by_clock_source {{cells {}}} {
             highlight_objects -color_index $clksrcarr($clksrc) $c
           } else {
             lappend unhighlightable $c
-         }
+          }
         }
       }
     }
