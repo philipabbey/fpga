@@ -30,6 +30,7 @@ entity retime is
   );
 end entity;
 
+
 architecture rtl of retime is
 
   signal reg_capture : std_logic_vector(num_bits-1 downto 0);

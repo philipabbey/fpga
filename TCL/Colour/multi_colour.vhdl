@@ -13,8 +13,7 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.std_logic_1164.all;
-
+  use ieee.std_logic_1164.all;
 
 entity multi_colour is
   generic (
@@ -29,6 +28,7 @@ entity multi_colour is
     data_out : out std_logic_vector(num_bits-1 downto 0)
   );
 end entity;
+
 
 architecture rtl of multi_colour is
 

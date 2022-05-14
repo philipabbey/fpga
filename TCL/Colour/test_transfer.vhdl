@@ -12,15 +12,16 @@
 --
 -------------------------------------------------------------------------------------
 
-library ieee;
-use ieee.std_logic_1164.all;
-library local;
-use local.testbench_pkg.all;
-library std;
-use std.env.all;
-
 entity test_transfer is
 end entity;
+
+
+library ieee;
+  use ieee.std_logic_1164.all;
+library local;
+  use local.testbench_pkg.all;
+library std;
+  use std.env.all;
 
 architecture test of test_transfer is
 
