@@ -16,9 +16,9 @@ end entity;
 
 
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 library local;
-use local.testbench_pkg.all;
+  use local.testbench_pkg.all;
 library modelsim_lib;
 
 architecture test of test_util_comands is

@@ -44,7 +44,7 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 
 entity comparator is
   generic(
@@ -63,7 +63,9 @@ entity comparator is
   );
 end entity;
 
-use work.comp_pkg.all;
+
+library work; -- Implicit anyway, but acts to group.
+  use work.comp_pkg.all;
 
 architecture rtl of comparator is
 

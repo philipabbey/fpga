@@ -18,8 +18,9 @@
 --
 -------------------------------------------------------------------------------------
 
-use work.test_fft_pkg.all;
-use work.test_data_fft_pkg.all;
+library work; -- Implicit anyway, but acts to group.
+  use work.test_fft_pkg.all;
+  use work.test_data_fft_pkg.all;
 
 entity test_fft_real is
   constant radix_c : positive := 2;

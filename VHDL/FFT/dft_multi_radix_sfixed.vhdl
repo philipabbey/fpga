@@ -22,10 +22,11 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.std_logic_1164.std_logic;
+  use ieee.std_logic_1164.std_logic;
 library ieee_proposed;
-use ieee_proposed.fixed_pkg.all;
-use work.fft_sfixed_pkg.all;
+  use ieee_proposed.fixed_pkg.all;
+library work; -- Implicit anyway, but acts to group.
+  use work.fft_sfixed_pkg.all;
 
 -- Perform the bit reversal on the input indices once at the top level, then call
 -- the recursive component.
@@ -52,10 +53,11 @@ end entity;
 
 
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 library ieee_proposed;
-use ieee_proposed.fixed_pkg.all;
-use work.fft_sfixed_pkg.all;
+  use ieee_proposed.fixed_pkg.all;
+library work; -- Implicit anyway, but acts to group.
+  use work.fft_sfixed_pkg.all;
 
 entity dftr_multi_radix_sfixed is
   generic (
@@ -80,7 +82,8 @@ end entity;
 
 
 library local;
-use work.adder_tree_pkg.all;
+library work; -- Implicit anyway, but acts to group.
+  use work.adder_tree_pkg.all;
 
 architecture radix_n of dftr_multi_radix_sfixed is
 

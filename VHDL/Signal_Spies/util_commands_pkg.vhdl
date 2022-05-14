@@ -14,7 +14,7 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 
 package util_commands_pkg is
 
@@ -40,7 +40,7 @@ end package;
 
 library modelsim_lib;
 library local;
-use local.testbench_pkg.wait_nr_ticks;
+  use local.testbench_pkg.wait_nr_ticks;
 
 package body util_commands_pkg is
 

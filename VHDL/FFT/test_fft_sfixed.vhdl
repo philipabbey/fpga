@@ -18,15 +18,17 @@
 --
 -------------------------------------------------------------------------------------
 
+-- These are required for all architectures, hence applied at entity level
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 library ieee_proposed;
-use ieee_proposed.fixed_pkg.all;
+  use ieee_proposed.fixed_pkg.all;
 library local;
-use local.testbench_pkg.all;
-use work.fft_sfixed_pkg.all;
-use work.test_fft_pkg.all;
-use work.test_data_fft_pkg.all;
+  use local.testbench_pkg.all;
+library work; -- Implicit anyway, but acts to group.
+  use work.fft_sfixed_pkg.all;
+  use work.test_fft_pkg.all;
+  use work.test_data_fft_pkg.all;
 
 entity test_fft_sfixed is
   constant radix_c : positive := 2;

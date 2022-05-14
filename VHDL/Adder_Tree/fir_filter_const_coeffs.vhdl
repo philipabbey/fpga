@@ -16,9 +16,9 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-use work.adder_tree_pkg.all;
+  use ieee.std_logic_1164.all;
+  use ieee.numeric_std.all;
+  use work.adder_tree_pkg.all;
 
 entity fir_filter_const_coeffs is
   generic (

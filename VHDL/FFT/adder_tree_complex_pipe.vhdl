@@ -14,12 +14,12 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+  use ieee.std_logic_1164.all;
 library ieee_proposed;
-use ieee_proposed.fixed_pkg.all;
-use work.fft_sfixed_pkg.all;
-use work.adder_tree_pkg.all;
+  use ieee_proposed.fixed_pkg.all;
+library work; -- Implicit anyway, but acts to group.
+  use work.fft_sfixed_pkg.all;
+  use work.adder_tree_pkg.all;
 
 entity adder_tree_complex_pipe is
   generic (
@@ -43,7 +43,7 @@ end entity;
 
 
 library ieee;
-use ieee.math_real.all;
+  use ieee.math_real.all;
 
 architecture rtl of adder_tree_complex_pipe is
 

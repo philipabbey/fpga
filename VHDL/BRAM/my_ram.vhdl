@@ -28,7 +28,7 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 
 entity my_ram is
     generic (
@@ -59,7 +59,7 @@ end entity;
 
 
 library ieee;
-use ieee.numeric_std.all;
+  use ieee.numeric_std.all;
 
 architecture inferred of my_ram is
 

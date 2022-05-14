@@ -23,8 +23,9 @@ entity test_dft_multi_radix_real is
 end entity;
 
 
-use work.test_fft_pkg.all;
-use work.test_data_fft_pkg.all;
+library work; -- Implicit anyway, but acts to group.
+  use work.test_fft_pkg.all;
+  use work.test_data_fft_pkg.all;
 
 architecture test of test_dft_multi_radix_real is
 

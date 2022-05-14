@@ -16,10 +16,10 @@ end entity;
 
 
 library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+  use ieee.std_logic_1164.all;
+  use ieee.numeric_std.all;
 library local;
-use local.testbench_pkg.all;
+  use local.testbench_pkg.all;
 
 architecture test of test_axi_pause is
 

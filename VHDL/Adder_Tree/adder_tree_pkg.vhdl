@@ -12,7 +12,7 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.numeric_std.all;
+  use ieee.numeric_std.all;
 
 package adder_tree_pkg is
 
@@ -147,7 +147,7 @@ end package;
 
 
 library ieee;
-use ieee.math_real.all;
+  use ieee.math_real.all;
 
 package body adder_tree_pkg is
 

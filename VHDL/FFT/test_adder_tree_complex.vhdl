@@ -16,16 +16,16 @@ end entity;
 
 
 library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+  use ieee.std_logic_1164.all;
+  use ieee.numeric_std.all;
 library ieee_proposed;
-use ieee_proposed.fixed_pkg.all;
-use work.fft_sfixed_pkg.all;
-use work.adder_tree_pkg.all;
-use work.test_fft_pkg.complex_str;
+  use ieee_proposed.fixed_pkg.all;
 library local;
-use local.testbench_pkg.all;
-
+  use local.testbench_pkg.all;
+library work; -- Implicit anyway, but acts to group.
+  use work.fft_sfixed_pkg.all;
+  use work.adder_tree_pkg.all;
+  use work.test_fft_pkg.complex_str;
 
 architecture test of test_adder_tree_complex is
 

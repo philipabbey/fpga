@@ -13,8 +13,9 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.numeric_std.all;
-use work.adder_tree_pkg.all;
+  use ieee.numeric_std.all;
+library work; -- Implicit anyway, but acts to group.
+  use work.adder_tree_pkg.all;
 
 -- An entity with:
 -- i : in  input_arr_t(open)(input_width_g-1 downto 0);

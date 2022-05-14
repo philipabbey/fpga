@@ -16,11 +16,11 @@ end entity;
 
 
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 library std;
-use std.textio.all;
+  use std.textio.all;
 library local;
-use local.testbench_pkg.all;
+  use local.testbench_pkg.all;
 
 architecture test of test_counter_wrapper is
 

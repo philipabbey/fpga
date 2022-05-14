@@ -16,11 +16,11 @@ end entity;
 
 
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 library ieee_proposed;
-use ieee_proposed.fixed_pkg.all;
+  use ieee_proposed.fixed_pkg.all;
 library local;
-use local.testbench_pkg.all;
+  use local.testbench_pkg.all;
 
 architecture test of test_sfixed_mult is
 

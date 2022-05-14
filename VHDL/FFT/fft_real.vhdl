@@ -17,8 +17,9 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.math_complex.all;
-use work.fft_real_pkg.all;
+  use ieee.math_complex.all;
+library work; -- Implicit anyway, but acts to group.
+  use work.fft_real_pkg.all;
 
 entity dftr_real is
   generic (
@@ -31,7 +32,8 @@ entity dftr_real is
 end entity;
 
 
-use work.fft_real_pkg.all;
+library work; -- Implicit anyway, but acts to group.
+  use work.fft_real_pkg.all;
 
 -- Perform the bit reversal on the input indices once at the top level, then call
 -- the recursive component.

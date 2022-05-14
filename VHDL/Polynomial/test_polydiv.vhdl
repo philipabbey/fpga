@@ -16,10 +16,10 @@ end entity;
 
 
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 library std;
 library local;
-use local.testbench_pkg.all;
+  use local.testbench_pkg.all;
 
 architecture test of test_polydiv is
 

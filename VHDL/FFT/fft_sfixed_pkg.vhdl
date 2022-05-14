@@ -12,10 +12,10 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.numeric_std.all;
-use ieee.math_complex.all;
+  use ieee.numeric_std.all;
+  use ieee.math_complex.all;
 library ieee_proposed;
-use ieee_proposed.fixed_pkg.all;
+  use ieee_proposed.fixed_pkg.all;
 
 package fft_sfixed_pkg is
 

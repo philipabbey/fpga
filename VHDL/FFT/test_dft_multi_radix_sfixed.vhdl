@@ -19,14 +19,16 @@
 --
 -------------------------------------------------------------------------------------
 
+-- Use across multiple architectures, so applied to the entity
 library ieee;
-use ieee.std_logic_1164.std_logic;
+  use ieee.std_logic_1164.std_logic;
 library ieee_proposed;
-use ieee_proposed.fixed_pkg.all;
+  use ieee_proposed.fixed_pkg.all;
 library local;
-use local.testbench_pkg.all;
-use work.test_fft_pkg.all;
-use work.test_data_fft_pkg.all;
+  use local.testbench_pkg.all;
+library work; -- Implicit anyway, but acts to group.
+  use work.test_fft_pkg.all;
+  use work.test_data_fft_pkg.all;
 
 entity test_dft_multi_radix_sfixed is
 end entity;

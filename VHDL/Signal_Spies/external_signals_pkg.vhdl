@@ -12,7 +12,7 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 
 package external_signals_pkg is
 
@@ -29,7 +29,7 @@ end package;
 
 
 library local;
-use local.testbench_pkg.wait_nr_ticks;
+  use local.testbench_pkg.wait_nr_ticks;
 
 package body external_signals_pkg is
 

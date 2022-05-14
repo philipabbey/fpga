@@ -16,7 +16,7 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 
 package testbench_pkg is
 
@@ -266,9 +266,9 @@ end package;
 
 
 library ieee;
-use ieee.math_real.all;
+  use ieee.math_real.all;
 library std;
-use std.textio.all;
+  use std.textio.all;
 
 package body testbench_pkg is
 

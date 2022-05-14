@@ -215,14 +215,16 @@
 entity test_comparators is
 end entity;
 
+
 library ieee;
-use ieee.std_logic_1164.all;
-use ieee.math_real.all;
+  use ieee.std_logic_1164.all;
+  use ieee.math_real.all;
 library std;
-use std.textio.all;
+  use std.textio.all;
 library local;
-use local.testbench_pkg.all;
-use work.comp_pkg.all;
+  use local.testbench_pkg.all;
+library work; -- Implicit anyway, but acts to group.
+  use work.comp_pkg.all;
 
 architecture test of test_comparators is
 

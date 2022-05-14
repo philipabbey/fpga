@@ -12,8 +12,8 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.numeric_std.all;
-use ieee.math_complex.all;
+  use ieee.numeric_std.all;
+  use ieee.math_complex.all;
 
 package fft_real_pkg is
 

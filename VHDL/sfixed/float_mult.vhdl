@@ -12,9 +12,9 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 library ieee_proposed;
-use ieee_proposed.float_pkg.all;
+  use ieee_proposed.float_pkg.all;
 
 entity float_mult is
   port(

@@ -12,7 +12,7 @@
 -------------------------------------------------------------------------------------
 
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 
 package signal_spies_pkg is
 
@@ -38,7 +38,7 @@ end package;
 
 library modelsim_lib;
 library local;
-use local.testbench_pkg.wait_nr_ticks;
+  use local.testbench_pkg.wait_nr_ticks;
 
 package body signal_spies_pkg is
 

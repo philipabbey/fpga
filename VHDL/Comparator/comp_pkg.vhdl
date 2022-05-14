@@ -169,7 +169,7 @@ end package;
 
 
 library ieee;
-use ieee.math_real.all;
+  use ieee.math_real.all;
 
 package body comp_pkg is
 

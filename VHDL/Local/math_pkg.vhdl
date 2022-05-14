@@ -105,7 +105,7 @@ end package;
 
 
 library ieee;
-use ieee.math_real.all;
+  use ieee.math_real.all;
 
 package body math_pkg is
 

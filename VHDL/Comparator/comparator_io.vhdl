@@ -164,7 +164,7 @@
 
 
 library ieee;
-use ieee.std_logic_1164.all;
+  use ieee.std_logic_1164.all;
 
 entity comparator_io is
   port(
@@ -175,6 +175,7 @@ entity comparator_io is
     equal  : out std_ulogic
   );
 end entity;
+
 
 architecture rtl of comparator_io is
 
