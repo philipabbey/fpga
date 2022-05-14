@@ -27,8 +27,8 @@ if exist work (
   vdel -modelsimini .\modelsim.ini -all
 )
 
-vmap local D:/Users/Philip/ModelSim/libraries/local
-vmap unisim D:/Users/Philip/ModelSim/libraries/unisim
+vmap local %SIM%/libraries/local
+vmap unisim %SIM%/libraries/unisim
 vlib work
 vcom -quiet -2008 ^
   %SRC%\my_ram.vhdl
