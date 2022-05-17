@@ -104,7 +104,7 @@ proc get_problem_cdc_issues {{verbose 0}} {
     set ret [get_cdc_violations -filter {SEVERITY == Critical}]
     if {$verbose} {
         foreach cdc $ret {
-            if {![get_property IS_WAIVED $cdc] && ([get_property EXCEPTION $cdc] == "None")} {
+            if {![get_property IS_WAIVED $cdc]} {
                 puts "[format "#%03d:           " [get_property ID $cdc]]  [get_property DESCRIPTION $cdc]"
                 puts "  Severity:       [get_property SEVERITY $cdc]"
                 puts "  Clock Crossing: [get_property STARTPOINT_CLOCK $cdc] -> [get_property ENDPOINT_CLOCK $cdc]"
