@@ -23,7 +23,7 @@ proc uncolor_registers {} {
     unmark_objects $allcells
 }
  
-# Colourise just the currently selected objects, must faster than the above.
+# Colourise just the currently selected objects, and mark the ASYNC_REG registers.
 #
 # Returns a list of primitive instance names with multiple clocks that could
 # not be highlighted multiple times.
@@ -63,8 +63,8 @@ proc colour_selected_primitives_by_clock_source {{cells {}}} {
             puts "Clock = $clksrc, Color Index = $clksrcarr($clksrc)"
             incr nextcol
             if {$nextcol == 2 || $nextcol == 5} {
-                # Skip these colours (yellow and blue)
-                incr nextcol
+              # Skip these colours (yellow and blue)
+              incr nextcol
             }
           }
           # Colour Nets
@@ -83,9 +83,14 @@ proc colour_selected_primitives_by_clock_source {{cells {}}} {
           } else {
             lappend unhighlightable $c
           }
+          if {[get_property ASYNC_REG $c] == 1} {
+            # RGB for Black
+            mark_objects -rgb {0 0 0} $c
+          }
         }
       }
     }
   }
   return $unhighlightable
 }
+
