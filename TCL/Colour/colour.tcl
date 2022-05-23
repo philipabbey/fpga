@@ -85,7 +85,7 @@ proc colour_selected_primitives_by_clock_source {{cells {}}} {
           }
           if {[get_property ASYNC_REG $c] == 1} {
             # RGB for Black
-            mark_objects -rgb {0 0 0} $c
+            mark_objects -color red $c
           }
         }
       }
