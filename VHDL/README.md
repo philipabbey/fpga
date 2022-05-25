@@ -8,6 +8,7 @@ The source code for various investigations.
 ### References:
  * [Working With AXI Streaming Data](http://blog.abbey1.org.uk/index.php/technology/working-with-axi-streaming-data#references)
 
+
 ## Adder Tree
 
 ### Themes:
@@ -21,6 +22,7 @@ Build an adder tree structure for any number of operands to be summed. But does 
  * [Adder Trees Pipelined Efficiently by Recursion](http://blog.abbey1.org.uk/index.php/technology/adder-trees-pipelined-efficiently-by-recursion)
  * [FIR Filter Implementation Comparisons](http://blog.abbey1.org.uk/index.php/technology/fir-filter-implementation-comparisons)
 
+
 ## BRAM
 
 ### Description
@@ -28,6 +30,7 @@ Testing Vivado's large BlockRAM inferrencing and how and when it uses cascading.
 
 ### References:
  * [Cascade Block RAMs for Larger Memories](http://blog.abbey1.org.uk/index.php/technology/cascade-block-rams-for-larger-memories)
+
 
 ## Comparator
 
@@ -41,6 +44,7 @@ Produce both fast and efficient very large comparators of _n_-bit vectors.
 ### References:
  * [Large Comparators Pipelined Efficiently by Recursion](http://blog.abbey1.org.uk/index.php/technology/large-comparator-pipelined-efficiently-by-recursion)
 
+
 ## Fast Fourier Transform (FFT)
 
 ### Themes:
@@ -53,6 +57,7 @@ Generalise the VHDL implementation to a multi-radix 'Radix-*n*' *p*-Point FFT wh
 ### References:
  * [Large Comparators Pipelined Efficiently by Recursion](http://blog.abbey1.org.uk/index.php/technology/radix-n-fast-fourier-transforms)
 
+
 ## Fixed Point Arithmetic Libraries (`sfixed`)
 
 ### Themes:
@@ -63,6 +68,7 @@ VHDL-2008 has added types `sfixed` and `ufixed` for fixed point arithmetic, but 
 
 ### References:
  * [Compiling VHDL For The Missing Fixed And Floating Point Libraries](http://blog.abbey1.org.uk/index.php/technology/compiling-vhdl-for-the-missing-fixed-and-floating)
+
 
 ## LFSR
 
@@ -75,6 +81,7 @@ Substituting _Linear Feedback Shift Register_ (LFSR) counters for synchronous co
 ### References:
  * [Swapping Synchronous and LFSR Counters](http://blog.abbey1.org.uk/index.php/technology/swapping-synchronous-and-lfsr-counters)
 
+
 ## Local
 
 ### Themes:
@@ -83,6 +90,7 @@ Substituting _Linear Feedback Shift Register_ (LFSR) counters for synchronous co
 
 ### Description
 A library of testing functions with which to build test benches for VHDL projects. This is required to be compiled before using any other VHDL sources in this repository.
+
 
 ## Polynomial
 
@@ -94,6 +102,19 @@ Polynomial division for any polynomial for any number of bits work per clock cyc
 
 ### References:
  * [Bus-width Polynomial Division Logic](http://blog.abbey1.org.uk/index.php/technology/bus-width-polynomial-division-logic)
+
+
+## Report CDC
+
+### Themes:
+ * Design verification
+
+### Description
+VHDL code to illustrate a number of incorrect clock domain crossing topologies identified by Vivado's TCL command <tt>report_cdc</tt>.
+
+### References:
+ * [Verification of Clock Domain Crossing Topologies](https://blog.abbey1.org.uk/index.php/technology/verification-of-clock-domain-crossing-topologies)
+
 
 ## Signal Spies
 
