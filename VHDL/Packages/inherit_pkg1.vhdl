@@ -11,6 +11,9 @@
 --
 -------------------------------------------------------------------------------------
 
+-- Java: class inherit_pkg extends base_pkg {..}
+
+
 package inherit_pkg1 is
 
   package inst_pkg is new work.base_pkg;
