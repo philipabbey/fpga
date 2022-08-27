@@ -92,6 +92,14 @@ Substituting _Linear Feedback Shift Register_ (LFSR) counters for synchronous co
 A library of testing functions with which to build test benches for VHDL projects. This is required to be compiled before using any other VHDL sources in this repository.
 
 
+## Packages
+
+### Themes:
+ * Libraries
+
+### Description
+Simple examples of working with VHDL-2008 packages. How close to inheritance-lie properties do  the new VHDL features get us? Protected types are class-like but how close?
+
 ## Polynomial
 
 ### Themes:
