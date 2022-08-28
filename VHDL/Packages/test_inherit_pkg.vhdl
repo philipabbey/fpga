@@ -11,10 +11,6 @@
 --
 -------------------------------------------------------------------------------------
 
--- Create a new package in library 'work'
---package inst_pkg is new work.inherit_pkg1;
-
-
 entity test_inherit_pkg is
 end entity;
 
