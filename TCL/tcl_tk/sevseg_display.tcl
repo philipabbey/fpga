@@ -17,7 +17,7 @@
 #
 #####################################################################################
 
-proc hseg {{can .} {w 40} {h 20} {col #f00} {ox 0} {oy 0}} {
+proc hseg {can w h {col #f00} {ox 0} {oy 0}} {
   $can create polygon \
     [expr      $h/2 + $ox]                   $oy  \
     [expr $w - $h/2 + $ox]                   $oy  \
@@ -28,7 +28,7 @@ proc hseg {{can .} {w 40} {h 20} {col #f00} {ox 0} {oy 0}} {
     -outline $col -fill $col
 }
 
-proc vseg {{can .} {w 20} {h 40} {col #f00} {ox 0} {oy 0}} {
+proc vseg {can w h {col #f00} {ox 0} {oy 0}} {
   $can create polygon \
                       $ox  [expr      $w/2 + $oy] \
                       $ox  [expr $h - $w/2 + $oy] \
@@ -51,89 +51,103 @@ proc vseg {{can .} {w 20} {h 40} {col #f00} {ox 0} {oy 0}} {
 #   #  d  #
 #    #####
 #
-#                        0123456
-#                        abcdefg
-proc sevseg {{can .} {b "0000000"} {ox 0} {oy 0}} {
-  global on
-  global off
+#                    0123456
+#                    abcdefg
+proc sevseg {can {b "0000000"} {w 20} {h 60} {g 2} {ox 0} {oy 0}} {
+  global on off
   if {[string length $b] != 7} {
     error "Seven segment displays need precisely 7 bits."
   }
   # a
   if {[expr [string index $b 0] == "1"]} {
-    hseg $can 60 20 $on  [expr 12+$ox] [expr 0+$oy]
+    hseg $can $h $w $on  [expr $w/2 + $g   + $ox]                          $oy
   } {
-    hseg $can 60 20 $off [expr 12+$ox] [expr 0+$oy]
+    hseg $can $h $w $off [expr $w/2 + $g   + $ox]                          $oy
   }
   # g
   if {[expr [string index $b 6] == "1"]} {
-    hseg $can 60 20 $on  [expr 12+$ox] [expr 64+$oy]
+    hseg $can $h $w $on  [expr $w/2 + $g   + $ox] [expr $h        + $g*2 + $oy]
   } {
-    hseg $can 60 20 $off [expr 12+$ox] [expr 64+$oy]
+    hseg $can $h $w $off [expr $w/2 + $g   + $ox] [expr $h        + $g*2 + $oy]
   }
   # d
   if {[expr [string index $b 3] == "1"]} {
-    hseg $can 60 20 $on  [expr 12+$ox] [expr 128+$oy]
+    hseg $can $h $w $on  [expr $w/2 + $g   + $ox] [expr $h*2      + $g*4 + $oy]
   } {
-    hseg $can 60 20 $off [expr 12+$ox] [expr 128+$oy]
+    hseg $can $h $w $off [expr $w/2 + $g   + $ox] [expr $h*2      + $g*4 + $oy]
   }
   # f
   if {[expr [string index $b 5] == "1"]} {
-    vseg $can 20 60 $on  [expr 0+$ox] [expr 12+$oy]
+    vseg $can $w $h $on                      $ox  [expr      $w/2 + $g   + $oy]
   } {
-    vseg $can 20 60 $off [expr 0+$ox] [expr 12+$oy]
+    vseg $can $w $h $off                     $ox  [expr      $w/2 + $g   + $oy]
   }
   # b
   if {[expr [string index $b 1] == "1"]} {
-    vseg $can 20 60 $on  [expr 64+$ox] [expr 12+$oy]
+    vseg $can $w $h $on  [expr $h   + $g*2 + $ox] [expr      $w/2 + $g   + $oy]
   } {
-    vseg $can 20 60 $off [expr 64+$ox] [expr 12+$oy]
+    vseg $can $w $h $off [expr $h   + $g*2 + $ox] [expr      $w/2 + $g   + $oy]
   }
   # e
   if {[expr [string index $b 4] == "1"]} {
-    vseg $can 20 60 $on  [expr 0+$ox] [expr 76+$oy]
+    vseg $can $w $h $on                      $ox  [expr $h + $w/2 + $g*3 + $oy]
   } {
-    vseg $can 20 60 $off [expr 0+$ox] [expr 76+$oy]
+    vseg $can $w $h $off                     $ox  [expr $h + $w/2 + $g*3 + $oy]
   }
   # c
   if {[expr [string index $b 2] == "1"]} {
-    vseg $can 20 60 $on  [expr 64+$ox] [expr 76+$oy]
+    vseg $can $w $h $on  [expr $h   + $g*2 + $ox] [expr $h + $w/2 + $g*3 + $oy]
   } {
-    vseg $can 20 60 $off [expr 64+$ox] [expr 76+$oy]
+    vseg $can $w $h $off [expr $h   + $g*2 + $ox] [expr $h + $w/2 + $g*3 + $oy]
   }
 }
 
 proc display {can s0 s1 s2 s3} {
-  global winheight
-  global winwidth
+  global width height gap space on winheight winwidth
+  set dw [expr $height + $width + $gap*2]
   destroy $can
-  canvas $can -width $winwidth -height $winheight
-  sevseg $can $s0 0
-  sevseg $can $s1 100
-  $can create oval 200 34 220  54 -outline #f00 -fill #f00
-  $can create oval 200 94 220 114 -outline #f00 -fill #f00
-  sevseg $can $s2 240
-  sevseg $can $s3 340
+  canvas $can -width $winwidth -height $winheight -background #000
+  sevseg $can $s0 $width $height $gap 0
+  sevseg $can $s1 $width $height $gap [expr $dw + $space]
+  # Central pair of dots, ':'
+  $can create oval \
+    [expr $dw*2 + $space*2         ] [expr $height  /2 +          $gap*2] \
+    [expr $dw*2 + $space*2 + $width] [expr $height  /2 + $width + $gap*2] \
+    -outline $on -fill $on
+  $can create oval \
+    [expr $dw*2 + $space*2         ] [expr $height*3/2 +          $gap*2] \
+    [expr $dw*2 + $space*2 + $width] [expr $height*3/2 + $width + $gap*2] \
+    -outline $on -fill $on
+  sevseg $can $s2 $width $height $gap [expr $dw*2 + $space*3 + $width]
+  sevseg $can $s3 $width $height $gap [expr $dw*3 + $space*4 + $width]
   pack $can
 }
 
 # Global variables
-set on #f00
-set off #aaa
-set winwidth 425
-set winheight 149
-set monitor {/test_time_display/disp }
+set on       #f00
+set off      #333
+set width      16
+set height     60
+set gap         2
+set space      12
+set winwidth  [expr ($height   + $width + $gap*2 + $space)*4 + $width + 1]
+set winheight [expr  $height*2 + $width + $gap*4                      + 1]
 
 destroy .sevseg
 toplevel .sevseg
 # Four seven segment displays for the time
 display .sevseg.time "0000000" "0000000" "0000000" "0000000"
 wm title .sevseg "Time Display"
-wm geometry .sevseg ${winwidth}x${winheight}+100+0
+wm geometry .sevseg ${winwidth}x${winheight}+100+100
 
 # Setup the trigger to update the display
+set monitor {/test_time_display/disp }
 when -label updateTime "${monitor}'event" {
-  display .sevseg.time [examine -radix bin "sim:${monitor}(0)"] [examine "sim:${monitor}(1)"] [examine "sim:${monitor}(2)"] [examine "sim:${monitor}(3)"]
+  display .sevseg.time \
+    [examine -radix bin "sim:${monitor}(0)"] \
+    [examine -radix bin "sim:${monitor}(1)"] \
+    [examine -radix bin "sim:${monitor}(2)"] \
+    [examine -radix bin "sim:${monitor}(3)"]
   # Don't let the sim run away, we won't see the display update
   stop
 }
