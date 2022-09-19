@@ -61,49 +61,49 @@ proc sevseg {can {b "0000000"} {w 20} {h 60} {g 2} {ox 0} {oy 0}} {
   # a
   if {[expr [string index $b 0] == "1"]} {
     hseg $can $h $w $on  [expr $w/2 + $g   + $ox]                          $oy
-  } {
+  } else {
     hseg $can $h $w $off [expr $w/2 + $g   + $ox]                          $oy
   }
   # g
   if {[expr [string index $b 6] == "1"]} {
     hseg $can $h $w $on  [expr $w/2 + $g   + $ox] [expr $h        + $g*2 + $oy]
-  } {
+  } else {
     hseg $can $h $w $off [expr $w/2 + $g   + $ox] [expr $h        + $g*2 + $oy]
   }
   # d
   if {[expr [string index $b 3] == "1"]} {
     hseg $can $h $w $on  [expr $w/2 + $g   + $ox] [expr $h*2      + $g*4 + $oy]
-  } {
+  } else {
     hseg $can $h $w $off [expr $w/2 + $g   + $ox] [expr $h*2      + $g*4 + $oy]
   }
   # f
   if {[expr [string index $b 5] == "1"]} {
     vseg $can $w $h $on                      $ox  [expr      $w/2 + $g   + $oy]
-  } {
+  } else {
     vseg $can $w $h $off                     $ox  [expr      $w/2 + $g   + $oy]
   }
   # b
   if {[expr [string index $b 1] == "1"]} {
     vseg $can $w $h $on  [expr $h   + $g*2 + $ox] [expr      $w/2 + $g   + $oy]
-  } {
+  } else {
     vseg $can $w $h $off [expr $h   + $g*2 + $ox] [expr      $w/2 + $g   + $oy]
   }
   # e
   if {[expr [string index $b 4] == "1"]} {
     vseg $can $w $h $on                      $ox  [expr $h + $w/2 + $g*3 + $oy]
-  } {
+  } else {
     vseg $can $w $h $off                     $ox  [expr $h + $w/2 + $g*3 + $oy]
   }
   # c
   if {[expr [string index $b 2] == "1"]} {
     vseg $can $w $h $on  [expr $h   + $g*2 + $ox] [expr $h + $w/2 + $g*3 + $oy]
-  } {
+  } else {
     vseg $can $w $h $off [expr $h   + $g*2 + $ox] [expr $h + $w/2 + $g*3 + $oy]
   }
 }
 
-proc display {can s0 s1 s2 s3} {
-  global width height gap space on winheight winwidth
+proc display {can {s0 "0000000"} {s1 "0000000"} {s2 "0000000"} {s3 "0000000"} {alarm 0} {am 0} {pm 0}} {
+  global width height gap space fontsize on off winheight winwidth
   set dw [expr $height + $width + $gap*2]
   destroy $can
   canvas $can -width $winwidth -height $winheight -background #000
@@ -120,7 +120,64 @@ proc display {can s0 s1 s2 s3} {
     -outline $on -fill $on
   sevseg $can $s2 $width $height $gap [expr $dw*2 + $space*3 + $width]
   sevseg $can $s3 $width $height $gap [expr $dw*3 + $space*4 + $width]
+
+  if {$am == 1} {
+    $can create text \
+      [expr $dw*4 + $space*5 + $width] [expr $height  /2 + $gap*2 + $fontsize/2] \
+      -fill $on -text "AM" \
+      -anchor w -font "Helvetica $fontsize bold"
+  } else {
+    $can create text \
+      [expr $dw*4 + $space*5 + $width] [expr $height  /2 + $gap*2 + $fontsize/2] \
+      -fill $off -text "AM" \
+      -anchor w -font "Helvetica $fontsize bold"
+  }
+
+  if {$pm == 1} {
+    $can create text \
+      [expr $dw*4 + $space*5 + $width] [expr $height*3/2 + $gap*2 + $fontsize/2] \
+      -fill $on -text "PM" \
+      -anchor w -font "Helvetica $fontsize bold"
+  } else {
+    $can create text \
+      [expr $dw*4 + $space*5 + $width] [expr $height*3/2 + $gap*2 + $fontsize/2] \
+      -fill $off -text "PM" \
+      -anchor w -font "Helvetica $fontsize bold"
+  }
+
+  if {$alarm == 1} {
+    $can create oval \
+      [expr $dw*4 + $space*5 + $width  ] [expr $height +            $gap*2] \
+      [expr $dw*4 + $space*5 + $width*2] [expr $height + $width   + $gap*2] \
+      -outline $on -fill $on
+  } else {
+    $can create oval \
+      [expr $dw*4 + $space*5 + $width  ] [expr $height +            $gap*2] \
+      [expr $dw*4 + $space*5 + $width*2] [expr $height + $width   + $gap*2] \
+      -outline $off -fill $off
+  }
+  $can create text \
+    [expr $dw*4 + $space*5 + $width*3/2] [expr $height + $width/2 + $gap*2] \
+    -fill #000 -text "A" \
+    -anchor c -font "Helvetica [expr $width*8/10] bold"
+
   pack $can
+}
+
+proc setup_monitor {} {
+  global monitor alarm am pm
+  when -label updateTime "${monitor}'event" {
+    display .sevseg.time \
+      [examine -radix bin "sim:${monitor}(0)"] \
+      [examine -radix bin "sim:${monitor}(1)"] \
+      [examine -radix bin "sim:${monitor}(2)"] \
+      [examine -radix bin "sim:${monitor}(3)"] \
+      [examine            "sim:${alarm}"     ] \
+      [examine            "sim:${am}"        ] \
+      [examine            "sim:${pm}"        ]
+    # Don't let the sim run away, we won't see the display update
+    stop
+  }
 }
 
 # Global variables
@@ -130,24 +187,28 @@ set width      16
 set height     60
 set gap         2
 set space      12
-set winwidth  [expr ($height   + $width + $gap*2 + $space)*4 + $width + 1]
-set winheight [expr  $height*2 + $width + $gap*4                      + 1]
+set fontsize   16
+# Don't amend these
+set winwidth  [expr ($height   + $width + $gap*2 + $space)*4 + $width + $space + $fontsize*2 + 1]
+set winheight [expr  $height*2 + $width + $gap*4 + 1]
+set monitor {/test_time_display/disp}
+set alarm   {/test_time_display/alarm}
+set am      {/test_time_display/am}
+set pm      {/test_time_display/pm}
 
+# Clean up from last time
 destroy .sevseg
+
 toplevel .sevseg
 # Four seven segment displays for the time
-display .sevseg.time "0000000" "0000000" "0000000" "0000000"
+display .sevseg.time
 wm title .sevseg "Time Display"
 wm geometry .sevseg ${winwidth}x${winheight}+100+100
 
-# Setup the trigger to update the display
-set monitor {/test_time_display/disp }
-when -label updateTime "${monitor}'event" {
-  display .sevseg.time \
-    [examine -radix bin "sim:${monitor}(0)"] \
-    [examine -radix bin "sim:${monitor}(1)"] \
-    [examine -radix bin "sim:${monitor}(2)"] \
-    [examine -radix bin "sim:${monitor}(3)"]
-  # Don't let the sim run away, we won't see the display update
-  stop
+if {[runStatus] == "ready"} {
+  # Setup the trigger to update the display
+  setup_monitor
+  puts "NOTE - Trigger setup."
+} {
+  puts "WARNING - Load the design then call TCL 'setup_monitor'."
 }

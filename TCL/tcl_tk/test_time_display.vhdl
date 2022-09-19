@@ -24,6 +24,9 @@ architecture rtl of test_time_display is
   signal clk   : std_logic := '0';
   signal digit : work.sevseg_pkg.digits_t;
   signal disp  : work.sevseg_pkg.time_disp_t;
+  signal am    : std_logic := '0';
+  signal pm    : std_logic := '0';
+  signal alarm : std_logic := '0';
 
 begin
 
@@ -37,7 +40,8 @@ begin
 
   process
   begin
-    digit <= (0, 1, 2, 3);
+    digit           <= (0, 1, 2, 3);
+    (am, alarm, pm) <= std_logic_vector'("100");
     wait_nr_ticks(clk, 1);
 
     for i in 0 to 15 loop
@@ -47,6 +51,7 @@ begin
         (digit(2)+1) mod 16,
         (digit(3)+1) mod 16
       );
+      (am, alarm, pm) <= std_logic_vector'(pm, am, alarm);
       wait_nr_ticks(clk, 1);
     end loop;
 
