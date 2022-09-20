@@ -165,19 +165,33 @@ proc display {can {s0 "0000000"} {s1 "0000000"} {s2 "0000000"} {s3 "0000000"} {a
 }
 
 proc setup_monitor {} {
-  global monitor alarm am pm
-  when -label updateTime "${monitor}'event" {
+  global disp alarm am pm
+  when -label updateTime "${disp}'event" {
+    set disp_v [lindex [examine -radix bin $disp] 0]
     display .sevseg.time \
-      [examine -radix bin "sim:${monitor}(0)"] \
-      [examine -radix bin "sim:${monitor}(1)"] \
-      [examine -radix bin "sim:${monitor}(2)"] \
-      [examine -radix bin "sim:${monitor}(3)"] \
-      [examine            "sim:${alarm}"     ] \
-      [examine            "sim:${am}"        ] \
-      [examine            "sim:${pm}"        ]
+      [lindex $disp_v 0] \
+      [lindex $disp_v 1] \
+      [lindex $disp_v 2] \
+      [lindex $disp_v 3] \
+      [examine $alarm]   \
+      [examine $am]      \
+      [examine $pm]
     # Don't let the sim run away, we won't see the display update
     stop
   }
+}
+
+proc display_cursor {} {
+  global disp alarm am pm
+  set disp_v [lindex [examine -time [wave cursor time] -radix bin $disp] 0]
+  display .sevseg.time \
+    [lindex $disp_v 0] \
+    [lindex $disp_v 1] \
+    [lindex $disp_v 2] \
+    [lindex $disp_v 3] \
+    [examine -time [wave cursor time] $alarm] \
+    [examine -time [wave cursor time] $am   ] \
+    [examine -time [wave cursor time] $pm   ]
 }
 
 # Global variables
@@ -191,10 +205,10 @@ set fontsize   16
 # Don't amend these
 set winwidth  [expr ($height   + $width + $gap*2 + $space)*4 + $width + $space + $fontsize*2 + 1]
 set winheight [expr  $height*2 + $width + $gap*4 + 1]
-set monitor {/test_time_display/disp}
-set alarm   {/test_time_display/alarm}
-set am      {/test_time_display/am}
-set pm      {/test_time_display/pm}
+set disp  {/test_time_display/disp}
+set alarm {/test_time_display/alarm}
+set am    {/test_time_display/am}
+set pm    {/test_time_display/pm}
 
 # Clean up from last time
 destroy .sevseg
@@ -212,3 +226,4 @@ if {[runStatus] == "ready"} {
 } {
   puts "WARNING - Load the design then call TCL 'setup_monitor'."
 }
+puts "NOTE - Use 'display_cursor' to update the display to the values shown under the cursor."
