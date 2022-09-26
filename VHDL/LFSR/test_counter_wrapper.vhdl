@@ -46,7 +46,7 @@ begin
     );
 
   clock(clk, 5 ns, 5 ns);
-  
+
   process
     variable res : line;
   begin
@@ -68,5 +68,5 @@ begin
     -- simulation stops here
     stop_clocks;
   end process;
-  
+
 end architecture;
