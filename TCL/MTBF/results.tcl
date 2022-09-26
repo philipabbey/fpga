@@ -1,4 +1,22 @@
+####################################################################################
+#
+# Distributed under MIT Licence
+#   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+#
+####################################################################################
+#
+# TCL code to automate the creation of experimental results for an n-stage CDC
+# synchroniser so that device physics can be deterrmined.
+# 
 # source -notrace {A:\Philip\Work\VHDL\MTBF\results.tcl}
+#
+# References:
+#  * Managing Mean Time Between Failure in Xilinx Devices
+#    https://blog.abbey1.org.uk/index.php/technology/managing-mean-time-between-failure-in-xilinx-devices
+#
+# P A Abbey, 24 September 2022
+#
+####################################################################################
 
 set_property part xczu2cg-sbva484-2-e [current_project]
 set num_bits 4

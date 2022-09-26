@@ -1,6 +1,6 @@
 # Mean Time Between Failure (MTBF) Analysis in Vivado
 
-TCL `proc`s to automate the generation of MTBF reports for a simple n-stage CDC synchroniser in order to understand hwo the calculation is applied to a simple design.
+TCL to automate the generation of MTBF reports for a simple _n_-stage CDC synchroniser in order to understand how the calculation is applied to a simple design.
 
 Please read the blog post [Managing Mean Time Between Failure in Xilinx Devices](https://blog.abbey1.org.uk/index.php/technology/managing-mean-time-between-failure-in-xilinx-devices) for an explanation of how the code works in detail.
 

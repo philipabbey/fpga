@@ -5,7 +5,9 @@
 --
 -------------------------------------------------------------------------------------
 --
--- Example clock domain crossing to demonstrate Vivado's MTBF calculation.
+-- Wrapper to isolate the retime component from manually specified out of context
+-- timing constraints so that the MTBF calculation's settling time is not affected by
+-- manual intervention.
 --
 -- P A Abbey, 24 September 2022
 --
