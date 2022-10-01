@@ -8,7 +8,7 @@
 -- Types used to scale from a single digit to a time and hence multipel seven segment
 -- displays.
 --
--- P A Abbey, 18 September 2020
+-- P A Abbey, 18 September 2022
 --
 -------------------------------------------------------------------------------------
 

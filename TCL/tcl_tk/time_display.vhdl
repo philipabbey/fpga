@@ -8,7 +8,7 @@
 -- Aggregate four instantiations of a seven segment display decoder in order to
 -- display the time.
 --
--- P A Abbey, 18 September 2020
+-- P A Abbey, 18 September 2022
 --
 -------------------------------------------------------------------------------------
 

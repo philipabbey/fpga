@@ -7,7 +7,7 @@
 --
 -- Test bench to drive the time display.
 --
--- P A Abbey, 18 September 2020
+-- P A Abbey, 18 September 2022
 --
 -------------------------------------------------------------------------------------
 
