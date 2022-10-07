@@ -12,7 +12,6 @@ set SRC=%~dp0
 rem drop last character '\'
 set SRC=%SRC:~0,-1%
 set DEST=%SIM%\projects\tcltk
-set CBIN=test.so
 
 echo Compile Source:   %SRC%\*
 echo Into Destination: %DEST%
