@@ -18,3 +18,7 @@ source {sevseg_display.tcl}
 5. `run -all` multiple times until completion.
 
 ![TCL/TK Graphical Display driven by VHDL in ModelSim](./media/time_display.png?raw=true "Example TCL/TK Graphical Display")
+
+## Acknowledgements
+
+Jointly code with @josephabbey.

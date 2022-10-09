@@ -15,7 +15,7 @@
 # Reference:
 #   https://blog.abbey1.org.uk/index.php/technology/tcl-tk-graphical-display-driven-by-a-vhdl
 #
-# P A Abbey, 18 September 2022
+# P A Abbey & J D Abbey, 18 September 2022
 #
 #####################################################################################
 

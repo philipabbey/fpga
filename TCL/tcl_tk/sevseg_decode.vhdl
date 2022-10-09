@@ -8,7 +8,7 @@
 -- Seven segment display decoder, converts a hexadecimal integer 0x0-0xF into the
 -- standard segment illuminations.
 --
--- P A Abbey, 18 September 2022
+-- P A Abbey & J D Abbey, 18 September 2022
 --
 -------------------------------------------------------------------------------------
 
