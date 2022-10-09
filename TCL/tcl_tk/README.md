@@ -21,4 +21,4 @@ source {sevseg_display.tcl}
 
 ## Acknowledgements
 
-Jointly code with @josephabbey.
+Jointly code with [@josephabbey](https://github.com/josephabbey).
