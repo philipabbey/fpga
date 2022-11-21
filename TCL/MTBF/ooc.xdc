@@ -35,33 +35,28 @@ set ths 0.046
 set txs 0.008
 # Additional clock uncertainty desired for over constraining the design, set by designer choice
 set tcu_add 0.000
- 
+
 create_clock -period 7.000 -name clk_src [get_ports clk_src]
 create_clock -period 6.000 -name clk_dest [get_ports clk_dest]
 
 set input_ports_src [get_ports {flags_in[*] reset_src}]
 set input_ports_dest [get_ports {reset_dest}]
 set output_ports [get_ports {flags_out[*]}]
- 
+
 #
 # Standard timing setup, allocate the device delays into the meaningful variables
 #
 # https://www.xilinx.com/publications/prod_mktg/club_vivado/presentation-2015/paris/Xilinx-TimingClosure.pdf
 # Recommended technique for over-constraining a design:
-set_clock_uncertainty $tcu_add [get_clocks]
- 
+set_clock_uncertainty -setup $tcu_add [get_clocks]
 # Input Hold = Input Setup (slow corner)
 set input_delay [expr $ths + $tcu + $txs]
 # Output Hold = Output Setup (slow corner)
 set output_delay $tsus
-
-set_input_delay  -clock [get_clocks clk_src]  -min $input_delay  $input_ports_src
-set_input_delay  -clock [get_clocks clk_src]  -max $input_delay  $input_ports_src
-
-set_input_delay  -clock [get_clocks clk_dest] -min $input_delay  $input_ports_dest
-set_input_delay  -clock [get_clocks clk_dest] -max $input_delay  $input_ports_dest
-set_output_delay -clock [get_clocks clk_dest] -min $output_delay $output_ports
-set_output_delay -clock [get_clocks clk_dest] -max $output_delay $output_ports
+ 
+set_input_delay  -clock [get_clocks clk_src]  $input_delay  $input_ports_src
+set_input_delay  -clock [get_clocks clk_dest] $input_delay  $input_ports_dest
+set_output_delay -clock [get_clocks clk_dest] $output_delay $output_ports
 
 # Manage False Paths (small design, taking a short cut here, don't typically recommend blanket turning off
 # static timing analysis between clocks like this. Specify the registers more precisely instead.
