@@ -6,9 +6,11 @@ Please read the blog post [Managing Mean Time Between Failure in Xilinx Devices]
 
 ## Execution
 
+Requires the [TCL library file](../auto_constrain/out_of_context_synth_lib.tcl) for out of context synthesis.
+
 1. Open a new project in Vivado
 2. Add the Two VHDL sources and synthesise and the XDC constraints files
-3. Amend the clock frequencies to use in [ooc.xdc](ooc.xdc)
+3. Amend the clock frequencies to use in [ooc.tcl](ooc.tcl)
 4. Source the [results.tcl](results.tcl) TCL script in the Vivado TCL shell
 
 ```tcl

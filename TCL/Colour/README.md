@@ -39,8 +39,10 @@ Intended to be part of a tutorial for those new to FPGA design, this blog is spe
 
 ## Execution
 
+Requires the [TCL library file](../auto_constrain/out_of_context_synth_lib.tcl) for out of context synthesis.
+
 You will need to create a Vivado project with both:
 * [transfer.vhdl](transfer.vhdl)
-* [ooc.xdc](ooc.xdc)
+* [ooc.tcl](ooc.tcl)
 
 Please read the blog post [Verification of Cross Clock Domain Timing Constraints and Exceptions](http://blog.abbey1.org.uk/index.php/technology/verification-of-clock-domain-crossing-timing-constraints-and-exceptions) for an explanation of how to amend the commented constraints in [ooc.xdc](ooc.xdc) to trial the methods proposed, and enter the TCL commands in Vivado to test their effect.
