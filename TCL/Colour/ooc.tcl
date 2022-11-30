@@ -44,7 +44,7 @@ set tcu 0.035
 
 # Part: xc7k70tfbv676-1
 # FDRE Setup Time (Setup_FDRE_C_D) in ns (Slow Process, max delay for Setup times)
-set tsus 0.037
+set tsus 0.034
 # FDRE Hold Time (Hold_FDRE_C_D) in ns (Slow Process, min delay for Hold times)
 set ths 0.218
 
