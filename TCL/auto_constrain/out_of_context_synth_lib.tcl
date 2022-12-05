@@ -31,8 +31,6 @@
 # Known issues:
 #  * BlockRAMs, PRIMITIVE_TYPE  =~ "BLOCKRAM.BRAM.*", how to extract clock domain
 #    given there could be two?
-#    * Inputs directly feeding BlockRAMs
-#    * Outputs directly driven by BlockRAMs
 #    We would need to determine if knowledge of the net/pin could then be associated
 #    precisely with just one of the two clocks through the list of cell properties,
 #    e.g. name suffix matching? Then modify get_clock_port_of_registers, passing it
@@ -57,7 +55,7 @@
 # the pins fed by or driving the ports and pulling timing data out of the "timing arcs".
 # This requires a synthesised design to be open. A reliable way to run these checks is
 # via the 'synth_check_setup_hold_times' command which ensures the synthesied design is
-# open (and performs synthesis if required). The parameters 'ths' & 'tsus' are taken
+# open (and performs synthesis if required). The parameters 'tsus' & 'ths' are taken
 # from the standard ooc.tcl template.
 #
 # Usage: synth_check_setup_hold_times $ths $tsus
@@ -314,7 +312,6 @@ proc find_multiple_clock_domain_ports {port_data} {
             lappend ret [list $port $data]
         }
     }
-    return $ret
 }
 
 # Automatically apply input and output timing constraints for OOC synthesis.
@@ -337,7 +334,7 @@ proc find_multiple_clock_domain_ports {port_data} {
 proc setup_port_constraints {input_delay output_delay {verbose 0}} {
     set inputs_ports [get_clock_for_input_ports [all_inputs]]
     if {$verbose} {
-        puts "--- Start automatically derived constraints by auto_constrain_lib.tcl ---"
+        puts "--- Start automatically derived constraints by out_of_context_synth_lib.tcl ---"
     }
     if {[is_single_clock_domain_per_port $inputs_ports] <= 1} {
         dict for {port data} $inputs_ports {
@@ -365,8 +362,9 @@ proc setup_port_constraints {input_delay output_delay {verbose 0}} {
             }
         }
     } else {
-        error "ERROR: Multiple clock domains detected on at least one input port."
-        puts [find_multiple_clock_domain_ports $inputs_ports]
+        puts "ERROR in '[lindex [info level 0] 0]': Multiple clock domains detected on at least one input port, diagnosis follows:"
+        find_multiple_clock_domain_ports $inputs_ports
+        error "ERROR in '[lindex [info level 0] 0]': Multiple clock domains detected on at least one input port."
     }
 
     set output_ports [get_clock_for_output_ports [all_outputs]]
@@ -381,13 +379,14 @@ proc setup_port_constraints {input_delay output_delay {verbose 0}} {
             set_output_delay -clock [get_clocks [lindex $d 1]] $output_delay $port
         }
     } else {
-        error "ERROR: Multiple clock domains detected on at least one output port."
-        puts [find_multiple_clock_domain_ports $output_ports]
+        puts "ERROR in '[lindex [info level 0] 0]': Multiple clock domains detected on at least one output port, diagnosis follows:"
+        find_multiple_clock_domain_ports $output_ports
+        error "ERROR in '[lindex [info level 0] 0]': Multiple clock domains detected on at least one output port."
     }
     if {$verbose} {
-        puts "---- End automatically derived constraints by auto_constrain_lib.tcl ----"
+        puts "---- End automatically derived constraints by out_of_context_synth_lib.tcl ----"
     }
-    puts "INFO Out of Context Synthesis: Call 'synth_check_setup_hold_times \$ths \$tsus' to check hold and setup time values."
+    puts "INFO in '[lindex [info level 0] 0]': Call 'synth_check_setup_hold_times \$tsus \$ths' to check setup and hold time values."
 }
 
 # For an input list of pairs: {{delay1 primitive1} {delay2 primitive2} {delay3 primitive3}}
@@ -395,7 +394,7 @@ proc setup_port_constraints {input_delay output_delay {verbose 0}} {
 #
 # Usage: max_delay {{1 a} {3 c} {2 b}} => {3 c}
 #
-proc max_delay {delay_list} {    
+proc max_delay {delay_list} {
     # TCL floating point number range: https://www.tcl.tk/man/tcl8.5/tutorial/Tcl6a.html
     set mv -1.0e+300
     set ret {}
@@ -411,82 +410,58 @@ proc max_delay {delay_list} {
     return $ret
 }
 
-# For input ports only, fetch the maximum hold time of a pin in the fanout of each port. Also
-# provide the primitive as that might explain any surprises.
+# For input ports only, fetch the maximum both the setup and hold times of a pin in the fanout
+# of each port. Also provide the primitive as that might explain any surprises.
 #
-# Usage: get_hold_times [all_inputs]
+# Usage: get_setup_hold_times [all_inputs]
 #
-# Returns: A list of pairs {input_port details}, where 'details' is a list of the form {hold_time primitive_type}.
-#   {
+# Returns: A dictionary keyed on 'setup' or 'hold', of dictionary of pairs
+#          {input_port {details}, input_port {details}...}
+#   where 'details' is a list of the form
+#          {hold_time primitive_type}.
+#
+# For example:
+#
+#   setup {
+#     # input_port {hold_time primitive_type}
+#     m_axis_ready {0.108 REGISTER.SDR.FDCE}
+#     {m_node_vector[0][major_type][0]} {0.108 REGISTER.SDR.FDRE}
+#     {m_node_vector[0][major_type][10]} {0.108 REGISTER.SDR.FDRE}
+#   }
+#   hold {
 #     # input_port {hold_time primitive_type}
 #     m_axis_ready {0.108 REGISTER.SDR.FDCE}
 #     {m_node_vector[0][major_type][0]} {0.108 REGISTER.SDR.FDRE}
 #     {m_node_vector[0][major_type][10]} {0.108 REGISTER.SDR.FDRE}
 #   }
 #
-proc get_hold_times {ports} {
-    set portdelays [dict create]
+proc get_setup_hold_times {ports} {
+    set setupdelays [dict create]
+    set holddelays  [dict create]
     foreach p $ports {
         # Exclude aysynchronous resets pins
         set fo [filter [all_fanout -quiet -endpoints_only -flat $p] -filter {!IS_CLOCK && !IS_CLEAR && !IS_PRESET}]
         if {[llength $fo] > 0} {
-            set dl {}
+            set sdl {}
+            set hdl {}
             foreach f $fo {
-                # Hold_FDRE_C_D
-                lappend dl [list \
+                lappend sdl [list \
+                    [get_property DELAY_SLOW_MIN_RISE [get_timing_arcs -to $f -filter {TYPE == "setup"}]] \
+                    [get_property PRIMITIVE_TYPE [get_cells -of_objects $f]] \
+                ]
+                lappend hdl [list \
                     [get_property DELAY_SLOW_MIN_RISE [get_timing_arcs -to $f -filter {TYPE == "hold"}]] \
                     [get_property PRIMITIVE_TYPE [get_cells -of_objects $f]] \
                 ]
             }
             # All values in the list tend to be the same
-            dict set portdelays $p [max_delay $dl]
+            dict set setupdelays $p [max_delay $sdl]
+            dict set holddelays  $p [max_delay $hdl]
         }
     }
-    return $portdelays
-}
-
-# For output ports only, fetch the maximum setup time of a pin in the fanin of each port. Also
-# provide the primitive as that might explain any surprises.
-#
-# Usage: get_setup_times [all_outputs]
-#
-# Returns: A list of pairs {output_port details}, where 'details' is a list of the form {setup_time primitive_type}.
-#   {
-#     # output_port {setup_time primitive_type}
-#     irq {0.000 REGISTER.SDR.FDRE}
-#     {m_axis_data[tdata][0]} {0.047 REGISTER.SDR.FDRE}
-#     {m_axis_data[tdata][10]} {0.047 REGISTER.SDR.FDRE}
-#     {m_axis_data[tdata][11]} {0.047 REGISTER.SDR.FDRE}
-#   }
-#
-proc get_setup_times {ports} {
     set portdelays [dict create]
-    foreach p $ports {
-        set dl {}
-        set fi [filter [all_fanin -quiet -flat $p] -filter {(DIRECTION == OUT) && (CLASS == pin)}]
-        foreach f $fi {
-            set c [get_cells -of_objects $f]
-            set l [dict create]
-            foreach a [get_timing_arcs -quiet -to [get_pins -of_objects $c -filter {
-                DIRECTION == IN &&
-                !IS_CLOCK &&
-                !IS_CLEAR && !IS_PRESET &&
-                !IS_RESET && !IS_SET
-            }] -filter {TYPE == "setup"}] {
-                dict set l [get_property TO_PIN $a] [list \
-                    [get_property DELAY_SLOW_MAX_RISE $a] \
-                    [get_property PRIMITIVE_TYPE $c] \
-                ]
-            }
-            if {[llength $l] > 0} {
-                lappend dl [max_delay [dict values $l]]
-            }
-        }
-        if {[llength $fi] > 0} {
-            # All values in the list tend to be the same
-            dict set portdelays $p [max_delay $dl]
-        }
-    }
+    dict set portdelays setup $setupdelays
+    dict set portdelays hold  $holddelays
     return $portdelays
 }
 
@@ -497,31 +472,32 @@ proc get_setup_times {ports} {
 #
 # NB. Requires a synthesised design to be open. Call 'synth_check_setup_hold_times' instead if not.
 #
-# Usage: check_setup_hold_times $ths $tsus 1
+# Usage: check_setup_hold_times $tsus $ths 1
 #
-proc check_setup_hold_times {hold_time setup_time {verbose 0} {design synth_1}} {
-    set hold_design  [max_delay [dict values [get_hold_times [all_inputs]]]]
-    # Delay
-    set hdd [lindex $hold_design 0]
-    # Primitive
-    set hdp [lindex $hold_design 1]
-    set setup_design [max_delay [dict values [get_setup_times [all_outputs]]]]
+proc check_setup_hold_times {setup_time hold_time {verbose 0} {design synth_1}} {
+    set times        [get_setup_hold_times [all_inputs]]
+    set setup_design [max_delay [dict values [dict get $times setup]]]
+    set hold_design  [max_delay [dict values [dict get $times hold]]]
     # Delay
     set sdd [lindex $setup_design 0]
     # Primitive
     set sdp [lindex $setup_design 1]
+    # Delay
+    set hdd [lindex $hold_design 0]
+    # Primitive
+    set hdp [lindex $hold_design 1]
+    if {$sdd != $setup_time} {
+        puts "WARNING in '[lindex [info level 0] 0]': Specified setup time '$setup_time ns' does not match output ports' maximum setup time of '$sdd ns' on a '$sdp' primtive."
+    } else {
+        if {$verbose} {
+            puts "INFO in '[lindex [info level 0] 0]': Specified setup time matches output ports' maximum setup time of '$sdd ns' on a '$sdp' primtive."
+        }
+    }
     if {$hdd != $hold_time} {
         puts "WARNING in '[lindex [info level 0] 0]': Specified hold time '$hold_time ns' does not match input ports' maximum hold time of '$hdd ns' on a '$hdp' primtive."
     } else {
         if {$verbose} {
             puts "INFO in '[lindex [info level 0] 0]': Specified hold time matches input ports' maximum hold time of '$hdd ns' on a '$hdp' primtive."
-        }
-    }
-    if {$sdd != $setup_time} {
-        puts "WARNING in '[lindex [info level 0] 0]': Specified hold time '$setup_time ns' does not match output ports' maximum hold time of '$sdd ns' on a '$sdp' primtive."
-    } else {
-        if {$verbose} {
-            puts "INFO in '[lindex [info level 0] 0]': Specified hold time matches output ports' maximum hold time of '$sdd ns' on a '$sdp' primtive."
         }
     }
 }
@@ -530,9 +506,9 @@ proc check_setup_hold_times {hold_time setup_time {verbose 0} {design synth_1}} 
 # input and output ports against which the supplied parameters used in the constraints file will
 # be checked.
 #
-# Usage: synth_check_setup_hold_times $ths $tsus
+# Usage: synth_check_setup_hold_times $tsus $ths
 #
-proc synth_check_setup_hold_times {ths tsus {synth synth_1} {jobs 6}} {
+proc synth_check_setup_hold_times {tsus ths {synth synth_1} {jobs 6}} {
     set d [current_design -quiet]
     set synth_run [get_runs $synth]
     set must_refesh [get_property NEEDS_REFRESH $synth_run]
@@ -557,8 +533,9 @@ proc synth_check_setup_hold_times {ths tsus {synth synth_1} {jobs 6}} {
     # Open a schematic of the basic design - The created window distracts from the TCL console where the result is printed.
     #report_timing_summary -delay_type min_max -report_unconstrained -check_timing_verbose -max_paths 10 -input_pins -routable_nets -name timing_synth
     # Check the TCL console for the printed results.
-    check_setup_hold_times $ths $tsus 1
+    check_setup_hold_times $tsus $ths 1
 }
+
 
 # Each of these results drives a clock at a sequential primitive and hence must have a constraint to set up a
 # clock, e.g. 'create_clock'. This function provides a simple design check.
