@@ -67,8 +67,8 @@ set txs 0.008
 # Additional clock uncertainty desired for over constraining the design, set by designer choice
 set tcu_add 0.000
 
-create_clock -period 5.000 -name sys_data_clk [get_ports clk_src1]
-create_clock -period 7.000 -name user_clk_250 [get_ports clk_src2]
+create_clock -period 5.000 -name clk_200 [get_ports clk1]
+create_clock -period 7.000 -name clk_250 [get_ports clk2]
 
 # Standard timing setup, allocate the device delays into the meaningful variables
 #
