@@ -445,6 +445,7 @@ proc get_setup_hold_times {ports} {
             set sdl {}
             set hdl {}
             foreach f $fo {
+                # Should this use DELAY_SLOW_MAX_RISE?
                 lappend sdl [list \
                     [get_property DELAY_SLOW_MIN_RISE [get_timing_arcs -to $f -filter {TYPE == "setup"}]] \
                     [get_property PRIMITIVE_TYPE [get_cells -of_objects $f]] \
