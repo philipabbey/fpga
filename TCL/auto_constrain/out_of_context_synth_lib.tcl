@@ -486,7 +486,7 @@ proc get_setup_hold_times {ports} {
 # available, hence this is a check after the fact rather than a value extraction for constraints before
 # synthesis.
 #
-# NB. Requires a synthesised design to be open. Call 'synth_check_setup_hold_times' instead if not.
+# NB. Requires a synthesised design to be open. Call 'check_ooc_setup' instead if not.
 #
 # Usage: check_setup_hold_times $tsus $ths 1
 #
