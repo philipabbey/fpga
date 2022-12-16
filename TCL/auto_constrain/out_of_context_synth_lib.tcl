@@ -15,6 +15,10 @@
 # specify input and output constraints for each port, significantly reducing the
 # effort required to set up OOC synthesis.
 #
+# To debug the use of this script:
+#   1.  Open an elaborated design (synth_design -rtl -name rtl_1 -mode out_of_context)
+#   2.  source -notrace {path\to\auto_constrain_lib.tcl}
+#
 # References:
 #  * Specifying Boundary Timing Constraints in Vivado
 #    https://blog.abbey1.org.uk/index.php/technology/specifying-boundary-timing-constraints-in-vivado
@@ -30,35 +34,32 @@
 #
 # Known issues:
 #  * BlockRAMs, PRIMITIVE_TYPE  =~ "BLOCKRAM.BRAM.*", how to extract clock domain
-#    given there could be two?
-#    We would need to determine if knowledge of the net/pin could then be associated
-#    precisely with just one of the two clocks through the list of cell properties,
-#    e.g. name suffix matching? Then modify get_clock_port_of_registers, passing it
-#    a second parameter that is the net attached (from fan-in/out in caller). This
-#    would then be used to select which of the two clocks is returned. Primitives of
-#    type "BLOCKRAM.BRAM.*" would then be a special case in the body of the procedure
-#    to be handled separately to the single clocked primitives.
+#    given there could be two different ones?
+#    We detect the presence of multiple clock primitives and extract both. Later this
+#    is found and managed. Constraints for such input ports must be set manually.
 #
 # If this TCL library simply does not work for your OOC synthesis, revert to manual
 # specification of input and output constraints.
 #
-#   set_input_delay  -clock [get_clocks {...}] $input_delay  <input port>
-#   set_output_delay -clock [get_clocks {...}] $output_delay <output port>
+#   set_input_delay  -clock [get_clocks {...}] $input_delay  [get_ports <input port>]
+#   set_output_delay -clock [get_clocks {...}] $output_delay [get_ports <output port>]
 #
 # Any manual set_false_path and set_max_delay constraints must go in the SCOPED_TO_REF
 # constraints file, NOT HERE, for use in both OOC and the full image synthesis.
 #
 # Verification:
 #
-# It is possible to verify the hold and setup times used by OOC synthesis by querying
-# the synthesised design. 'check_setup_hold_times' provides this verification by finding
-# the pins fed by or driving the ports and pulling timing data out of the "timing arcs".
-# This requires a synthesised design to be open. A reliable way to run these checks is
-# via the 'synth_check_setup_hold_times' command which ensures the synthesied design is
+# It is possible to verify the hold and setup times, clock setup and input and output
+# delay application used by OOC synthesis by querying the synthesised design.
+# 'check_setup_hold_times' provides these verifications by finding the pins fed by or driving
+# the ports and pulling timing data out of the "timing arcs" and 'check_port_constraints'
+# checks the input and output delays from each port's "timing paths" to ensure every port has
+# been constrained. This requires a synthesised design to be open. A reliable way to run
+# these checks is via the 'check_ooc_setup' command which ensures the synthesied design is
 # open (and performs synthesis if required). The parameters 'tsus' & 'ths' are taken
 # from the standard ooc.tcl template.
 #
-# Usage: synth_check_setup_hold_times $ths $tsus
+# Usage: check_ooc_setup $ths $tsus
 #
 
 
@@ -69,8 +70,9 @@
 # Returns: Each cell listed with its clock name and clock source port
 #          E.g. {{cell clock_name clock_port} {cell clock_name clock_port} ...}
 #
-# NB. Zynq devices have changed from using a PRIMITIVE_GROUP of "REGISTER", as
-# used by Kintex devices, to "FLOP_LATCH" post synthesis.
+# An exception is made here for primitives with no clocks, where the return format will
+# include a list element of the format:
+#          {cell NOTSET clock_port}
 #
 proc get_clock_port_of_registers {cells} {
     set clklist {}
@@ -79,21 +81,38 @@ proc get_clock_port_of_registers {cells} {
         # See Ref [1] for filter criteria
         if {[llength [get_cells -quiet $c -filter {IS_SEQUENTIAL}]] > 0} {
             set pins [get_pins -quiet -of_objects $c -filter {IS_CLOCK}]
-            if {[llength $pins] > 0} {
-                set clksrc [get_clocks -quiet -of_objects $pins]
-                # This might not return a value, but the pin is connected to a clock port, so trace it back to the origins.
-                if {[llength $clksrc] == 0} {
-                    set clksrc [get_clocks -of_objects [all_fanin -flat -startpoints_only $pins]]
+            if {[llength $pins] < 1} {
+                # E.g. LUTRAM have a CLK pin that do not have their IS_CLOCK property set to 1.
+                set clksrc [get_clocks -quiet -of_objects $c]
+                if {[llength $clksrc] > 0} {
+                    lappend clklist [list $c $clksrc [get_property SOURCE_PINS $clksrc]]
+                } else {
+#                    puts "WARNING in '[lindex [info level 0] 0]': No clock constraint found for cell '$c' of primitive type '[get_property PRIMITIVE_TYPE $c]'."
+                    lappend clklist [list $c NOTSET NOTFOUND]
                 }
             } else {
-                # LUTRAM have a CLK pin that do not have their IS_CLOCK property set to 1.
-                set clksrc [get_clocks -of_objects $c]
+                foreach p $pins {
+                    set clksrc [get_clocks -quiet -of_objects $p]
+                    # This might not return a value, but the pin is connected to a clock port, so trace it back to the origins.
+                    if {[llength $clksrc] > 0} {
+                        set pinsrc [get_property SOURCE_PINS $clksrc]
+                    } else {
+                        set pinsrc [all_fanin -flat -startpoints_only $p]
+                        set clksrc [get_clocks -quiet -of_objects $pinsrc]
+                    }
+                    if {[llength $clksrc] > 0} {
+                        lappend clklist [list $c $clksrc $pinsrc]
+                    } else {
+#                        puts "WARNING in '[lindex [info level 0] 0]': No clock constraint found for pin '$p' of primitive type '[get_property PRIMITIVE_TYPE $c]'."
+                        lappend clklist [list $c NOTSET $pinsrc]
+                    }
+                }
             }
-            lappend clklist [list $c $clksrc [get_property SOURCE_PINS $clksrc]]
         }
     }
     return $clklist
 }
+
 
 # Returns a dictionary of lists such that each input port is associated with a list
 # of destination registers each associated with its clock name and clock input port.
@@ -128,9 +147,6 @@ proc get_clock_port_of_registers {cells} {
 #     {{flags_in_i_reg[0]} clk_src_nm clk_src}
 #   }
 #
-# NB. Zynq devices have changed from using a PRIMITIVE_GROUP of "REGISTER", as
-# used by Kintex devices, to "FLOP_LATCH" post synthesis.
-#
 proc get_clock_for_input_ports {ports} {
     set clklist [dict create]
     foreach p $ports {
@@ -143,44 +159,48 @@ proc get_clock_for_input_ports {ports} {
                     # See Ref [1] for filter criteria
                     set c [get_cells -quiet -of_objects $f -filter {IS_SEQUENTIAL}]
                     if {[llength $c]} {
-                        set r [get_clock_port_of_registers $c]
-                        if {[llength $r] == 0} {
-                            error "ERROR: get_clock_for_input_ports - 'get_clock_port_of_registers $c' returned no registers."
+                        # Can return multiple clocks for a single primitive
+                        set regs [get_clock_port_of_registers $c]
+                        foreach r $regs {
+                            if {[llength $r] == 0} {
+                                error "ERROR in '[lindex [info level 0] 0]': 'get_clock_port_of_registers $c' returned no registers for port '$p'."
+                            } else {
+                                set l $r
+                                # Is $f the reset pin to $c or a data pin?
+                                #
+                                #  * Data pin to a register with property ASYNC_REG - Mark input ASYNC for false path (later)
+                                #  * Cell with XPM_CDC property ASYNC_RST           - Mark input ASYNC for false path (later), UltraScale specific,
+                                #                                                     no pin properties IS_CLEAR || IS_PRESET yet (argh!)
+                                #  * Asynchronous reset pin                         - Mark input ASYNC for false path (later), e.g. cell name
+                                #                                                     RTL_REG_ASYNC, pin properties IS_CLEAR || IS_PRESET
+                                #  * Synchronous reset pin                          - No ASYNC_REG to ensure it remains a timed path, e.g. pin
+                                #                                                     properties IS_RESET || IS_SET
+                                #
+                                # Another strategy for cells with XPM_CDC properties (any value) is to mark them (e.g. with an optional "XPM") for
+                                # absolutely no treatment later and allow XPMs to sort themselves out with their own constraints. However the XPM
+                                # constraints are not marking them up themselves. Watch and learn here.
+                                #
+                                # NB. Need to cater for a synchronous reset feeding an ASYNC_REG register, hence the check for both sorts of reset pins.
+                                #
+                                # NB. pins with IS_SETRESET give us problems: Programmable synchronous or asynchronous set/reset. The pin's behavior is
+                                # controlled by an attribute on the block. E.g. The RSTRAMB pin on a RAMB36E2. Ignore for now, as IS_SETRESET is set
+                                # when IS_RESET is also set, so the documentation is not sufficiently complete on this attribute.
+                                #
+                                #  if {[llength [get_pins -quiet -of_objects $c -filter {IS_SETRESET}]] > 0} {
+                                #      error "ERROR in '[lindex [info level 0] 0]': 'IS_SETRESET' property used on an input pin of '$c', the script cannot handle these."
+                                #  }
+                                #
+                                set asyncrsts [get_pins -quiet -of_objects $c -filter {IS_CLEAR || IS_PRESET}]
+                                set syncrsts [get_pins -quiet -of_objects $c -filter {IS_RESET || IS_SET}]
+                                if {(([get_property ASYNC_REG $c] == 1) ||
+                                     (([string equal [get_property XPM_CDC $c] "ASYNC_RST"]) && ([string match "*/CLR" $f])) ||
+                                     (([llength $asyncrsts] > 0) && ([lsearch -exact $asyncrsts $f] >= 0))) &&
+                                    !(([llength $syncrsts] > 0) && ([lsearch -exact $syncrsts $f] >= 0))} {
+                                    lappend l {ASYNC}
+                                }
+                                lappend reglist $l
+                            }
                         }
-                        set l {*}$r
-                        # Is $f the reset pin to $c or a data pin?
-                        #
-                        #  * Data pin to a register with property ASYNC_REG - Mark input ASYNC for false path (later)
-                        #  * Cell with XPM_CDC property ASYNC_RST           - Mark input ASYNC for false path (later), UltraScale specific,
-                        #                                                     no pin properties IS_CLEAR || IS_PRESET yet (argh!)
-                        #  * Asynchronous reset pin                         - Mark input ASYNC for false path (later), e.g. cell name
-                        #                                                     RTL_REG_ASYNC, pin properties IS_CLEAR || IS_PRESET
-                        #  * Synchronous reset pin                          - No ASYNC_REG to ensure it remains a timed path, e.g. pin
-                        #                                                     properties IS_RESET || IS_SET
-                        #
-                        # Another strategy for cells with XPM_CDC properties (any value) is to mark them (e.g. with an optional "XPM") for
-                        # absolutely no treatment later and allow XPMs to sort themselves out with their own constraints. However the XPM
-                        # constraints are not marking them up themselves. Watch and learn here.
-                        #
-                        # NB. Need to cater for a synchronous reset feeding an ASYNC_REG register, hence the check for both sorts of reset pins.
-                        #
-                        # NB. pins with IS_SETRESET give us problems: Programmable synchronous or asynchronous set/reset. The pin's behavior is
-                        # controlled by an attribute on the block. E.g. The RSTRAMB pin on a RAMB36E2. Ignore for now, as IS_SETRESET is set
-                        # when IS_RESET is also set, so the documentation is not sufficiently complete on this attribute.
-                        #
-                        #  if {[llength [get_pins -quiet -of_objects $c -filter {IS_SETRESET}]] > 0} {
-                        #      error "ERROR: get_clock_for_input_ports - 'IS_SETRESET' property used on an input pin of '$c', the script cannot handle these."
-                        #  }
-                        #
-                        set asyncrsts [get_pins -quiet -of_objects $c -filter {IS_CLEAR || IS_PRESET}]
-                        set syncrsts [get_pins -quiet -of_objects $c -filter {IS_RESET || IS_SET}]
-                        if {(([get_property ASYNC_REG $c] == 1) ||
-                             (([string equal [get_property XPM_CDC $c] "ASYNC_RST"]) && ([string match "*/CLR" $f])) ||
-                             (([llength $asyncrsts] > 0) && ([lsearch -exact $asyncrsts $f] >= 0))) &&
-                            !(([llength $syncrsts] > 0) && ([lsearch -exact $syncrsts $f] >= 0))} {
-                            lappend l {ASYNC}
-                        }
-                        lappend reglist $l
                     }
                 }
                 dict set clklist $p $reglist
@@ -189,6 +209,7 @@ proc get_clock_for_input_ports {ports} {
     }
     return $clklist
 }
+
 
 # Returns a dictionary of lists such that each output port is associated with a list
 # of source registers paired with its clock name and clock input port. NB. There can
@@ -223,96 +244,41 @@ proc get_clock_for_output_ports {ports} {
     return $clklist
 }
 
-# Process the port data dictionary returned by 'get_clock_for_input_port' and
-# 'get_clock_for_output_ports' and list the distinct clock names and source pins per port. The hope is
-# that the value for each key is a list of length one. If not then a port is feeding or
-# being fed by mutliple clock domains. Any clock domain marked as terminating at an
-# asynchronous input is omitted.
+
+# For a single port's list of connections, check return a list of unique clock domains.
 #
 # Parameters:
-#   port_data - A dictionary produced by either 'get_clock_for_input_port' or
-#               'get_clock_for_output_ports'.
+#   port_data - A list of tuples in the format:
+#   {
+#     {{flags_out_reg[0]} clk_dest_nm1 clk_pin1}
+#     {{flags_out_reg[1]} clk_dest_nm1 clk_pin1}
+#     {{flags_out_reg[2]} clk_dest_nm2 clk_pin2}
+#   }
 #
-# Usage:
-#   unique_clock_domains [get_clock_for_input_ports  [all_inputs]]
-#   unique_clock_domains [get_clock_for_output_ports [all_outputs]]
+# Returns: A list of the unique clock names and clock pins, e.g.
+#   {
+#     {clk_dest_nm1 clk_pin1}
+#     {clk_dest_nm2 clk_pin2}
+#   }
 #
-# Return:
-#   # Port        Clock name and pin list
-#   {flags_in[0]} {clk_src_nm clk_pin}
-#   {flags_in[1]} {{clk_src_nm clk_pin} {clk_dest_nm clk_pin}}
-#   {flags_in[2]} {clk_src_nm clk_pin}
-#   {flags_in[3]} {clk_src_nm clk_pin}
-#   reset_dest    {clk_dest_nm clk_pin}
-#   reset_src     {clk_src_nm clk_pin}
+# Usage: single_port_unique_clock_domains [dict get [get_clock_for_input_ports [get_ports {m_axi4_com[arready]}]] {m_axi4_com[arready]}]
+#           => {sys_data_clk sys_data_clk}
 #
-proc unique_clock_domains {port_data} {
-    set clklist [dict create]
-    dict for {port data} $port_data {
-        set clks {}
-        foreach d $data {
-            if {![string equal [lindex $d 3] "ASYNC"]} {
-                set clkgrp [lindex $d 1]
-                set clkpin [lindex $d 2]
-                set item [list $clkgrp $clkpin]
-                if {[lsearch -exact $clks $item] < 0} {
-                    lappend clks $item
-                }
+proc single_port_unique_clock_domains {port_data} {
+    set clks {}
+    foreach d $port_data {
+        if {![string equal [lindex $d 3] "ASYNC"]} {
+            set clkgrp [lindex $d 1]
+            set clkpin [lindex $d 2]
+            set item [list $clkgrp $clkpin]
+            if {[lsearch -exact $clks $item] < 0} {
+                lappend clks $item
             }
         }
-        dict set clklist $port $clks
     }
-    return $clklist
+    return $clks
 }
 
-# Process the port data dictionary returned by 'get_clock_for_input_port' and
-# 'get_clock_for_output_ports' and count the distinct clock names per port. Return
-# the maximum number of unique clock names per port. The hope is this value is 1,
-# i.e. no port in the port_data has more then a single clock domain. Any clock
-# domain marked as terminating in an input marked as ASYNC is omitted.
-#
-# Usage:
-#   is_single_clock_domain_per_port [get_clock_for_input_ports  [all_inputs]]
-#   is_single_clock_domain_per_port [get_clock_for_output_ports [all_outputs]]
-#
-# Return:
-#   0 - All ports feed ASYNC inputs                           - GOOD
-#   1 - All ports feed or are driven by a single clock domain - GOOD
-#  >1 - Some ports feed or are fed by multiple clock domains  - BAD
-#
-proc is_single_clock_domain_per_port {port_data} {
-    set clklist [unique_clock_domains $port_data]
-    set min 0
-    dict for {port data} $clklist {
-        set l [llength $data]
-        if {$l > $min} {
-            set min $l
-        }
-    }
-    return $min
-}
-
-# When 'is_single_clock_domain_per_port' says there are multiple clock domains per port,
-# this function will list the offending port and the clocks for debugging.
-#
-# Usage:
-#   find_multiple_clock_domain_ports [get_clock_for_input_ports  [all_inputs]]
-#   find_multiple_clock_domain_ports [get_clock_for_output_ports [all_outputs]]
-#
-# Return:
-#   {port} {{clock_name clock_port}}
-#
-proc find_multiple_clock_domain_ports {port_data} {
-    set clklist [unique_clock_domains $port_data]
-    set ret {}
-    dict for {port data} $clklist {
-        set l [llength $data]
-        if {$l > 1} {
-            puts "$port $l '$data'"
-            lappend ret [list $port $data]
-        }
-    }
-}
 
 # Automatically apply input and output timing constraints for OOC synthesis.
 #
@@ -332,18 +298,26 @@ proc find_multiple_clock_domain_ports {port_data} {
 # continues to warn about the partially constrained input. XPM use false paths.
 #
 proc setup_port_constraints {input_delay output_delay {verbose 0}} {
-    set inputs_ports [get_clock_for_input_ports [all_inputs]]
+    # Cannot be a global as it does not exist as the time this function is called.
+    set script_name "auto_constrain_lib.tcl"
+
     if {$verbose} {
-        puts "--- Start automatically derived constraints by out_of_context_synth_lib.tcl ---"
+        puts "--- Start automatically derived constraints by $script_name ---"
     }
-    if {[is_single_clock_domain_per_port $inputs_ports] <= 1} {
-        dict for {port data} $inputs_ports {
-            # We've checked there's only a single clock domain in the list to worry about, but
-            # we might want to set up false paths from any ports to each ASYNC input.
-            set setopd 0
+
+    dict for {port data} [get_clock_for_input_ports [all_inputs]] {
+        # 'data' is the list of destination sequential primitives
+        # Cannot extract any existing input or output delay from a port without 'get_timing_paths',
+        # which requires a synthesied design, not just elaboration.
+        #  * get_property INPUT_DELAY [get_timing_paths -from $port]
+        #  * get_property OUTPUT_DELAY [get_timing_paths -to $port]
+        set setopd 0
+        set ucd [single_port_unique_clock_domains $data]
+        if {[llength $ucd] == 1} {
             foreach d $data {
                 # d = {register clock_name clock_port ?ASYNC?}
                 if {[string equal [lindex $d 3] "ASYNC"]} {
+                    # Set up false paths from any ports to each ASYNC pin.
                     if {$verbose} {
                         puts "set_false_path -from $port -to [lindex $d 0]"
                     }
@@ -351,6 +325,8 @@ proc setup_port_constraints {input_delay output_delay {verbose 0}} {
                     set_false_path -from $port -to [lindex $d 0]
                     # Alternative is: set_max_delay -datapath_only -from [get_ports $port] -to [lindex $d 0] [get_property PERIOD [get_clocks [lindex $d 1]]]
                     # See observation above.
+                } elseif {[string equal [lindex $d 1] "NOTSET"]} {
+                    puts "WARNING in '[lindex [info level 0] 0]': Input port '$port' has unknown clock constraint on pin '[lindex $d 2]'."
                 } elseif {! $setopd} {
                     # Only need to set up this constraint the first time
                     set setopd 1
@@ -360,34 +336,66 @@ proc setup_port_constraints {input_delay output_delay {verbose 0}} {
                     set_input_delay -clock [get_clocks [lindex $d 1]] $input_delay $port
                 }
             }
+        } elseif {[llength $data] > 1} {
+            # if $data contains more then one clock... Provide evidence and call for manual setting
+            puts "WARNING in '[lindex [info level 0] 0]': Input port '$port' has multiple clocks. Clock list: ${ucd}."
+            if {$verbose} {
+                puts "# Select the best constraint and add manually in OOC constraints, before call to '[lindex [info level 0] 0]'"
+                foreach c $ucd {
+                    if {![string equal [lindex $c 0] "NOTSET"]} {
+                        puts "# set_input_delay -clock \[get_clocks {[lindex $c 0]}\] $input_delay \[get_port {$port}\]"
+                    }
+                    puts "# set_input_delay -clock \[get_clocks -of_objects \[get_ports {[lindex $c 1]}\]\] $input_delay \[get_port {$port}\]"
+                }
+            }
+        } else {
+            # ([llength $data] == 0) || ($except == "NONE")
+            puts "WARNING in '[lindex [info level 0] 0]': Input port '$port' has no clocks."
         }
-    } else {
-        puts "ERROR in '[lindex [info level 0] 0]': Multiple clock domains detected on at least one input port, diagnosis follows:"
-        find_multiple_clock_domain_ports $inputs_ports
-        error "ERROR in '[lindex [info level 0] 0]': Multiple clock domains detected on at least one input port."
     }
 
-    set output_ports [get_clock_for_output_ports [all_outputs]]
-    if {[is_single_clock_domain_per_port $output_ports] == 1} {
-        dict for {port data} $output_ports {
-            # We've checked there's only a single clock domain in the list to worry about.
-            set d [lindex $data 0]
-            # d = {register clock_name clock_port}
-            if {$verbose} {
-                puts "set_output_delay -clock [get_clocks [lindex $d 1]] $output_delay $port"
+    dict for {port data} [get_clock_for_output_ports [all_outputs]] {
+        # 'data' is the list of destination sequential primitives
+        set setopd 0
+        set ucd [single_port_unique_clock_domains $data]
+        if {[llength $ucd] == 1} {
+            foreach d $data {
+                # d = {register clock_name clock_port ?ASYNC?}
+                if {[string equal [lindex $d 1] "NOTSET"]} {
+                    puts "WARNING in '[lindex [info level 0] 0]': Output port '$port' has unknown clock constraint on pin '[lindex $d 2]'."
+                } elseif {! $setopd} {
+                    # Only need to set up this constraint the first time
+                    set setopd 1
+                    if {$verbose} {
+                        puts "set_output_delay -clock [get_clocks [lindex $d 1]] $output_delay $port"
+                    }
+                    set_output_delay -clock [get_clocks [lindex $d 1]] $output_delay $port
+                }
             }
-            set_output_delay -clock [get_clocks [lindex $d 1]] $output_delay $port
+        } elseif {[llength $data] > 1} {
+            # if $data contains more then one clock... Provide evidence and call for manual setting
+            puts "WARNING in '[lindex [info level 0] 0]': Output port '$port' has multiple clocks. Clock list: ${ucd}."
+            if {$verbose} {
+                puts "# Select the best constraint and add manually in OOC constraints, before call to '[lindex [info level 0] 0]'"
+                foreach c $ucd {
+                    if {![string equal [lindex $c 0] "NOTSET"]} {
+                        puts "# set_output_delay -clock \[get_clocks {[lindex $c 0]}\] $output_delay \[get_port {$port}\]"
+                    }
+                    puts "# set_output_delay -clock \[get_clocks -of_objects \[get_ports {[lindex $c 1]}\]\] $output_delay \[get_port {$port}\]"
+                }
+            }
+        } else {
+            # ([llength $data] == 0) || ($except == "NONE")
+            puts "WARNING in '[lindex [info level 0] 0]': Output port '$port' has no clocks."
         }
-    } else {
-        puts "ERROR in '[lindex [info level 0] 0]': Multiple clock domains detected on at least one output port, diagnosis follows:"
-        find_multiple_clock_domain_ports $output_ports
-        error "ERROR in '[lindex [info level 0] 0]': Multiple clock domains detected on at least one output port."
     }
+
     if {$verbose} {
-        puts "---- End automatically derived constraints by out_of_context_synth_lib.tcl ----"
+        puts "---- End automatically derived constraints by $script_name ----"
     }
-    puts "INFO in '[lindex [info level 0] 0]': Call 'synth_check_setup_hold_times \$tsus \$ths' to check setup and hold time values."
+    puts "INFO Out of Context Synthesis: Call TCL 'check_ooc_setup \$tsus \$ths' to check the OOC setup."
 }
+
 
 # For an input list of pairs: {{delay1 primitive1} {delay2 primitive2} {delay3 primitive3}}
 # Return the pair with the largest 'delay' value.
@@ -409,6 +417,7 @@ proc max_delay {delay_list} {
     }
     return $ret
 }
+
 
 # For input ports only, fetch the maximum both the setup and hold times of a pin in the fanout
 # of each port. Also provide the primitive as that might explain any surprises.
@@ -439,21 +448,26 @@ proc get_setup_hold_times {ports} {
     set setupdelays [dict create]
     set holddelays  [dict create]
     foreach p $ports {
-        # Exclude aysynchronous resets pins
-        set fo [filter [all_fanout -quiet -endpoints_only -flat $p] -filter {!IS_CLOCK && !IS_CLEAR && !IS_PRESET}]
+        # Exclude asynchronous resets pins and any that are tied to GND or VCC
+        set fo [filter [all_fanout -quiet -endpoints_only -flat $p] -filter {!IS_CLOCK && !IS_CLEAR && !IS_PRESET && !IS_TIED}]
         if {[llength $fo] > 0} {
             set sdl {}
             set hdl {}
             foreach f $fo {
-                # Should this use DELAY_SLOW_MAX_RISE?
-                lappend sdl [list \
-                    [get_property DELAY_SLOW_MIN_RISE [get_timing_arcs -to $f -filter {TYPE == "setup"}]] \
-                    [get_property PRIMITIVE_TYPE [get_cells -of_objects $f]] \
-                ]
-                lappend hdl [list \
-                    [get_property DELAY_SLOW_MIN_RISE [get_timing_arcs -to $f -filter {TYPE == "hold"}]] \
-                    [get_property PRIMITIVE_TYPE [get_cells -of_objects $f]] \
-                ]
+                set c [get_cells -of_objects $f]
+                if {[get_property IS_SEQUENTIAL $c]} {
+                    lappend sdl [list \
+                        [get_property DELAY_SLOW_MIN_RISE [get_timing_arcs -to $f -filter {TYPE == "setup"}]] \
+                        [get_property PRIMITIVE_TYPE $c] \
+                    ]
+                    lappend hdl [list \
+                        [get_property DELAY_SLOW_MIN_RISE [get_timing_arcs -to $f -filter {TYPE == "hold"}]] \
+                        [get_property PRIMITIVE_TYPE $c] \
+                    ]
+# Highlights an issue with 'all_fanout -endpoints_only' above
+#                } else {
+#                    puts "WARNING in '[lindex [info level 0] 0]': '$f' given as a timing endpoint when it is not sequential."
+                }
             }
             # All values in the list tend to be the same
             dict set setupdelays $p [max_delay $sdl]
@@ -466,6 +480,7 @@ proc get_setup_hold_times {ports} {
     return $portdelays
 }
 
+
 # Verify the hold and setup times supplied at parameters match the synthesised design's expected hold
 # and setup times. Note this check can only be done *after* synthesis when the timing arcs are
 # available, hence this is a check after the fact rather than a value extraction for constraints before
@@ -475,7 +490,10 @@ proc get_setup_hold_times {ports} {
 #
 # Usage: check_setup_hold_times $tsus $ths 1
 #
+# Return: the number of warnings
+#
 proc check_setup_hold_times {setup_time hold_time {verbose 0} {design synth_1}} {
+    set warn 0
     set times        [get_setup_hold_times [all_inputs]]
     set setup_design [max_delay [dict values [dict get $times setup]]]
     set hold_design  [max_delay [dict values [dict get $times hold]]]
@@ -489,6 +507,7 @@ proc check_setup_hold_times {setup_time hold_time {verbose 0} {design synth_1}} 
     set hdp [lindex $hold_design 1]
     if {$sdd != $setup_time} {
         puts "WARNING in '[lindex [info level 0] 0]': Specified setup time '$setup_time ns' does not match output ports' maximum setup time of '$sdd ns' on a '$sdp' primtive."
+        incr warn
     } else {
         if {$verbose} {
             puts "INFO in '[lindex [info level 0] 0]': Specified setup time matches output ports' maximum setup time of '$sdd ns' on a '$sdp' primtive."
@@ -496,20 +515,115 @@ proc check_setup_hold_times {setup_time hold_time {verbose 0} {design synth_1}} 
     }
     if {$hdd != $hold_time} {
         puts "WARNING in '[lindex [info level 0] 0]': Specified hold time '$hold_time ns' does not match input ports' maximum hold time of '$hdd ns' on a '$hdp' primtive."
+        incr warn
     } else {
         if {$verbose} {
             puts "INFO in '[lindex [info level 0] 0]': Specified hold time matches input ports' maximum hold time of '$hdd ns' on a '$hdp' primtive."
         }
     }
+    return $warn
 }
 
-# Check we have the sythesised design open, or perform synthesis. Then extract the timing for the
-# input and output ports against which the supplied parameters used in the constraints file will
-# be checked.
+
+# Each of these results drives a clock at a sequential primitive and hence must have a constraint to set up a
+# clock, e.g. 'create_clock'. This function provides a simple design check.
 #
-# Usage: synth_check_setup_hold_times $tsus $ths
+# Usage: design_clock_pins => { user_clks[user_clk_375] sys_ctrl_clk }
 #
-proc synth_check_setup_hold_times {tsus ths {synth synth_1} {jobs 6}} {
+proc design_clock_pins {} {
+    return [all_fanin -startpoints_only -flat [get_pins -of_objects [get_cells -hier -filter {IS_SEQUENTIAL}] -filter {IS_CLOCK}]]
+}
+
+
+# Perform a simple check that all clocks have been defined for this design.
+# Requires a design to be open, elaborated at least.
+#
+# Usage: check_design_clocks 1
+#
+# Return: the number of warnings
+#
+proc check_design_clocks {{verbose 0}} {
+    set warn 0
+    set clkports [design_clock_pins]
+    foreach clk $clkports {
+        set clk_name [get_clocks -quiet -of_objects $clk]
+        if {[llength $clk_name] > 0} {
+            if {$verbose} {
+                puts "INFO in '[lindex [info level 0] 0]': Clock port '[get_property SOURCE_PINS $clk_name]' has clock name '$clk_name' with period '[get_property PERIOD $clk_name] ns'."
+            }
+        } else {
+            puts "WARNING in '[lindex [info level 0] 0]': '$clk' is used to drive a clock without a clock constraint."
+            incr warn
+        }
+    }
+    return $warn
+}
+
+
+# Verify the input and output constraints for each port in the design. This must be run post
+# synthesis, i.e. not on an elaborated design.
+#
+# Usage: check_port_constraints 1
+#
+# Return: the number of warnings
+#
+# Sample output to the console:
+#
+# INFO in 'check_port_constraints': Input port 'sys_ctrl_aresetn' has delay set to 0.152 ns.
+# INFO in 'check_port_constraints': Input port 'sys_data_aresetn' has delay set to 0.152 ns.
+# INFO in 'check_port_constraints': Output port 'irq' has delay set to 0.439 ns.
+# INFO in 'check_port_constraints': Output port 'm_axi4_req[araddr][0]' has delay set to 0.439 ns.
+# INFO in 'check_port_constraints': Output port 'm_axi4_req[araddr][10]' has delay set to 0.439 ns.
+#
+proc check_port_constraints {{verbose 0}} {
+    set warn 0
+    # Cannot be a global as it does not exist as the time this function is called.
+    set script_name "auto_constrain_lib.tcl"
+
+    puts "--- Start port constraints verification by $script_name ---"
+    set input_ports [get_clock_for_input_ports [all_inputs]]
+    dict for {port data} $input_ports {
+        set dset [get_property INPUT_DELAY [get_timing_paths -from $port]]
+        if {$dset != ""} {
+            if {$verbose} {
+                puts "INFO in '[lindex [info level 0] 0]': Input port '$port' has delay set to [get_property INPUT_DELAY [get_timing_paths -from $port]] ns."
+            }
+        } else {
+            puts "WARNING in '[lindex [info level 0] 0]': Input port '$port' has no delay set."
+            incr warn
+        }
+    }
+
+    set output_ports [get_clock_for_output_ports [all_outputs]]
+    dict for {port data} $output_ports {
+        set dset [get_property OUTPUT_DELAY [get_timing_paths -to $port]]
+        if {$dset != ""} {
+            if {$verbose} {
+                puts "INFO in '[lindex [info level 0] 0]': Output port '$port' has delay set to [get_property OUTPUT_DELAY [get_timing_paths -to $port]] ns."
+            }
+        } else {
+            puts "WARNING in '[lindex [info level 0] 0]': Output port '$port' has no delay set."
+            incr warn
+        }
+    }
+
+    if {$warn == 0} {
+        puts "INFO in '[lindex [info level 0] 0]': No missing constraints found."
+    }
+
+    puts "---- End port constraints verification by $script_name ----"
+    return $warn
+}
+
+
+# Check we have the sythesised design open, or perform synthesis. Only then is it
+# possible to perform post synthesis checks for OOC setup.
+#
+# Usage: open_synth_design
+#
+# Return: the number of warnings
+#
+proc open_synth_design {{synth synth_1} {jobs 6}} {
     set d [current_design -quiet]
     set synth_run [get_runs $synth]
     set must_refesh [get_property NEEDS_REFRESH $synth_run]
@@ -531,35 +645,22 @@ proc synth_check_setup_hold_times {tsus ths {synth synth_1} {jobs 6}} {
     if {[llength $d] == 0} {
         open_run $synth -name $synth
     }
+}
+
+
+# Perform OOC synthesis setup checks. This will open a synthesised design if not already open.
+#
+# Usage: check_ooc_setup $tsus $ths 1
+#
+proc check_ooc_setup {tsus ths {verbose 0}} {
+    set warn 0
+    open_synth_design
     # Open a schematic of the basic design - The created window distracts from the TCL console where the result is printed.
     #report_timing_summary -delay_type min_max -report_unconstrained -check_timing_verbose -max_paths 10 -input_pins -routable_nets -name timing_synth
     # Check the TCL console for the printed results.
-    check_setup_hold_times $tsus $ths 1
-}
-
-
-# Each of these results drives a clock at a sequential primitive and hence must have a constraint to set up a
-# clock, e.g. 'create_clock'. This function provides a simple design check.
-#
-# Usage: design_clock_pins => { user_clks[user_clk_375] sys_ctrl_clk }
-#
-proc design_clock_pins {} {
-    return [all_fanin -startpoints_only -flat [get_pins -of_objects [get_cells -hier -filter {IS_SEQUENTIAL}] -filter {IS_CLOCK}]]
-}
-
-# Perform a simple check that all clocks have been defined for this design.
-# Requires a design to be open, elaborated at least.
-#
-# Usage: check_design_clocks
-#
-proc check_design_clocks {} {
-    set clkports [design_clock_pins]
-    foreach clk $clkports {
-        set clk_name [get_clocks -quiet -of_objects $clk]
-        if {[llength $clk_name] > 0} {
-            puts "INFO in '[lindex [info level 0] 0]': Clock port '[get_property SOURCE_PINS $clk_name]' has clock name '$clk_name' with period '[get_property PERIOD $clk_name] ns'."
-        } else {
-            puts "WARNING in '[lindex [info level 0] 0]': '$clk' is used to drive a clock without a clock definition."
-        }
-    }
+    incr warn [check_setup_hold_times $tsus $ths $verbose]
+    incr warn [check_design_clocks $verbose]
+    incr warn [check_port_constraints $verbose]
+    puts "INFO in '[lindex [info level 0] 0]': Number of warnings to address: $warn."
+    return $warn
 }
