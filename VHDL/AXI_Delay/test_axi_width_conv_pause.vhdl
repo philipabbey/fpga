@@ -7,7 +7,7 @@
 --
 -- Test the data width conversion with pause mechanism for an AXI Data Stream.
 --
--- P A Abbey, 24 February 2022
+-- P A Abbey, 24 February 2023
 --
 -------------------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ begin
       s_axi_valid <= '0';
       wait_rndr_ticks(clk, 0.25);
       s_axi_valid <= '1';
-      s_axi_data  <= std_logic_vector(to_unsigned((i+1) mod 256, m_axi_data'length) & to_unsigned((i mod 256), m_axi_data'length));
+      s_axi_data  <= std_logic_vector(to_unsigned((i+1) mod 256, m_axi_data'length) & to_unsigned(i mod 256, m_axi_data'length));
       wait_nf_ticks(clk, 1);
       wait_until(s_axi_ready, '1');
       wait_nr_ticks(clk, 1);

@@ -7,10 +7,7 @@
 --
 -- A data width converter with pause mechanism for an AXI Data Stream.
 --
--- Reference: Register ready signals in low latency, zero bubble pipeline
---            https://www.itdev.co.uk/blog/pipelining-axi-buses-registered-ready-signals
---
--- P A Abbey, 24 February 2022
+-- P A Abbey, 24 February 2023
 --
 -------------------------------------------------------------------------------------
 
