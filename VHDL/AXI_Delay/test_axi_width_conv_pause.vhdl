@@ -5,13 +5,13 @@
 --
 -------------------------------------------------------------------------------------
 --
--- Test the pause mechanism for an AXI Data Stream.
+-- Test the data width conversion with pause mechanism for an AXI Data Stream.
 --
--- P A Abbey, 1 April 2022
+-- P A Abbey, 24 February 2022
 --
 -------------------------------------------------------------------------------------
 
-entity test_axi_pause is
+entity test_axi_width_conv_pause is
 end entity;
 
 
@@ -21,29 +21,25 @@ library ieee;
 library local;
   use local.testbench_pkg.all;
 
-architecture test of test_axi_pause is
+architecture test of test_axi_width_conv_pause is
 
-  constant data_width_c : positive := 16;
-  constant max_loops_c  : positive := 128;
+  constant max_loops_c : positive := 512;
 
   signal clk          : std_logic;
-  signal s_axi_data   : std_logic_vector(data_width_c-1 downto 0) := (others => '0');
-  signal s_axi_valid  : std_logic                                 := '0';
-  signal s_axi_ready  : std_logic                                 := '0';
-  signal enable       : std_logic                                 := '1';
-  signal m_axi_data   : std_logic_vector(data_width_c-1 downto 0) := (others => '0');
-  signal m_axi_valid  : std_logic                                 := '0';
-  signal m_axi_ready  : std_logic                                 := '0';
+  signal s_axi_data   : std_logic_vector(15 downto 0) := (others => '0');
+  signal s_axi_valid  : std_logic                     := '0';
+  signal s_axi_ready  : std_logic                     := '0';
+  signal enable       : std_logic                     := '1';
+  signal m_axi_data   : std_logic_vector( 7 downto 0) := (others => '0');
+  signal m_axi_valid  : std_logic                     := '0';
+  signal m_axi_ready  : std_logic                     := '0';
 
 begin
 
   clkgen : clock(clk, 10 ns);
 
 
-  axi_delay_i : entity work.axi_pause 
-    generic map (
-      data_width_g => data_width_c
-    )
+  axi_delay_i : entity work.axi_width_conv_pause 
     port map (
       clk         => clk,
       s_axi_data  => s_axi_data,
@@ -81,11 +77,11 @@ begin
       s_axi_valid <= '0';
       wait_rndr_ticks(clk, 0.25);
       s_axi_valid <= '1';
-      s_axi_data  <= std_logic_vector(to_unsigned(i, s_axi_data'length));
+      s_axi_data  <= std_logic_vector(to_unsigned((i+1) mod 256, m_axi_data'length) & to_unsigned((i mod 256), m_axi_data'length));
       wait_nf_ticks(clk, 1);
       wait_until(s_axi_ready, '1');
       wait_nr_ticks(clk, 1);
-      i := i + 1;
+      i := i + 2;
     end loop;
     s_axi_valid <= '0';
     wait_nr_ticks(clk, 1);
@@ -107,8 +103,8 @@ begin
       m_axi_ready <= '1';
       wait_nf_ticks(clk, 1);
       wait_until(m_axi_valid, '1');
-      if to_integer(unsigned(m_axi_data)) /= i then
-        report "Incorrect data read, expected: " & integer'image(i) & " got: " & integer'image(to_integer(unsigned(m_axi_data)));
+      if to_integer(unsigned(m_axi_data)) /= (i mod 256) then
+        report "Incorrect data read, expected: " & integer'image(i mod 256) & " got: " & integer'image(to_integer(unsigned(m_axi_data)));
         tests_passed := false;
       end if;
       wait_nr_ticks(clk, 1);

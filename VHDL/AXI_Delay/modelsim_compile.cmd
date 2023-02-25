@@ -36,7 +36,9 @@ vcom -quiet -2008 ^
   %SRC%\axi_delay_mixed.vhdl ^
   %SRC%\test_axi_delay_mixed.vhdl ^
   %SRC%\axi_pause.vhdl ^
-  %SRC%\test_axi_pause.vhdl
+  %SRC%\test_axi_pause.vhdl ^
+  %SRC%\axi_width_conv_pause.vhdl ^
+  %SRC%\test_axi_width_conv_pause.vhdl
 set ec=%ERRORLEVEL%
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.

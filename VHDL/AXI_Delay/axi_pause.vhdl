@@ -25,10 +25,10 @@ entity axi_pause is
     clk         : in  std_logic;
     s_axi_data  : in  std_logic_vector(data_width_g-1 downto 0);
     s_axi_valid : in  std_logic;
-    s_axi_ready : out std_logic := '0';
+    s_axi_ready : out std_logic                                 := '0';
     enable      : in  std_logic;
     m_axi_data  : out std_logic_vector(data_width_g-1 downto 0) := (others => '0');
-    m_axi_valid : out std_logic := '0';
+    m_axi_valid : out std_logic                                 := '0';
     m_axi_ready : in  std_logic
   );
 end entity;
