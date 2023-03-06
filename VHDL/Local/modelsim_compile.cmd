@@ -28,7 +28,7 @@ if exist local (
 )
 
 vlib local
-vmap local ./local
+vmap local %DEST:\=/%/local
 vcom -quiet -2008 -work local ^
   %SRC%\math_pkg.vhdl ^
   %SRC%\lfsr_pkg.vhdl ^

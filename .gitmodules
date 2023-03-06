@@ -1,0 +1,3 @@
+[submodule "VHDL/OsvvmLibraries"]
+	path = VHDL/OsvvmLibraries
+	url = https://github.com/osvvm/OsvvmLibraries

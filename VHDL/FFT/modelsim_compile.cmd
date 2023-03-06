@@ -27,9 +27,8 @@ if exist work (
   vdel -modelsimini .\modelsim.ini -all
 )
 
-vmap floatfixlib %SIM%\libraries\ieee_proposed
-vmap ieee_proposed %SIM%\libraries\ieee_proposed
-vmap local %SIM%\libraries\local
+rem Convert back slashes to forward slashes
+vmap others %SIM:\=/%/libraries/modelsim.ini
 vlib work
 vcom -quiet -2008 ^
   %SRC%\fft_real_pkg.vhdl ^

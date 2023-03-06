@@ -38,6 +38,7 @@ architecture test of test_testbench is
   signal reset         : std_ulogic                     := '0';
   signal enable        : std_ulogic                     := '0';
   signal data_random   : std_ulogic_vector(31 downto 0) := (others => '0');
+  signal int_random    : integer                        := 0;
   signal test_sig      : std_ulogic_vector(test_cnt_t'range);
   signal test_cnt_low  : test_cnt_t                     := (others => 0);
   signal test_cnt_high : test_cnt_t                     := (others => 0);
@@ -98,18 +99,26 @@ begin
     -- Expect to see 'X's from before the reset
     wait_nr_ticks(clk, 1);
     -- Initialise the inputs
-    enable <= '0';
+    enable      <= '0';
     data_random <= (others => '0');
     wait_nr_ticks(clk, 1);
     toggle_r(reset, clk, 2);
 
     wait_nr_ticks(clk, 1);
-    enable <= '1';
+    enable      <= '1';
     data_random <= random_vector(data_random'length);
     wait_nr_ticks(clk, 1);
     data_random <= random_vector(data_random'length);
     wait_nr_ticks(clk, 1);
     data_random <= random_vector(data_random'length);
+    wait_nr_ticks(clk, 1);
+
+    int_random <= random_integer(5, 10);
+    wait_nr_ticks(clk, 1);
+    int_random <= random_integer(-5, 0);
+    wait_nr_ticks(clk, 1);
+    int_random <= random_integer(-2, 2);
+    wait_nr_ticks(clk, 1);
 
     wait_absolute_time(terminal_time);
     if (now = terminal_time) then

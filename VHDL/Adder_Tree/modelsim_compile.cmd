@@ -27,7 +27,8 @@ if exist work (
   vdel -modelsimini .\modelsim.ini -all
 )
 
-vmap local %SIM%\libraries\local
+rem Convert back slashes to forward slashes
+vmap others %SIM:\=/%/libraries/modelsim.ini
 vlib work
 vcom -quiet -2008 ^
   %SRC%\adder_tree_pkg.vhdl ^

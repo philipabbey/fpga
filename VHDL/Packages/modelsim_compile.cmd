@@ -32,7 +32,6 @@ if not exist modelsim.ini (
   vmap -c
 )
 
-rem vmap local %SIM%/libraries/local
 vlib work
 vcom -quiet -2008 ^
   %SRC%\prot_type_pkg.vhdl ^

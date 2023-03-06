@@ -224,6 +224,13 @@ package testbench_pkg is
   );
 
 
+  -- Generate a random number within an integer range.
+  --
+  -- Usage:
+  --   data_int <= random_integer(5, 10);
+  --
+  impure function random_integer(min, max : integer) return integer;
+
   -- Generate a vector with randomly allocated '0's and '1's returning a
   -- std_ulogic_vector.
   --
@@ -570,6 +577,12 @@ package body testbench_pkg is
     end loop;
     wait;
   end procedure;
+
+
+  impure function random_integer(min, max : integer) return integer is
+  begin
+    return min + integer(round(rndgen.random * real(max - min)));
+  end function;
 
 
   impure function random_vector(width : natural) return std_ulogic_vector is
