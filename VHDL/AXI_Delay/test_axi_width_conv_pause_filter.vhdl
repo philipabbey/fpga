@@ -24,7 +24,7 @@ library local;
 
 architecture test of test_axi_width_conv_pause_filter is
 
-  constant max_loops_c : positive := 512;
+  constant max_loops_c : positive := 2048;
 
   signal clk           : std_logic;
   signal s_axi_data    : std_logic_vector(15 downto 0) := (others => '0');
@@ -104,7 +104,6 @@ begin
 
       s_axi_byte_en <= be;
       wait_nf_ticks(clk, 1);
---      wait_until(s_axi_ready, '1');
       loop
         if s_axi_ready = '1' then
           exit;
