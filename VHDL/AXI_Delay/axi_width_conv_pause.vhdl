@@ -30,7 +30,8 @@ end entity;
 
 architecture rtl of axi_width_conv_pause is
 
-  signal s_half : std_logic := '0'; -- Second half of input data?
+  -- We're processing the first half of the input word and hence about to process the second half
+  signal s_half : std_logic := '0';
 
 begin
 
