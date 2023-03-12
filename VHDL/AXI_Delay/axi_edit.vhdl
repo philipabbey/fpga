@@ -5,7 +5,7 @@
 --
 -------------------------------------------------------------------------------------
 --
--- A pause mechanism for an AXI Data Stream.
+-- A generalised edit mechanism for an AXI Data Stream.
 --
 -- Reference: Register ready signals in low latency, zero bubble pipeline
 --            https://www.itdev.co.uk/blog/pipelining-axi-buses-registered-ready-signals
@@ -29,6 +29,7 @@ entity axi_edit is
     s_axi_ready : out std_logic                                 := '0';
     alt_data    : in  std_logic_vector(data_width_g-1 downto 0);
     alt_valid   : in  std_logic                                 := '0';
+    alt_ready   : out std_logic                                 := '0';
     m_axi_data  : out std_logic_vector(data_width_g-1 downto 0) := (others => '0');
     m_axi_valid : out std_logic                                 := '0';
     m_axi_wr    : in  std_logic                                 := '1';
@@ -43,8 +44,10 @@ begin
   with to_bitvector(s_axi_rd & m_axi_wr) select
     s_axi_ready <= '0'                            when "00", -- Pause
                    '0'                            when "01", -- Insert
-                   '1'                            when "10", -- Drop
+                   m_axi_ready                    when "10", -- Drop
                    m_axi_ready or not m_axi_valid when "11"; -- Pass / Swap
+
+  alt_ready <= m_axi_ready or not m_axi_valid;
 
   process(clk)
   begin
@@ -58,13 +61,15 @@ begin
           end if;
 
         when "01" => -- Insert, need alt_valid
-          if m_axi_ready = '1' and alt_valid = '1' then
+          if alt_ready = '1' and alt_valid = '1' then
             m_axi_data  <= alt_data;
-            m_axi_valid <= '1';
           end if;
+          m_axi_valid <= alt_valid;
 
         when "10" => -- Drop
+          if m_axi_ready = '1' or m_axi_valid = '0' then
             m_axi_valid <= '0';
+          end if;
 
         when "11" => -- Pass / Swap, dependent on alt_valid
           if m_axi_ready = '1' or m_axi_valid = '0' then
