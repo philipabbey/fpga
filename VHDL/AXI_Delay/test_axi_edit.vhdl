@@ -20,10 +20,9 @@ end entity;
 
 library ieee;
   use ieee.std_logic_1164.all;
-  use ieee.numeric_std.all;
+  use ieee.numeric_std_unsigned.to_stdlogicvector;
 library osvvm;
   context osvvm.OsvvmContext;
---  use osvvm.ScoreboardPkg_slv.all;
 library osvvm_axi4;
   context osvvm_axi4.AxiStreamContext;
 
@@ -376,8 +375,8 @@ begin
     sb <= osvvm.ScoreboardPkg_slv.NewID("AXI_Data");
     WaitForBarrier(TestStart);
     -- Make sure each Tx has been used before setting the TRANSMIT_VALID_DELAY_CYCLES option.
-    SendAsync(StreamTxRec,  std_logic_vector(to_unsigned(0, data_width_c)), opconv(pass) & '0');
-    Send     (StreamAltRec, std_logic_vector(to_unsigned(0, data_width_c)), opconv(pass) & '0');
+    SendAsync(StreamTxRec,  to_stdlogicvector(0, data_width_c), opconv(pass) & '0');
+    Send     (StreamAltRec, to_stdlogicvector(0, data_width_c), opconv(pass) & '0');
 
     loop
       opi := GetRandPoint(edit_cov);
@@ -395,26 +394,26 @@ begin
           WaitForClock(clk, rand.RandInt(1, 3));
 
         when insert =>
-          alt_data_v := std_logic_vector(to_unsigned(j, data_width_c));
+          alt_data_v := to_stdlogicvector(j, data_width_c);
           j          := j - 1;
           osvvm.ScoreboardPkg_slv.Push(sb, alt_data_v);
           Send(StreamAltRec, alt_data_v, opconv(op) & '0');
 
         when drop =>
-          axi_data_v := std_logic_vector(to_unsigned(i, data_width_c));
+          axi_data_v := to_stdlogicvector(i, data_width_c);
           i          := i + 1;
           Send(StreamTxRec, axi_data_v, opconv(op) & '0');
 
         when pass =>
-          axi_data_v := std_logic_vector(to_unsigned(i, data_width_c));
+          axi_data_v := to_stdlogicvector(i, data_width_c);
           i          := i + 1;
           osvvm.ScoreboardPkg_slv.Push(sb, axi_data_v);
           Send(StreamTxRec, axi_data_v, opconv(op) & '0');
 
         when swap =>
-          alt_data_v := std_logic_vector(to_unsigned(j, data_width_c));
+          alt_data_v := to_stdlogicvector(j, data_width_c);
           j          := j - 1;
-          axi_data_v := std_logic_vector(to_unsigned(i, data_width_c));
+          axi_data_v := to_stdlogicvector(i, data_width_c);
           i          := i + 1;
           osvvm.ScoreboardPkg_slv.Push(sb, alt_data_v);
           SendAsync(StreamTxRec,  axi_data_v, opconv(op) & '0');
