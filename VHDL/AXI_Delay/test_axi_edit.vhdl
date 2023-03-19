@@ -29,7 +29,7 @@ library osvvm_axi4;
 
 architecture test of test_axi_edit is
 
-  constant timeout              : time     := 36 us;
+  constant timeout              : time     := 16 us;
   constant data_width_c         : positive := 16;
   constant axi_tuser_width_tx_c : integer  := 2;
   constant axi_tuser_width_rx_c : integer  := 0;
@@ -48,17 +48,6 @@ architecture test of test_axi_edit is
     axi_op_t'pos(axi_op_t'low) to axi_op_t'pos(axi_op_t'high),
     axi_op_t'pos(axi_op_t'low) to axi_op_t'pos(axi_op_t'high)
   ) of natural;
-  -- Check each type of transition is covered, 5^2 = 25
-  -- {axi_op_t x axi_op_t}
-  --
-  constant trans_arr : trans_arr_t := (
-    --                       pass, pause, swap, drop, insert
-    axi_op_t'pos(pass)   => (  10,    10,   10,   10,   10 ),
-    axi_op_t'pos(pause)  => (  10,     2,    2,    2,    2 ),
-    axi_op_t'pos(swap)   => (  10,     2,    2,    2,    2 ),
-    axi_op_t'pos(drop)   => (  10,     2,    2,    2,    2 ),
-    axi_op_t'pos(insert) => (  10,     2,    2,    2,    2 )
-  );
 
   package axis_tx_pkg is new osvvm_axi4.AxiStreamGenericSignalsPkg
     generic map (
@@ -140,16 +129,6 @@ architecture test of test_axi_edit is
           return pass;
         end if;
 
-    end case;
-  end function;
-
-  function opconv(op : axi_op_t) return std_logic_vector is
-  begin
-    case op is
-      when pause       => return "00";
-      when insert      => return "01";
-      when pass | swap => return "11";
-      when drop        => return "10";
     end case;
   end function;
 
@@ -287,6 +266,18 @@ begin
       end if;
     end function;
 
+    -- Check each type of transition is covered, 5^2 = 25
+    -- {axi_op_t x axi_op_t}
+    --
+    constant trans_arr : trans_arr_t := (
+      --                       pass, pause, swap, drop, insert
+      axi_op_t'pos(pass)   => (  10,    10,   10,   10,   10 ),
+      axi_op_t'pos(pause)  => (  10,     2,    2,    2,    2 ),
+      axi_op_t'pos(swap)   => (  10,     2,    2,    2,    2 ),
+      axi_op_t'pos(drop)   => (  10,     2,    2,    2,    2 ),
+      axi_op_t'pos(insert) => (  10,     2,    2,    2,    2 )
+    );
+
   begin
     edit_cov  <= NewID("Edit AXI Stream");
     trans_cov <= NewID("All pair transitions");
@@ -300,11 +291,11 @@ begin
     SetAlertStopCount(FAILURE, 2);
 
     -- Edit actions
-    AddBins(edit_cov, "Pass  ", 10, GenBin(axi_op_t'pos(pass)));
-    AddBins(edit_cov, "Pause ", 10, GenBin(axi_op_t'pos(pause)));
-    AddBins(edit_cov, "Swap  ", 10, GenBin(axi_op_t'pos(swap)));
-    AddBins(edit_cov, "Drop  ", 10, GenBin(axi_op_t'pos(drop)));
-    AddBins(edit_cov, "Insert", 10, GenBin(axi_op_t'pos(insert)));
+    AddBins(edit_cov, "Pass  ", 200, GenBin(axi_op_t'pos(pass)));
+    AddBins(edit_cov, "Pause ", 100, GenBin(axi_op_t'pos(pause)));
+    AddBins(edit_cov, "Swap  ", 100, GenBin(axi_op_t'pos(swap)));
+    AddBins(edit_cov, "Drop  ", 100, GenBin(axi_op_t'pos(drop)));
+    AddBins(edit_cov, "Insert", 100, GenBin(axi_op_t'pos(insert)));
 
     -- Check each type of transition is covered, 5^2 = 25
     for i in axi_op_t'pos(axi_op_t'low) to axi_op_t'pos(axi_op_t'high) loop
@@ -320,13 +311,13 @@ begin
     end loop;
 
     -- AXI valid behaviour on transmitter (axis_tx)
-    AddBins(valid_cov, "Tx No Delay      ", 1, GenBin(0));
+    AddBins(valid_cov, "Tx No Delay      ", 2, GenBin(0));
     AddBins(valid_cov, "Tx 1 Clock Delay ", 3, GenBin(1));
     AddBins(valid_cov, "Tx 2 Clocks Delay", 1, GenBin(2));
 
     -- AXI ready behaviour on receiver (axis_rx)
-    AddCross(ready_cov, "Rx No Delay  ", 4, GenBin(0, 1), GenBin(0));
-    AddCross(ready_cov, "Rx Some Delay", 2, GenBin(0, 1), GenBin(1, 2));
+    AddCross(ready_cov, "Rx No Delay  ", 2, GenBin(0, 1), GenBin(0));
+    AddCross(ready_cov, "Rx Some Delay", 1, GenBin(0, 1), GenBin(1, 2));
     -- These don't appear in the reports and I can't see where they might be used.
     SetItemBinNames(ready_cov, "Rx Ready Before Valid", "Rx Valid Delay");
 
@@ -370,6 +361,16 @@ begin
     variable axi_data_v : std_logic_vector(axis_tx_pkg.TData'range);
     variable alt_data_v : std_logic_vector(axis_alt_pkg.TData'range);
 
+    function opconv(op : axi_op_t) return std_logic_vector is
+    begin
+      case op is
+        when pause       => return "00";
+        when insert      => return "01";
+        when pass | swap => return "11";
+        when drop        => return "10";
+      end case;
+    end function;
+
   begin
     SetAlertLogName("AXI Edit Coverage");
     sb <= osvvm.ScoreboardPkg_slv.NewID("AXI_Data");
@@ -391,7 +392,7 @@ begin
       case op is
 
         when pause =>
-          WaitForClock(clk, rand.RandInt(3, 5));
+          WaitForClock(clk, rand.RandInt(1, 3));
 
         when insert =>
           alt_data_v := std_logic_vector(to_unsigned(j, data_width_c));

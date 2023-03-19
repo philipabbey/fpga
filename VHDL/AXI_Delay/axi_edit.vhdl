@@ -45,7 +45,6 @@ begin
     s_axi_ready <= '0'                            when "00", -- Pause
                    '0'                            when "01", -- Insert
                    m_axi_ready or not m_axi_valid when "10", -- Drop
-                   --          ^^^^^^^^^^^^^^^^^^ Condition only added for "ready before valid"
                    m_axi_ready or not m_axi_valid when "11"; -- Pass / Swap
 
   alt_ready <= m_axi_ready or not m_axi_valid;
@@ -65,13 +64,10 @@ begin
           if alt_ready = '1' and alt_valid = '1' then
             m_axi_data <= alt_data;
           end if;
-          if m_axi_ready = '1' or m_axi_valid = '0' then -- Condition only added for "ready before valid"
-            m_axi_valid <= alt_valid;
-          end if;
+          m_axi_valid <= alt_valid;
 
         when "10" => -- Drop
           if m_axi_ready = '1' or m_axi_valid = '0' then
---          if s_axi_valid = '1' then
             m_axi_valid <= '0';
           end if;
 
