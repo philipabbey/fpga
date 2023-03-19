@@ -44,7 +44,8 @@ begin
   with to_bitvector(s_axi_rd & m_axi_wr) select
     s_axi_ready <= '0'                            when "00", -- Pause
                    '0'                            when "01", -- Insert
-                   m_axi_ready                    when "10", -- Drop
+                   m_axi_ready or not m_axi_valid when "10", -- Drop
+                   --          ^^^^^^^^^^^^^^^^^^ Condition only added for "ready before valid"
                    m_axi_ready or not m_axi_valid when "11"; -- Pass / Swap
 
   alt_ready <= m_axi_ready or not m_axi_valid;
@@ -62,12 +63,15 @@ begin
 
         when "01" => -- Insert, need alt_valid
           if alt_ready = '1' and alt_valid = '1' then
-            m_axi_data  <= alt_data;
+            m_axi_data <= alt_data;
           end if;
-          m_axi_valid <= alt_valid;
+          if m_axi_ready = '1' or m_axi_valid = '0' then -- Condition only added for "ready before valid"
+            m_axi_valid <= alt_valid;
+          end if;
 
         when "10" => -- Drop
           if m_axi_ready = '1' or m_axi_valid = '0' then
+--          if s_axi_valid = '1' then
             m_axi_valid <= '0';
           end if;
 

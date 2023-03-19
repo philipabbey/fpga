@@ -30,6 +30,7 @@ rem )
 rem Convert back slashes to forward slashes
 vmap others %SIM:\=/%/libraries/modelsim.ini
 vlib work
+rem -suppress 1246 
 vcom -quiet -2008 ^
   %SRC%\axi_delay.vhdl ^
   %SRC%\test_axi_delay.vhdl ^
