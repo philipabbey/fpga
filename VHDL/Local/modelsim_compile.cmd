@@ -25,9 +25,9 @@ rem vlib needs to be execute from the local directory, limited command line swit
 cd /d %DEST%
 if exist local (
   vdel -lib local -modelsimini ./modelsim.ini -all
+  vlib local
 )
 
-vlib local
 vmap local %DEST:\=/%/local
 vcom -quiet -2008 -work local ^
   %SRC%\math_pkg.vhdl ^

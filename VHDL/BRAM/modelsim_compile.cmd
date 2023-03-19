@@ -25,11 +25,11 @@ cd /d %DEST%
 if exist work (
   echo Deleting old work directory
   vdel -modelsimini .\modelsim.ini -all
+  vlib work
 )
 
 rem Convert back slashes to forward slashes
 vmap others %SIM:\=/%/libraries/modelsim.ini
-vlib work
 vcom -quiet -2008 ^
   %SRC%\my_ram.vhdl
 set ec=%ERRORLEVEL%

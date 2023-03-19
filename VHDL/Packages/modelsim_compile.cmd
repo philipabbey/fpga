@@ -25,6 +25,7 @@ cd /d %DEST%
 if exist work (
   echo Deleting old work directory
   vdel -modelsimini .\modelsim.ini -all
+  vlib work
 )
 rem not required when using vmap later. Without this "vdel -modelsimini .\modelsim.ini" fails.
 if not exist modelsim.ini (
@@ -32,7 +33,6 @@ if not exist modelsim.ini (
   vmap -c
 )
 
-vlib work
 vcom -quiet -2008 ^
   %SRC%\prot_type_pkg.vhdl ^
   %SRC%\base_pkg.vhdl ^
