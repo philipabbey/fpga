@@ -41,11 +41,8 @@ end entity;
 architecture rtl of axi_edit is
 begin
 
-  with to_bitvector(s_axi_rd & m_axi_wr) select
-    s_axi_ready <= '0'                            when "00", -- Pause
-                   '0'                            when "01", -- Insert
-                   m_axi_ready or not m_axi_valid when "10", -- Drop
-                   m_axi_ready or not m_axi_valid when "11"; -- Pass / Swap
+  s_axi_ready <= '0' when s_axi_rd = '0' else    -- Pause + Insert
+                 m_axi_ready or not m_axi_valid; -- Drop + Pass / Swap
 
   alt_ready <= m_axi_ready or not m_axi_valid;
 
@@ -55,7 +52,7 @@ begin
 
       case to_bitvector(s_axi_rd & m_axi_wr) is
 
-        when "00" => -- Pause
+        when "00" | "10" => -- Pause + Drop
           if m_axi_ready = '1' or m_axi_valid = '0' then
             m_axi_valid <= '0';
           end if;
@@ -65,11 +62,6 @@ begin
             m_axi_data <= alt_data;
           end if;
           m_axi_valid <= alt_valid;
-
-        when "10" => -- Drop
-          if m_axi_ready = '1' or m_axi_valid = '0' then
-            m_axi_valid <= '0';
-          end if;
 
         when "11" => -- Pass / Swap, dependent on alt_valid
           if m_axi_ready = '1' or m_axi_valid = '0' then
