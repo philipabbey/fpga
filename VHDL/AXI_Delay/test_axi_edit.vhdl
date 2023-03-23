@@ -151,7 +151,7 @@ begin
     generic map (
       INIT_ID       => axis_tx_pkg.INIT_ID,
       INIT_DEST     => axis_tx_pkg.INIT_DEST,
-      INIT_USER     => "00", --axis_tx_pkg.INIT_USER,
+      INIT_USER     => axis_tx_pkg.INIT_USER,
       INIT_LAST     => 0,
       DEFAULT_DELAY => default_delay_c,
       tperiod_Clk   => clk_period_c
@@ -176,7 +176,7 @@ begin
     generic map (
       INIT_ID       => axis_tx_pkg.INIT_ID,
       INIT_DEST     => axis_tx_pkg.INIT_DEST,
-      INIT_USER     => "00", --axis_tx_pkg.INIT_USER,
+      INIT_USER     => axis_tx_pkg.INIT_USER,
       INIT_LAST     => 0,
       DEFAULT_DELAY => default_delay_c,
       tperiod_Clk   => clk_period_c
