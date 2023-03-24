@@ -7,8 +7,8 @@
 --
 -- A generalised edit mechanism for an AXI Data Stream.
 --
--- Reference: Register ready signals in low latency, zero bubble pipeline
---            https://www.itdev.co.uk/blog/pipelining-axi-buses-registered-ready-signals
+-- Reference: AXI Stream General Edit
+--            https://blog.abbey1.org.uk/index.php/technology/axi-stream-general-edit
 --
 -- P A Abbey, 2 March 2023
 --

@@ -280,7 +280,7 @@ begin
   begin
     edit_cov  <= NewID("Edit AXI Stream");
     trans_cov <= NewID("All pair transitions");
-    valid_cov <= NewID("Tx AXI Valid COverage");
+    valid_cov <= NewID("Tx AXI Valid Coverage");
     ready_cov <= NewID("Rx AXI Ready Coverage");
     wait for 0 ns;
     InitSeed(edit_cov,  seed_g);
@@ -433,9 +433,11 @@ begin
 
 
   sink : process
+
     variable before : natural range 0 to 1;
     variable delay  : natural range 0 to 2;
-    variable ignore : std_logic_vector(15 downto 0);
+    variable ignore : std_logic_vector(axis_rx_pkg.TData'range);
+
   begin
     WaitForBarrier(TestStart);
     -- Throw away the initial values.
@@ -465,40 +467,40 @@ begin
   silence : block
   begin
     -- NB. These must be applied to "external signals", not Stream*Rec at this level or they have no effect
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType >>.Rdy            <= 0;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType >>.Operation      <= NOT_DRIVEN;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType >>.DataToModel    <= (others => '0');
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType >>.ParamToModel   <= (others => '0');
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType >>.DataFromModel  <= (others => '0');
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType >>.IntToModel     <= 0;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType >>.BoolToModel    <= false;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType >>.BoolFromModel  <= false;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType >>.TimeToModel    <= 0 ns;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType >>.TimeFromModel  <= 0 ns;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType >>.Options        <= 0;
+    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.Rdy            <= 0;
+    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.Operation      <= NOT_DRIVEN;
+    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.DataToModel    <= (others => '0');
+    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.ParamToModel   <= (others => '0');
+    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.DataFromModel  <= (others => '0');
+    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.IntToModel     <= 0;
+    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.BoolToModel    <= false;
+    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.BoolFromModel  <= false;
+    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.TimeToModel    <= 0 ns;
+    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.TimeFromModel  <= 0 ns;
+    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.Options        <= 0;
 
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType >>.Rdy           <= 0;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType >>.Operation     <= NOT_DRIVEN;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType >>.DataToModel   <= (others => '0');
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType >>.ParamToModel  <= (others => '0');
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType >>.DataFromModel <= (others => '0');
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType >>.IntToModel    <= 0;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType >>.BoolToModel   <= false;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType >>.BoolFromModel <= false;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType >>.TimeToModel   <= 0 ns;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType >>.TimeFromModel <= 0 ns;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType >>.Options       <= 0;
+    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.Rdy           <= 0;
+    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.Operation     <= NOT_DRIVEN;
+    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.DataToModel   <= (others => '0');
+    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.ParamToModel  <= (others => '0');
+    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.DataFromModel <= (others => '0');
+    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.IntToModel    <= 0;
+    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.BoolToModel   <= false;
+    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.BoolFromModel <= false;
+    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.TimeToModel   <= 0 ns;
+    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.TimeFromModel <= 0 ns;
+    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.Options       <= 0;
 
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType >>.Rdy            <= 0;
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType >>.Operation      <= NOT_DRIVEN;
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType >>.DataToModel    <= (others => '0');
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType >>.ParamToModel   <= (others => '0');
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType >>.DataFromModel  <= (others => '0');
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType >>.IntToModel     <= 0;
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType >>.BoolToModel    <= false;
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType >>.TimeToModel    <= 0 ns;
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType >>.TimeFromModel  <= 0 ns;
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType >>.Options        <= 0;
+    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.Rdy            <= 0;
+    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.Operation      <= NOT_DRIVEN;
+    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.DataToModel    <= (others => '0');
+    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.ParamToModel   <= (others => '0');
+    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.DataFromModel  <= (others => '0');
+    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.IntToModel     <= 0;
+    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.BoolToModel    <= false;
+    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.TimeToModel    <= 0 ns;
+    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.TimeFromModel  <= 0 ns;
+    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.Options        <= 0;
   end block;
 
 end architecture;
