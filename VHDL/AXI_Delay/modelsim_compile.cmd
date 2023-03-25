@@ -22,11 +22,11 @@ if not exist %DEST% (
 )
 rem vlib needs to be execute from the local directory, limited command line switches.
 cd /d %DEST%
-if exist work (
-  echo Deleting old work directory
-  vdel -modelsimini .\modelsim.ini -all
-  vlib work
-)
+rem if exist work (
+rem   echo Deleting old work directory
+rem   vdel -modelsimini .\modelsim.ini -all
+rem   vlib work
+rem )
 
 rem Convert back slashes to forward slashes
 vmap others %SIM:\=/%/libraries/modelsim.ini
@@ -43,7 +43,10 @@ vcom -quiet -2008 ^
   %SRC%\axi_width_conv_pause_filter.vhdl ^
   %SRC%\test_axi_width_conv_pause_filter.vhdl ^
   %SRC%\axi_edit.vhdl ^
-  %SRC%\test_axi_edit.vhdl
+  %SRC%\test_axi_edit.vhdl ^
+  %SRC%\protocol_edit.vhdl ^
+  %SRC%\ScoreboardPkg_char.vhdl ^
+  %SRC%\test_protocol_edit.vhdl
 set ec=%ERRORLEVEL%
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
