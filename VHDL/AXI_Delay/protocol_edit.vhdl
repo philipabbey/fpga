@@ -7,8 +7,11 @@
 --
 -- Demonstrator for editing a protocol in a stream of bytes sent over AXI.
 --
--- Reference: AXI Stream General Edit
---            https://blog.abbey1.org.uk/index.php/technology/axi-stream-general-edit
+-- References:
+--  1. AXI Stream Protocol Editing
+--     https://blog.abbey1.org.uk/index.php/technology/axi-stream-protocol-editing
+--  2. AXI Stream General Edit
+--     https://blog.abbey1.org.uk/index.php/technology/axi-stream-general-edit
 --
 -- P A Abbey, 24 March 2023
 --
@@ -34,6 +37,8 @@ library work;
   use work.char_utils_pkg.all;
 
 architecture rtl of protocol_edit is
+
+  constant debug_c : boolean := false;
 
   type axi_op_t is (
     pass,
@@ -72,8 +77,6 @@ architecture rtl of protocol_edit is
   signal alt_ready   : std_logic                    := '0';
   signal state       : state_t                      := readip;
   signal axi_op      : axi_op_t                     := pass;
-  signal consumed    : std_logic                    := '0';
-  signal awked_wr    : std_logic                    := '0';
   signal pass_input  : std_logic                    := '1';
 
   -- Convert the readable enumberated type to the values required to drive signals:
@@ -136,16 +139,6 @@ begin
   process(clk)
   begin
     if rising_edge(clk) then
-
-      consumed <= '0';
-      if alt_ready = '1'and alt_valid = '1' then
-        awked_wr <= '1';
-      end if;
-
-      awked_wr <= '0';
-      if s_axi_ready = '1' and s_axi_valid = '1' then
-        consumed <= '1';
-      end if;
 
       case state is
 
@@ -386,5 +379,32 @@ begin
       end case;
     end if;
   end process;
+
+
+  debug : if debug_c generate
+
+    signal consumed : std_logic := '0';
+    signal awked_wr : std_logic := '0';
+
+  begin
+
+    process(clk)
+    begin
+      if rising_edge(clk) then
+
+        awked_wr <= '0';
+        if alt_ready = '1'and alt_valid = '1' then
+          awked_wr <= '1';
+        end if;
+
+        consumed <= '0';
+        if s_axi_ready = '1' and s_axi_valid = '1' then
+          consumed <= '1';
+        end if;
+
+      end if;
+    end process;
+
+  end generate;
 
 end architecture;

@@ -8,6 +8,12 @@
 -- Test for the demonstrator for editing a protocol in a stream of bytes sent over
 -- AXI.
 --
+-- References:
+--  1. AXI Stream Protocol Editing
+--     https://blog.abbey1.org.uk/index.php/technology/axi-stream-protocol-editing
+--  2. AXI Stream General Edit
+--     https://blog.abbey1.org.uk/index.php/technology/axi-stream-general-edit
+--
 -- P A Abbey, 24 March 2023
 --
 -------------------------------------------------------------------------------------
@@ -40,7 +46,7 @@ architecture test of test_protocol_edit is
   constant clk_period_c         : time     := 10 ns;
   constant default_delay_c      : time     := 1 ps;
   -- Set to true to remove AXI timing and see the pattern of processing more clearly
-  constant fast_forward_c       : boolean  := false; 
+  constant fast_forward_c       : boolean  := false;
 
   package axis_tx_pkg is new osvvm_axi4.AxiStreamGenericSignalsPkg
     generic map (
