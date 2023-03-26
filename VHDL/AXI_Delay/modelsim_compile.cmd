@@ -22,11 +22,11 @@ if not exist %DEST% (
 )
 rem vlib needs to be execute from the local directory, limited command line switches.
 cd /d %DEST%
-rem if exist work (
-rem   echo Deleting old work directory
-rem   vdel -modelsimini .\modelsim.ini -all
-rem   vlib work
-rem )
+if exist work (
+  echo Deleting old work directory
+  vdel -modelsimini .\modelsim.ini -all
+  vlib work
+)
 
 rem Convert back slashes to forward slashes
 vmap others %SIM:\=/%/libraries/modelsim.ini
