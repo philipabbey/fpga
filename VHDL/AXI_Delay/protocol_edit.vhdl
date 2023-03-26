@@ -5,7 +5,7 @@
 --
 -------------------------------------------------------------------------------------
 --
--- Demonstartor for editing a protocol in a stream of bytes sent over AXI.
+-- Demonstrator for editing a protocol in a stream of bytes sent over AXI.
 --
 -- Reference: AXI Stream General Edit
 --            https://blog.abbey1.org.uk/index.php/technology/axi-stream-general-edit
@@ -29,6 +29,9 @@ entity protocol_edit is
   );
 end entity;
 
+
+library work;
+  use work.char_utils_pkg.all;
 
 architecture rtl of protocol_edit is
 
@@ -85,23 +88,6 @@ architecture rtl of protocol_edit is
       when pass   => return "110";
       when swap   => return "111";
     end case;
-  end function;
-
-  -- ASCII character conversion utility
-  --
-  function char2vec(c : character) return std_logic_vector is
-  begin
-    return ieee.numeric_std_unsigned.to_stdlogicvector(character'pos(c), 8);
-  end function;
-
-  -- ASCII character conversion utility
-  --
-  function vec2char(s : std_logic_vector) return character is
-  begin
-    assert s'length = 8
-      report "Error: vec2char() must be passed an 8-bit vector."
-      severity failure;
-    return character'val(ieee.numeric_std_unsigned.to_integer(s));
   end function;
 
 begin
@@ -224,8 +210,9 @@ begin
 
               -- Test 4b. Insert a character, after R
               when 'R' =>
-                axi_op <= pass;
-                state  <= ins4b;
+                axi_op     <= pass;
+                pass_input <= '0';
+                state      <= ins4b;
 
               -- Test 5a. Insert sequence, before character S
               when 'S' =>
@@ -342,7 +329,8 @@ begin
           end if;
 
         when ins4b =>
-          if s_axi_ready = '1' and s_axi_valid = '1' then
+          -- The input AXI register delay is currently stalled. Wait for the take, not for the next input.
+          if delay_ready = '1' and delay_valid = '1' then
             axi_op   <= insert;
             alt_data <= char2vec('y');
             state    <= readip;

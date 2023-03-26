@@ -44,6 +44,7 @@ vcom -quiet -2008 ^
   %SRC%\test_axi_width_conv_pause_filter.vhdl ^
   %SRC%\axi_edit.vhdl ^
   %SRC%\test_axi_edit.vhdl ^
+  %SRC%\char_utils_pkg.vhdl ^
   %SRC%\protocol_edit.vhdl ^
   %SRC%\ScoreboardPkg_char.vhdl ^
   %SRC%\test_protocol_edit.vhdl
