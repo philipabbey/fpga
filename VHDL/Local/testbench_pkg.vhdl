@@ -241,6 +241,7 @@ package testbench_pkg is
 
 
   -- The seed for the current state of the random number generator.
+  -- NB. Defaults to (1, 1)
   type seeds_t is array(0 to 1) of positive;
 
 
