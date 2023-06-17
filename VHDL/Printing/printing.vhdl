@@ -28,6 +28,14 @@ library std;
 
 architecture test of printing_tb is
 
+  procedure print(s : string) is
+    variable l : line;
+  begin
+    write(l, s);
+    writeline(output, l);
+  end procedure;
+
+
 --  procedure print(s1, s2 : string) is
 --    variable l : line;
 --  begin
@@ -41,6 +49,7 @@ architecture test of printing_tb is
 --    );
 --    writeline(output, l);
 --  end procedure;
+
 
   procedure print(s1, s2 : string) is
     variable l : line;
@@ -73,7 +82,7 @@ architecture test of printing_tb is
   -- Create a string from a real in non-normalised scientific form. That means the significand or
   -- mantissa does not need to be a value between 1 and 10. This is convenient when wanting to display
   -- real values as strings in an ISO unit, typically where the exponent is -9, -6, -3, 0, 3, 6 etc,
-  -- i.e in engineering notation. But this function is more general in that it works for any exponent.
+  -- i.e. in engineering notation. But this function is more general in that it works for any exponent.
   --
   function to_scientific(
     value  : real;
