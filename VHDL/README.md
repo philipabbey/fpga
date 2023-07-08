@@ -121,7 +121,7 @@ Polynomial division for any polynomial for any number of bits work per clock cyc
 VHDL solutions I keep searching the Internet for, so I've created a crib.
 
 ### References:
- * [A Crib For Formatting Strings in VHDL](https://blog.abbey1.org.uk/index.php/technology/a-crib-for-formatting-strings-in-vhdl#fixed-point-numbers)
+ * [A Crib For Formatting Strings in VHDL](https://blog.abbey1.org.uk/index.php/technology/a-crib-for-formatting-strings-in-vhdl)
 
 
 ## Report CDC
