@@ -25,6 +25,8 @@ library ieee;
   use ieee.math_complex.all;
 library std;
   use std.textio.all;
+library ieee_proposed;
+  use ieee_proposed.fixed_pkg.all;
 
 architecture test of printing_tb is
 
@@ -125,9 +127,11 @@ architecture test of printing_tb is
 begin
 
   process
-    variable r   : real := 3.141592653589793238e-4;
+    variable r   : real                         := 3.141592653589793238e-4;
     variable slv : std_logic_vector(7 downto 0) := "10110101";
-    variable c   : complex := (1.2345, -1.2345);
+    variable c   : complex                      := (1.2345, -1.2345);
+    variable uf  : ufixed(15 downto -16)        := to_ufixed( 4.1, 15, -16);
+    variable sf  : sfixed(15 downto -16)        := to_sfixed(-4.1, 15, -16);
   begin
 
     -- Printing real
@@ -162,7 +166,20 @@ begin
     -- # scientific exp= 3: 0.0012e+03
     -- # scientific exp= 4: 0.0001e+04
 
-    -- printing time
+    print("ufixed 1:", to_string(uf));
+    -- #          ufixed 1: 0000000000000100.0001100110011010
+    print("ufixed 2:", to_string(to_real(uf), "%.2g"));
+    -- #          ufixed 2: 4.1
+    print("ufixed 3:", to_string(to_real(uf), 7));
+    -- #          ufixed 3: 4.1000061
+    print("sfixed 1:", to_string(sf));
+    -- #          sfixed 1: 1111111111111011.1110011001100110
+    print("sfixed 2:", to_string(to_real(sf), "%.2g"));
+    -- #          sfixed 2: -4.1
+    print("sfixed 3:", to_string(to_real(sf), 7));
+    -- #          sfixed 3: -4.1000061
+
+    -- Printing time
     print("time 1:", to_string(12.5 ns, ps));
     -- #            time 1: 12500 ps
 

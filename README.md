@@ -1,6 +1,6 @@
 # FPGA Projects
 
-These projects are typically explained through a [personal blog site](http://blog.abbey1.org.uk/index.php/technology/).
+These projects are typically explained through a [personal blog site](https://blog.abbey1.org.uk/index.php/technology/).
 
 ## VHDL
 

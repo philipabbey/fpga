@@ -54,8 +54,8 @@ rem  15 = SystemVerilog assertions using local variable (Verilog)
 
 rem Turn off the warning about null ranges as this is expected.
 vlib ieee_proposed
-vmap floatfixlib ./ieee_proposed
-vmap ieee_proposed ./ieee_proposed
+vmap floatfixlib %DEST:\=/%/ieee_proposed
+vmap ieee_proposed %DEST:\=/%/ieee_proposed
 rem Must use VHDL-1993 not VHDL-2008
 vcom -quiet -93 -nowarn 3 -work ieee_proposed ^
   %SRC%\fixed_float_types_c.vhd ^

@@ -11,7 +11,7 @@ This is not the place for being an authority on clock domain crossing techniques
 
 Instead here I'm concerned with making it easy to get familiar with someone else's HDL code, perhaps where there is some doubt over the safety of some of the cross clock domain signals. To do this I wanted a better way to visualise which clock domain each register was in based on the clock name on the clock pin. So I decided to try using a facility in Vivado where gates can be either or both 'highlighted' or 'marked'. Highlighted seemed to give the best results, here are a few to see if you are convinced about this sort of visualisation technique.
 
-Please read the blog post [Visualising Clock Domain Crossings in Vivado](http://blog.abbey1.org.uk/index.php/technology/visualising-clock-domain-crossings-in-vivado) to explain how the code works in detail.
+Please read the blog post [Visualising Clock Domain Crossings in Vivado](https://blog.abbey1.org.uk/index.php/technology/visualising-clock-domain-crossings-in-vivado) to explain how the code works in detail.
 
 ## Execution
 
@@ -45,4 +45,4 @@ You will need to create a Vivado project with both:
 * [transfer.vhdl](transfer.vhdl)
 * [ooc.tcl](ooc.tcl)
 
-Please read the blog post [Verification of Cross Clock Domain Timing Constraints and Exceptions](http://blog.abbey1.org.uk/index.php/technology/verification-of-clock-domain-crossing-timing-constraints-and-exceptions) for an explanation of how to amend the commented constraints in [ooc.xdc](ooc.xdc) to trial the methods proposed, and enter the TCL commands in Vivado to test their effect.
+Please read the blog post [Verification of Cross Clock Domain Timing Constraints and Exceptions](https://blog.abbey1.org.uk/index.php/technology/verification-of-clock-domain-crossing-timing-constraints-and-exceptions) for an explanation of how to amend the commented constraints in [ooc.xdc](ooc.xdc) to trial the methods proposed, and enter the TCL commands in Vivado to test their effect.

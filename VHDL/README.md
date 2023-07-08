@@ -6,7 +6,7 @@ The source code for various investigations.
  * Working with AXI data streams, buffering and pausing.
 
 ### References:
- * [Working With AXI Streaming Data](http://blog.abbey1.org.uk/index.php/technology/working-with-axi-streaming-data#references)
+ * [Working With AXI Streaming Data](https://blog.abbey1.org.uk/index.php/technology/working-with-axi-streaming-data#references)
 
 
 ## Adder Tree
@@ -19,8 +19,8 @@ The source code for various investigations.
 Build an adder tree structure for any number of operands to be summed. But does the recursive adder tree provide any advantage? Verified by comparing with two other FIR Filter implementations.
 
 ### References:
- * [Adder Trees Pipelined Efficiently by Recursion](http://blog.abbey1.org.uk/index.php/technology/adder-trees-pipelined-efficiently-by-recursion)
- * [FIR Filter Implementation Comparisons](http://blog.abbey1.org.uk/index.php/technology/fir-filter-implementation-comparisons)
+ * [Adder Trees Pipelined Efficiently by Recursion](https://blog.abbey1.org.uk/index.php/technology/adder-trees-pipelined-efficiently-by-recursion)
+ * [FIR Filter Implementation Comparisons](https://blog.abbey1.org.uk/index.php/technology/fir-filter-implementation-comparisons)
 
 
 ## BRAM
@@ -29,7 +29,7 @@ Build an adder tree structure for any number of operands to be summed. But does 
 Testing Vivado's large BlockRAM inferrencing and how and when it uses cascading.
 
 ### References:
- * [Cascade Block RAMs for Larger Memories](http://blog.abbey1.org.uk/index.php/technology/cascade-block-rams-for-larger-memories)
+ * [Cascade Block RAMs for Larger Memories](https://blog.abbey1.org.uk/index.php/technology/cascade-block-rams-for-larger-memories)
 
 
 ## Comparator
@@ -42,7 +42,7 @@ Testing Vivado's large BlockRAM inferrencing and how and when it uses cascading.
 Produce both fast and efficient very large comparators of _n_-bit vectors.
 
 ### References:
- * [Large Comparators Pipelined Efficiently by Recursion](http://blog.abbey1.org.uk/index.php/technology/large-comparator-pipelined-efficiently-by-recursion)
+ * [Large Comparators Pipelined Efficiently by Recursion](https://blog.abbey1.org.uk/index.php/technology/large-comparator-pipelined-efficiently-by-recursion)
 
 
 ## Fast Fourier Transform (FFT)
@@ -55,7 +55,7 @@ Produce both fast and efficient very large comparators of _n_-bit vectors.
 Generalise the VHDL implementation to a multi-radix 'Radix-*n*' *p*-Point FFT where '*n*' and '*p*' are positive integer generics to the entity.
 
 ### References:
- * [Large Comparators Pipelined Efficiently by Recursion](http://blog.abbey1.org.uk/index.php/technology/radix-n-fast-fourier-transforms)
+ * [Large Comparators Pipelined Efficiently by Recursion](https://blog.abbey1.org.uk/index.php/technology/radix-n-fast-fourier-transforms)
 
 
 ## Fixed Point Arithmetic Libraries (`sfixed`)
@@ -67,7 +67,7 @@ Generalise the VHDL implementation to a multi-radix 'Radix-*n*' *p*-Point FFT wh
 VHDL-2008 has added types `sfixed` and `ufixed` for fixed point arithmetic, but you may struggle to use them with older tools. Here's how to fix that.
 
 ### References:
- * [Compiling VHDL For The Missing Fixed And Floating Point Libraries](http://blog.abbey1.org.uk/index.php/technology/compiling-vhdl-for-the-missing-fixed-and-floating)
+ * [Compiling VHDL For The Missing Fixed And Floating Point Libraries](https://blog.abbey1.org.uk/index.php/technology/compiling-vhdl-for-the-missing-fixed-and-floating)
 
 
 ## LFSR
@@ -79,7 +79,7 @@ VHDL-2008 has added types `sfixed` and `ufixed` for fixed point arithmetic, but 
 Substituting _Linear Feedback Shift Register_ (LFSR) counters for synchronous counter equivalents to avoid the carry chain delay. The polynomial used for the LFSR is automatically selected based on the required maximum count value.
 
 ### References:
- * [Swapping Synchronous and LFSR Counters](http://blog.abbey1.org.uk/index.php/technology/swapping-synchronous-and-lfsr-counters)
+ * [Swapping Synchronous and LFSR Counters](https://blog.abbey1.org.uk/index.php/technology/swapping-synchronous-and-lfsr-counters)
 
 
 ## Local
@@ -109,7 +109,19 @@ Simple examples of working with VHDL-2008 packages. How close to inheritance-lie
 Polynomial division for any polynomial for any number of bits work per clock cycle. Useful for calculating (for example) CRCs on byte-wide data.
 
 ### References:
- * [Bus-width Polynomial Division Logic](http://blog.abbey1.org.uk/index.php/technology/bus-width-polynomial-division-logic)
+ * [Bus-width Polynomial Division Logic](https://blog.abbey1.org.uk/index.php/technology/bus-width-polynomial-division-logic)
+
+
+## Printing
+
+### Themes:
+ * Testing
+
+### Description
+VHDL solutions I keep searching the Internet for, so I've created a crib.
+
+### References:
+ * [A Crib For Formatting Strings in VHDL](https://blog.abbey1.org.uk/index.php/technology/a-crib-for-formatting-strings-in-vhdl#fixed-point-numbers)
 
 
 ## Report CDC
@@ -133,4 +145,4 @@ VHDL code to illustrate a number of incorrect clock domain crossing topologies i
 Familiarisation with VHDL-2008 "_External Signals_" and ModelSim "_Signal Spies_". Trying to understand some superficial explanations.
 
 ### References:
- * [Comparison of ModelSim 'Signal Spies' and VHDL 'External Signals'](http://blog.abbey1.org.uk/index.php/technology/comparison-of-modelsim-signal-spies-and-vhdl-external)
+ * [Comparison of ModelSim 'Signal Spies' and VHDL 'External Signals'](https://blog.abbey1.org.uk/index.php/technology/comparison-of-modelsim-signal-spies-and-vhdl-external)

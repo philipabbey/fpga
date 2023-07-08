@@ -4,7 +4,7 @@ A few solutions and options to manipulating AXI data streams.
 
 Please read the following blog posts for an explanation:
 
-* [Working With AXI Streaming Data](http://blog.abbey1.org.uk/index.php/technology/working-with-axi-streaming-data)
+* [Working With AXI Streaming Data](https://blog.abbey1.org.uk/index.php/technology/working-with-axi-streaming-data)
 * [AXI Data Stream Width Conversion](https://blog.abbey1.org.uk/index.php/technology/axi-data-stream-width-conversion)
 * [AXI Stream General Edit](https://blog.abbey1.org.uk/index.php/technology/axi-stream-general-edit)
 
