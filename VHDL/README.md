@@ -146,3 +146,15 @@ Familiarisation with VHDL-2008 "_External Signals_" and ModelSim "_Signal Spies_
 
 ### References:
  * [Comparison of ModelSim 'Signal Spies' and VHDL 'External Signals'](https://blog.abbey1.org.uk/index.php/technology/comparison-of-modelsim-signal-spies-and-vhdl-external)
+
+
+## XPM
+
+### Themes:
+ * Testing
+
+### Description
+Testing Xilinx Parameterized Macros (XPM).
+
+### References:
+ * [Exploring Xilinx XPM Memory](https://blog.abbey1.org.uk/index.php/technology/exploring-xilinx-xpm-memory)

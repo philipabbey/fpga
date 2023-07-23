@@ -36,26 +36,28 @@ vlog -quiet -work work "D:\Xilinx\Vivado\2019.1\data\verilog\src\glbl.v"
 rem ** Warning: A:\Philip\Work\VHDL\Public\VHDL\XPM/dpram_err.vhdl(xx): (vcom-1246) Range -1 downto 0 is null.
 rem The source of these is guarded by conditional tests for generated blocks, hence the error is suppressed below.
 
-rem  %SRC%/xpm_memory_pkg.vhdl ^
-rem  %SRC%/synth_dpram.vhdl
-
 vcom -quiet -2008 -work work -suppress 1246 ^
   %SRC%/dpram_1clk.vhdl ^
   %SRC%/test_dpram_1clk.vhdl ^
   %SRC%/dpram_2clk.vhdl ^
   %SRC%/test_dpram_2clk.vhdl ^
   %SRC%/dpram_err.vhdl ^
-  %SRC%/test_dpram_err.vhdl
+  %SRC%/test_dpram_err.vhdl ^
+  %SRC%/dpram_1clk_init.vhdl ^
+  %SRC%/test_dpram_1clk_init.vhdl
 set ec=%ERRORLEVEL%
+
+copy %SRC:/=\%\init.mem %DEST%
 
 if %ec% equ 0 (
   echo =================================================================
   echo Run the simulation with:
   echo.
   echo   cd {%DEST%}
-  echo   vsim -t 1ps work.test_dpram_1clk    or
-  echo   vsim -t 1ps work.test_dpram_2clk    or
-  echo   vsim -t 1ps work.test_dpram_err
+  echo   vsim -t 1ps work.test_dpram_1clk       or
+  echo   vsim -t 1ps work.test_dpram_2clk       or
+  echo   vsim -t 1ps work.test_dpram_err        or
+  echo   vsim -t 1ps work.test_dpram_1clk_init
   echo =================================================================
 )
 
