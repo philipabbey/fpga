@@ -193,10 +193,12 @@ begin
       BlankLine(1);
       WriteBin(gap_cov);
       BlankLine(1);
-      WriteBin(wr_sleep_cov);
-      BlankLine(1);
-      WriteBin(rd_sleep_cov);
-      BlankLine(1);
+      if sleepable then
+        WriteBin(wr_sleep_cov);
+        BlankLine(1);
+        WriteBin(rd_sleep_cov);
+        BlankLine(1);
+      end if;
       AlertIf(GetAffirmCount < 1, "Test is not Self-Checking.");
       AlertIf(GetAffirmCount < 2**tests_c(i).addr_bits, "Not all addresses have been verified.");
       EndOfTestReports;
