@@ -16,7 +16,7 @@
 #  * Specifying Boundary Timing Constraints in Vivado
 #    https://blog.abbey1.org.uk/index.php/technology/specifying-boundary-timing-constraints-in-vivado
 #  * Determining port clock domains for automating input and output constraints
-#    https://blog.abbey1.org.uk/index.php/technology/...
+#    https://blog.abbey1.org.uk/index.php/technology/determining-port-clock-domains-for-automating-input-and
 #
 # P A Abbey, 20 November 2022
 #
