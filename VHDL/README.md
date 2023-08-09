@@ -45,6 +45,15 @@ Produce both fast and efficient very large comparators of _n_-bit vectors.
  * [Large Comparators Pipelined Efficiently by Recursion](https://blog.abbey1.org.uk/index.php/technology/large-comparator-pipelined-efficiently-by-recursion)
 
 
+## Control Sets
+
+### Description
+Testing Vivado's control set remapping ability in order to increase packing density and reduce routing congestion.
+
+### References:
+ * [Practical Control Set Reduction](https://blog.abbey1.org.uk/index.php/technology/practical-control-set-reduction)
+
+
 ## Fast Fourier Transform (FFT)
 
 ### Themes:
