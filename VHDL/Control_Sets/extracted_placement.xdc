@@ -19,7 +19,7 @@
 # # width=4
 # #resize_pblock [get_pblocks pblock_1] -replace -add {SLICE_X36Y99:SLICE_X37Y100}
 # # width=128, way bigger than should be required
-# resize_pblock [get_pblocks pblock_1] -replace -add {SLICE_X36Y90:SLICE_X47Y102}
+# resize_pblock [get_pblocks pblock_1] -replace -add {SLICE_X36Y96:SLICE_X43Y99}
 
 # Manual placement into a single SliceL for width=4
 set_property BEL D5LUT [get_cells {shift_g.q[0]_i_1}]
