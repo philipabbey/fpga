@@ -37,7 +37,8 @@ set tcu 0.035
 # FDRE Setup Time (Setup_FDRE_C_D) in ns (Slow Process, max delay for Setup times)
 set tsus 0.367
 # FDRE Hold Time (Hold_FDRE_C_D) in ns (Slow Process, min delay for Hold times)
-set ths 0.218
+# After synthesis 0.218 ns, after implementation 0.216 - 0.255 ns
+set ths 0.255
 
 # Zynq Part: xc7z020clg484-1
 # FDRE Setup Time (Setup_FDRE_C_D) in ns (Slow Process, max delay for Setup times)
