@@ -13,5 +13,4 @@
 #
 #####################################################################################
 
-set_property EXTRACT_RESET  true [get_ports {reset}]
 set_property EXTRACT_ENABLE true [get_ports {ces[*]}]
