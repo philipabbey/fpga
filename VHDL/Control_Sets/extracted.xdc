@@ -13,4 +13,6 @@
 #
 #####################################################################################
 
-set_property EXTRACT_ENABLE true [get_ports {ces[*]}]
+# Not working on its own, needs -control_set_opt_threshold setting to be changed.
+#set_property EXTRACT_RESET  true [get_nets -of_objects [get_ports {reset}]]
+set_property EXTRACT_ENABLE true [get_nets -of_objects [get_ports {ces[*]}]]

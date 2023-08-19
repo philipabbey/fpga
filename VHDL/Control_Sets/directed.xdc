@@ -12,5 +12,5 @@
 #
 #####################################################################################
 
-set_property DIRECT_RESET  true [get_ports {reset}]
-set_property DIRECT_ENABLE true [get_ports {ces[*]}]
+set_property DIRECT_RESET  true [get_nets -of_objects [get_ports {reset}]]
+set_property DIRECT_ENABLE true [get_nets -of_objects [get_ports {ces[*]}]]
