@@ -75,8 +75,8 @@ architecture inferred of my_ram is
     -- 2D Array Declaration for RAM
     type ram_type is array((2**ram_addr_g)-1 downto 0) of std_logic_vector(ram_width_g-1 downto 0);
     -- Define RAM - Do not use VHDL Protected types for synthesis!
-    -- ERROR: [Synth 8-6750] Unsupported VHDL type protected. This is not suited for Synthesis [.../VHDL/BRAM/inferred_ram.vhdl:xx]
-    -- WARNING: [Synth 8-4747] shared variables must be of a protected type [.../VHDL/BRAM/inferred_ram.vhdl:xx]
+    -- ERROR: [Synth 8-6750] Unsupported VHDL type protected. This is not suited for Synthesis [.../inferred_ram.vhdl:xx]
+    -- WARNING: [Synth 8-4747] shared variables must be of a protected type [.../inferred_ram.vhdl:xx]
     shared variable ram : ram_type := (others => (others => '0'));
 
 begin
