@@ -117,7 +117,9 @@ package adder_tree_pkg is
   ) return positive;
 
 
-  -- Given an adder with a pair of input operands, calculate the number of coefficients to recurse with on the first input, with the remainder recurse on for the second input. The first half will be the larger half for an odd number of coefficients.
+  -- Given an adder with a pair of input operands, calculate the number of coefficients to recurse
+  -- with on the first input, with the remainder recurse on for the second input. The first half
+  -- will be the larger half for an odd number of coefficients.
   function first_adder_operands(
     constant num_operands : positive
   ) return positive;
