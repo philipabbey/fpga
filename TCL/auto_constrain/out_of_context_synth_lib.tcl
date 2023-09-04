@@ -65,7 +65,7 @@
 
 # Get the clock source of each cell in the supplied 'cells' list
 #
-# Usage: get_clock_port [get_selected_objects]
+# Usage: get_clock_port_of_registers [get_selected_objects]
 #
 # Returns: Each cell listed with its clock name and clock source port
 #          E.g. {{cell clock_name clock_port} {cell clock_name clock_port} ...}
@@ -122,8 +122,8 @@ proc get_clock_port_of_registers {cells} {
 # domain.
 #
 # Usage:
-#   get_clock_for_input_port [get_ports {port1 port2} -filter {DIRECTION == "IN"}]
-#   get_clock_for_input_port [all_inputs]
+#   get_clock_for_input_ports [get_ports {port1 port2} -filter {DIRECTION == "IN"}]
+#   get_clock_for_input_ports [all_inputs]
 #
 # Returns:
 #   {flags_in[0]} {{{flags_in_i_reg[0]} clk_src_nm clk_src}}
