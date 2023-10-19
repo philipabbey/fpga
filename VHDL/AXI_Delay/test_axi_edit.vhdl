@@ -464,43 +464,14 @@ begin
   -- # ** Warning: (vsim-8683) Uninitialized inout port /test_axi_edit/axis_tx/TransRec.DataToModel(15) has no driver.
   -- # This port will contribute value (U) to the signal network.
   --
-  silence : block
-  begin
-    -- NB. These must be applied to "external signals", not Stream*Rec at this level or they have no effect
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.Rdy            <= 0;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.Operation      <= NOT_DRIVEN;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.DataToModel    <= (others => '0');
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.ParamToModel   <= (others => '0');
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.DataFromModel  <= (others => '0');
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.IntToModel     <= 0;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.BoolToModel    <= false;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.BoolFromModel  <= false;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.TimeToModel    <= 0 ns;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.TimeFromModel  <= 0 ns;
-    <<signal .test_axi_edit.axis_tx.TransRec : StreamRecType>>.Options        <= 0;
-
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.Rdy           <= 0;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.Operation     <= NOT_DRIVEN;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.DataToModel   <= (others => '0');
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.ParamToModel  <= (others => '0');
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.DataFromModel <= (others => '0');
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.IntToModel    <= 0;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.BoolToModel   <= false;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.BoolFromModel <= false;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.TimeToModel   <= 0 ns;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.TimeFromModel <= 0 ns;
-    <<signal .test_axi_edit.axis_alt.TransRec : StreamRecType>>.Options       <= 0;
-
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.Rdy            <= 0;
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.Operation      <= NOT_DRIVEN;
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.DataToModel    <= (others => '0');
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.ParamToModel   <= (others => '0');
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.DataFromModel  <= (others => '0');
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.IntToModel     <= 0;
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.BoolToModel    <= false;
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.TimeToModel    <= 0 ns;
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.TimeFromModel  <= 0 ns;
-    <<signal .test_axi_edit.axis_rx.TransRec : StreamRecType>>.Options        <= 0;
-  end block;
+  OSVVM_Common.StreamTransactionPkg.ReleaseTransactionRecord(
+      << signal axis_tx.TransRec : OSVVM_Common.StreamTransactionPkg.StreamRecType >>
+  );
+  OSVVM_Common.StreamTransactionPkg.ReleaseTransactionRecord(
+      << signal axis_alt.TransRec : OSVVM_Common.StreamTransactionPkg.StreamRecType >>
+  );
+  OSVVM_Common.StreamTransactionPkg.ReleaseTransactionRecord(
+      << signal axis_rx.TransRec : OSVVM_Common.StreamTransactionPkg.StreamRecType >>
+  );
 
 end architecture;
