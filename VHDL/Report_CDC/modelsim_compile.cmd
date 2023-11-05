@@ -25,10 +25,10 @@ cd /d %DEST%
 if exist work (
   echo Deleting old work directory
   vdel -modelsimini .\modelsim.ini -all
-  vlib work
 )
 
 vmap xpm %SIM%/libraries/xpm
+vlib work
 vmap work ./work
 vcom -quiet -2008 -work work ^
   %SRC%/sync_reg.vhdl ^

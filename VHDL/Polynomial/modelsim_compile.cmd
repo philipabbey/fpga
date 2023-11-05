@@ -25,9 +25,10 @@ cd /d %DEST%
 if exist work (
   echo Deleting old work directory
   vdel -modelsimini .\modelsim.ini -all
-  vlib work
 )
 
+vlib work
+vmap work ./work
 rem Convert back slashes to forward slashes
 vmap others %SIM:\=/%/libraries/modelsim.ini
 vcom -quiet -2008 ^
