@@ -157,11 +157,13 @@ begin
       end if;
     end process;
 
+
     -- 'stable attribute requires a globally static parameter, i.e. 'dest_period_g * len_g' not a signal/variable like 'clk_period'.
     --    E.g. di_stbl <= di'stable(dest_period_g * len_g);
     -- We can recreate this from the measured 'clk_period' instead, NB. must not use a rising clock edge:
     di_dly_vec <= di & di_dly_vec(0 to di_dly_vec'high-1) after clk_period;
     di_stbl    <= (di_dly_vec(di_dly_vec'high) = di) and is_same(di_dly_vec);
+
 
     verify : process(clk_dest)
     begin

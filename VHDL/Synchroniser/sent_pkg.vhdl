@@ -7,14 +7,12 @@ package sent_pkg is
 
   type sent_t is record
     data  : std_logic_vector(width-1 downto 0);
-    delay : natural;
-    check : boolean;
+    delay : time;
   end record;
   
   constant sent_init_c : sent_t := (
     data  => (others => '0'),
-    delay => 0,
-    check => true
+    delay => 0 ns
   );
 
   function to_string(s : sent_t) return string;
@@ -35,7 +33,7 @@ package body sent_pkg is
 
   function to_string(s : sent_t) return string is
   begin
-    return "data: " & to_hstring(s.data) & " delay: " & to_string(s.delay) & " check: " & to_string(s.check);
+    return "data: 0x" & to_hstring(s.data) & " delay: " & to_string(s.delay, ns);
   end function;
 
 end package body;
