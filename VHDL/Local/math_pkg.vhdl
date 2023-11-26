@@ -68,6 +68,17 @@ package math_pkg is
   function trunc_ceil(r : real; d : natural) return integer;
 
 
+  -- Integer ceil(x/y), perform ceil() without using a conversion to real.
+  -- Ref: https://stackoverflow.com/questions/2745074/fast-ceiling-of-an-integer-division-in-c-c
+  --
+  -- Usage:
+  --   int_ceil_div(16,    10)    => 2
+  --   int_ceil_div(16 ns, 10 ns) => 2
+  --
+  function int_ceil_div(x, y : natural) return integer;
+  function int_ceil_div(x, y : time) return integer;
+
+
   -- Return the ceil(log(n, base)), i.e. round up the result of log(n, base).
   --
   function ceil_log(
@@ -140,6 +151,20 @@ package body math_pkg is
     constant exp : real := (1.0 * 10.0**d);
   begin
     return integer(ceil(trunc(r * exp) / exp));
+  end function;
+
+
+  -- Integer ceil(x/y)
+  function int_ceil_div(x, y : natural) return integer is
+  begin
+    -- (x + y - 1) / y, but to avoid overflow in x+y use:
+    return 1 + ((x - 1) / y);
+  end function;
+
+  function int_ceil_div(x, y : time) return integer is
+  begin
+    -- (x + y - 1 fs) / y, but to avoid overflow in x+y use:
+    return 1 + ((x - 1 fs) / y);
   end function;
 
 
