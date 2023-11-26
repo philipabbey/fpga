@@ -157,6 +157,18 @@ Familiarisation with VHDL-2008 "_External Signals_" and ModelSim "_Signal Spies_
  * [Comparison of ModelSim 'Signal Spies' and VHDL 'External Signals'](https://blog.abbey1.org.uk/index.php/technology/comparison-of-modelsim-signal-spies-and-vhdl-external)
 
 
+## Sychroniser
+
+### Themes:
+ * Testing
+
+### Description
+Implementing dynamic timing checks for a standard clock domain crossing solution.
+
+### References:
+ * [](https://blog.abbey1.org.uk/index.php/technology/)
+
+
 ## XPM
 
 ### Themes:
