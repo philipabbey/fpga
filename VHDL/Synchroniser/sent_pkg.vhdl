@@ -1,3 +1,16 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- Custom OSVVM scoreboard for test bench test_bus_data_valid_synch.
+--
+-- P A Abbey, 4 November 2023
+--
+-------------------------------------------------------------------------------------
+
 library ieee;
   use ieee.std_logic_1164.all;
 library osvvm;
