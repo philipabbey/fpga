@@ -21,7 +21,7 @@ package fft_real_pkg is
   type complex_vector       is array (integer range <>) of complex;
   type complex_vector_arr_t is array (integer range<>)  of complex_vector;
   type natural_vector       is array (integer range <>) of natural;
-  type natural_vector_arr_t is array (integer range<>)  of integer_vector;
+  type natural_vector_arr_t is array (integer range<>)  of natural_vector;
 
 
   -- Easiest illustrated through an example, here is the bit reversal of the indices of 8 values
@@ -141,6 +141,27 @@ end package;
 library local;
 
 package body fft_real_pkg is
+
+  -- Missing from Quartus Prime
+  function maximum(a, b : real) return real is
+  begin
+    if a > b then
+	   return a;
+    else
+	   return b;
+	 end if;
+  end function;
+
+  -- Missing from Quartus Prime
+  function minimum(a, b : real) return real is
+  begin
+    if a < b then
+	   return a;
+    else
+	   return b;
+	 end if;
+  end function;
+
 
   function bit_reverse (i : natural; bits : positive) return natural is
     variable tmp : unsigned(bits-1 downto 0) := to_unsigned(i, bits);
