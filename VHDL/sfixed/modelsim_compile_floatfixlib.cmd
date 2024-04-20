@@ -14,7 +14,8 @@ rem ----------------------------------------------------------------------------
 
 set SIM=%USERPROFILE%\ModelSim
 rem Batch file's directory where the source code is
-set SRC=D:\intelFPGA_lite\18.1\modelsim_ase\vhdl_src\floatfixlib
+rem set SRC=D:\intelFPGA_lite\18.1\modelsim_ase\vhdl_src\floatfixlib
+set SRC=C:\intelFPGA_lite\23.1std\questa_fse\vhdl_src\floatfixlib
 set DEST=%SIM%\libraries
 
 echo Compile Source:   %SRC%\*

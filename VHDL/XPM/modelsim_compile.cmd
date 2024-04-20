@@ -13,6 +13,7 @@ rem drop last character '\'
 set SRC=%SRC:~0,-1%
 set SRC=%SRC:\=/%
 set DEST=%SIM%\projects\XPM
+set OTHERS=%SIM%\libraries\modelsim.ini
 
 echo Compile Source:   %SRC%\*
 echo Into Destination: %DEST%
@@ -28,12 +29,11 @@ if exist work (
   vdel -modelsimini .\modelsim.ini -all
 )
 
-rem Convert back slashes to forward slashes
-vmap others %SIM:\=/%/libraries/modelsim.ini
+vmap others %OTHERS:\=/%
 vlib work
 vmap work ./work
-vlog -quiet -work work "D:\Xilinx\Vivado\2019.1\data\verilog\src\glbl.v"
-rem ** Warning: A:\Philip\Work\VHDL\Public\VHDL\XPM/dpram_err.vhdl(xx): (vcom-1246) Range -1 downto 0 is null.
+vlog -quiet -work work "C:\Xilinx\Vivado\2023.2\data\verilog\src\glbl.v"
+rem ** Warning: .../XPM/dpram_err.vhdl(xx): (vcom-1246) Range -1 downto 0 is null.
 rem The source of these is guarded by conditional tests for generated blocks, hence the error is suppressed below.
 
 vcom -quiet -2008 -work work -suppress 1246 ^

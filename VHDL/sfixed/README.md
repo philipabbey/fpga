@@ -7,7 +7,7 @@ Please read the blog post [Compiling VHDL For The Missing Fixed And Floating Poi
 ## Compilation
 
 1. Compile VHDL library [local](../Local) if you have not already done so.
-2. Compile the missing fixed point libraries with [modelsim_compile_sfixed.cmd](modelsim_compile_sfixed.cmd).
+2. Compile the missing fixed point libraries with [modelsim_compile_floatfixlib.cmd](modelsim_compile_floatfixlib.cmd).
 3. Run the [modelsim_compile.cmd](modelsim_compile.cmd) Windows batch file.
 
 Assumes the following directory already exists and hence will fail to compile if it does not. Amend to suit your needs.
@@ -16,7 +16,7 @@ Assumes the following directory already exists and hence will fail to compile if
 set SIM=%USERPROFILE%\ModelSim
 ```
 
-Additionally [modelsim_compile_sfixed.cmd](modelsim_compile_sfixed.cmd) requires you to supply the path to your local ModelSim installation.
+Additionally [modelsim_compile_floatfixlib.cmd](modelsim_compile_floatfixlib.cmd) requires you to supply the path to your local ModelSim installation.
 
 ```batch
 set SRC=<quartus install path>\modelsim_ase\vhdl_src\floatfixlib
