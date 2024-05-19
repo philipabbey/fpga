@@ -6,7 +6,14 @@ The source code for various investigations.
  * Working with AXI data streams, buffering and pausing.
 
 ### References:
- * [Working With AXI Streaming Data](https://blog.abbey1.org.uk/index.php/technology/working-with-axi-streaming-data#references)
+ * [Working With AXI Streaming Data](https://blog.abbey1.org.uk/index.php/technology/working-with-axi-streaming-data)
+
+
+## AXI Delay RAM
+ * Working with AXI data streams, interfacing XPM RAM as an AXI-S source with pipeling.
+
+### References:
+ * [Implementing an AXI-Streaming delay pipeline when reading data from XPM RAM](https://blog.abbey1.org.uk/index.php/technology/implementing-an-axi-streaming-delay-pipeline-when-reading)
 
 
 ## Adder Tree
