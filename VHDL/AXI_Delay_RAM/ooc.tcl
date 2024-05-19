@@ -31,20 +31,28 @@ set tcu 0.035
 # Maximum setup time of '0.242 ns' on a 'FLOP_LATCH.flop.FDRE' primtive.
 # Maximum hold  time of '0.161 ns' on a 'FLOP_LATCH.flop.FDRE' primtive.
 
-# !! Numbersa not right here, DOUBLE CHECK
+# BlockRAMs seem to mess up the automatic timing setup checks. In order to meet the hold time
+# of $txs below, we need to add 0.034 ns. Hence something needs amending in TCL
+# 'proc check_setup_hold_times'
+#
+# Clock path has a net delay 0.672 ns
+# Data  path has a net delay 0.638 ns
+# 0.672 - 0.638 = 0.034 ns
+# check_ooc_setup 0.479 [expr 0.343 + 0.034]
+set tsus 0.479
+set ths  [expr 0.343 + 0.034]
+# WARNING in 'check_setup_hold_times': Specified hold time '0.377 ns' does not match input ports' maximum hold time of '0.343 ns' on a 'BMEM.bram.RAMB18E1' primtive.
 
-# BlockRAMs seem to mess up the automatic timing setup checks 0.564 is extracted, but is then
-# WARNING in 'check_setup_hold_times': Specified hold time '0.598] ns' does not match input ports' maximum hold time of '0.564 ns' on a 'BMEM.bram.RAMB18E1' primtive.
-# Clock path has net delay 0.672
-# Data path has a net delay 0.641
-# 0.672 - 0.641 = 0.031, hence something needs amending in TCL 'proc check_setup_hold_times'
-# check_ooc_setup 0.624 [expr 0.564 + 0.034]
-#set ths  [expr 0.564 + 0.034]
-
-# Distributed RAMs have a different effect
-# 0.672 - 0.638 = 0.034
-set tsus 0.624
-set ths  [expr 0.564 + 0.048]
+# Distributed RAMs have a similar but different effect, in order to meet the hold time of $txs
+# below, we need to add 0.034 ns again.
+#
+# Clock path has a net delay 0.672 ns
+# Data  path has a net delay 0.638 ns
+# 0.672 - 0.638 = 0.034 ns
+# check_ooc_setup 0.410 [expr 0.578 + 0.034]
+#set tsus 0.410
+#set ths  [expr 0.578 + 0.034]
+# WARNING in 'check_setup_hold_times': Specified hold time '0.612 ns' does not match input ports' maximum hold time of '0.578 ns' on a 'DMEM.dram.RAM128X1D' primtive.
 
 # Choose these:
 #
