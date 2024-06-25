@@ -8,8 +8,7 @@
 -- AXI delay register with the first stage being an XPM RAM, using the second stage
 -- output registers as a second stage of AXI delay.
 --
--- Reference: ???
---            https://www.itdev.co.uk/blog/
+-- Reference: https://blog.abbey1.org.uk/index.php/technology/implementing-an-axi-streaming-delay-pipeline-when-reading
 --
 -- P A Abbey, 16 May 2024
 --
@@ -26,7 +25,6 @@ entity axi_delay_ram is
     port (
         clk          : in  std_logic;
         reset        : in  std_logic;
-        run          : in  std_logic;
         -- Port A to load and verify the RAM
         ram_addr     : in  std_logic_vector(ram_addr_width_g-1 downto 0);
         ram_wr_data  : in  std_logic_vector(ram_data_width_g-1 downto 0);
@@ -35,6 +33,7 @@ entity axi_delay_ram is
         ram_rd_data  : out std_logic_vector(ram_data_width_g-1 downto 0) := (others => '0');
         ram_rd_valid : out std_logic                                     := '0';
         -- Sequentially extracting data from the RAM
+        run          : in  std_logic;
         item_tdata   : out std_logic_vector(ram_data_width_g-1 downto 0) := (others => '0');
         item_tvalid  : out std_logic                                     := '0';
         item_tready  : in  std_logic -- Might need to reconsider naming convention, this is the external tready
