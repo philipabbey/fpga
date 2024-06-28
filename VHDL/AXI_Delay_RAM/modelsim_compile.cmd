@@ -32,9 +32,10 @@ vmap work ./work
 rem Convert back slashes to forward slashes
 vmap others %SIM:\=/%/libraries/modelsim.ini
 vcom -quiet -2008 -work work ^
+  %SRC%\axi_delay_iterator.vhdl ^
   %SRC%\axi_delay_ram.vhdl ^
+  %SRC%\test_axi_delay_iterator.vhdl ^
   %SRC%\test_delay_ram.vhdl
-rem   %SRC%\test_axi_delay_ram.vhdl
 set ec=%ERRORLEVEL%
 
 echo.
@@ -42,6 +43,7 @@ echo ========================================================
 echo To run the simulation in ModelSim:
 echo.
 echo   cd {%DEST%}
+echo   vsim work.test_axi_delay_iterator -voptargs="+acc" -t ps
 echo   vsim work.test_delay_ram -voptargs="+acc" -t ps
 echo.
 echo ========================================================
