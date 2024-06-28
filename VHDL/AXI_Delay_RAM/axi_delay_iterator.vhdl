@@ -17,7 +17,7 @@
 library ieee;
   use ieee.std_logic_1164.all;
 
-entity axi_delay_ram is
+entity axi_delay_iterator is
     generic (
         ram_addr_width_g : positive := 8;
         ram_data_width_g : positive := 16
@@ -46,17 +46,17 @@ library ieee;
 library xpm;
   use xpm.vcomponents.all;
 
-architecture rtl of axi_delay_ram is
+architecture rtl of axi_delay_iterator is
 
     -- RAM Pipeline
-    signal item_next_addr  : natural range 0 to (2**ram_addr_width_g)-1    := 0;
-    signal ram_rd_valid_i  : std_logic                                     := '0';
-    signal ram_int_dv      : std_logic                                     := '0'; -- RAM internal register stage
-    signal ram_int_rdy     : std_logic                                     := '0'; -- RAM internal register stage
-    signal item_next_data  : std_logic_vector(ram_data_width_g-1 downto 0) := (others => '0');
-    signal item_next_valid : std_logic                                     := '0';
-    signal item_next_rdy   : std_logic                                     := '0';
-    signal item_tready_i   : std_logic                                     := '0'; -- item_first/last ready
+    signal item_next_addr : natural range 0 to (2**ram_addr_width_g)-1    := 0;
+    signal ram_rd_valid_d : std_logic                                     := '0';
+    signal ram_int_dv     : std_logic                                     := '0'; -- RAM internal register stage
+    signal item_next_rdy  : std_logic                                     := '0'; -- RAM internal register stage
+    signal item_next_data : std_logic_vector(ram_data_width_g-1 downto 0) := (others => '0');
+    signal item_valid_i   : std_logic                                     := '0';
+    signal ram_int_rdy    : std_logic                                     := '0';
+    signal item_tready_i  : std_logic                                     := '0'; -- item_first/last ready
 
 begin
 
@@ -67,48 +67,48 @@ begin
     begin
         if rising_edge(clk) then
             -- RAM Port A
-            ram_rd_valid_i <= ram_rd_en;
-            ram_rd_valid   <= ram_rd_valid_i;
+            ram_rd_valid_d <= ram_rd_en;
+            ram_rd_valid   <= ram_rd_valid_d;
 
             -- RAM Port B
             -- First stage: BlockRAM pure delay single cycle lookup
-            if ram_int_rdy = '1' and run = '1' then
+            if item_next_rdy = '1' and run = '1' then
                 ram_int_dv <= '1';
                 if item_next_addr = (2**ram_addr_width_g)-1 then
                     item_next_addr <= 0;
                 else
                     item_next_addr <= item_next_addr + 1;
                 end if;
-            elsif item_next_rdy = '1' then
+            elsif ram_int_rdy = '1' then
                 ram_int_dv <= '0';
             end if;
 
             -- Second stage: BlockRAM registered outputs
-            if item_next_rdy = '1' then
-                item_next_valid <= ram_int_dv;
+            if ram_int_rdy = '1' then
+                item_valid_i <= ram_int_dv;
             end if;
 
-            -- Third stage: first/last in use
+            -- Third stage: Perhaps perform some data manipulation here before letting go, or remove this stage.
             if item_tready_i = '1' then
                 item_tdata  <= item_next_data;
-                item_tvalid <= item_next_valid;
+                item_tvalid <= item_valid_i;
             end if;
 
             if reset = '1' then
-                ram_rd_valid_i  <= '0';
-                ram_rd_valid    <= '0';
-                item_next_addr  <= 0;
-                ram_int_dv      <= '0';
-                item_next_valid <= '0';
-                item_tvalid     <= '0';
+                ram_rd_valid   <= '0';
+                ram_rd_valid_d <= '0';
+                item_next_addr <= 0;
+                ram_int_dv     <= '0';
+                item_valid_i   <= '0';
+                item_tvalid    <= '0';
             end if;
         end if;
     end process;
 
     -- First stage: BlockRAM pure delay single cycle lookup
-    ram_int_rdy   <= item_next_rdy or not ram_int_dv;
+    item_next_rdy   <= ram_int_rdy or not ram_int_dv;
     -- Second stage: BlockRAM registered outputs
-    item_next_rdy <= item_tready_i or not item_next_valid;
+    ram_int_rdy <= item_tready_i or not item_valid_i;
     -- Third stage: first/last in use
     item_tready_i <= item_tready or not item_tvalid;
 
@@ -187,14 +187,14 @@ begin
             addrb          => to_slv(item_next_addr, ram_addr_width_g), -- ADDR_WIDTH_B-bit input: Address for port B read operations.
             dinb           => (others => '0'),                          -- WRITE_DATA_WIDTH_B-bit input: Data input for port B write operations.
             doutb          => item_next_data,                           -- READ_DATA_WIDTH_B-bit output: Data output for port B read operations.
-            enb            => ram_int_rdy,                              -- 1-bit input: Memory enable signal for port B. Must be high on clock
+            enb            => item_next_rdy,                              -- 1-bit input: Memory enable signal for port B. Must be high on clock
                                                                         -- cycles when read operations are initiated. Pipelined internally.
             web            => "0",                                      -- WRITE_DATA_WIDTH_B/BYTE_WRITE_WIDTH_B-bit input: Write enable vector
                                                                         -- for port B input data port dinb. 1 bit wide when word-wide writes
                                                                         -- are used. In byte-wide write configurations, each bit controls the
                                                                         -- writing one byte of dinb to address addrb. For example, to
                                                                         -- synchronously write only bits [15-8] of dinb when WRITE_DATA_WIDTH_B
-            regceb         => item_next_rdy,                            -- 1-bit input: Clock Enable for the last register stage on the output
+            regceb         => ram_int_rdy,                              -- 1-bit input: Clock Enable for the last register stage on the output
                                                                         -- data path.
             sleep          => '0',                                      -- 1-bit input: sleep signal to enable the dynamic power saving feature.
             injectdbiterra => '0',                                      -- 1-bit input: Controls double bit error injection on input data when

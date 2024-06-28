@@ -11,7 +11,7 @@
 --
 -------------------------------------------------------------------------------------
 
-entity test_delay_ram is
+entity test_axi_delay_iterator is
   generic(
     seed_g : integer := 5
   );
@@ -26,9 +26,9 @@ library osvvm;
 library osvvm_axi4;
   context osvvm_axi4.AxiStreamContext;
 
-architecture test of test_delay_ram is
+architecture test of test_axi_delay_iterator is
 
-  constant timeout              : time     := 16 us;
+  constant timeout_c            : time     := 16 us;
   constant clk_period_c         : time     := 10 ns;
   constant default_delay_c      : time     :=  1 ps;
   constant ram_addr_width_c     : positive :=  5;
@@ -47,7 +47,6 @@ architecture test of test_delay_ram is
   begin
     rand.InitSeed(seed_g+1);
     for i in 0 to l-1 loop
-      -- Make this more interesting in due course
       ret(i) := to_slv(rand.RandInt(0, (2**ram_data_width_c)-1), ram_data_width_c);
     end loop;
     return ret;
@@ -109,7 +108,7 @@ begin
   );
 
 
-  axi_delay_ram_i : entity work.axi_delay_ram
+  axi_delay_ram_i : entity work.axi_delay_iterator
     generic map (
       ram_addr_width_g => ram_addr_width_c,
       ram_data_width_g => ram_data_width_c
@@ -174,9 +173,9 @@ begin
 
     WaitForBarrier(TestStart);
 
-    WaitForBarrier(TestDone, timeout);
+    WaitForBarrier(TestDone, timeout_c);
     WaitForClock(clk, 10);
-    AlertIf(now >= timeout, "Test finished due to timeout");
+    AlertIf(now >= timeout_c, "Test finished due to timeout");
     AlertIf(GetAffirmCount < 1, "Test is not Self-Checking");
 
     SetReportOptions (
@@ -287,7 +286,7 @@ begin
   -- # This port will contribute value (U) to the signal network.
   --
   OSVVM_Common.StreamTransactionPkg.ReleaseTransactionRecord(
-      << signal axis_rx.TransRec : OSVVM_Common.StreamTransactionPkg.StreamRecType >>
+    << signal axis_rx.TransRec : OSVVM_Common.StreamTransactionPkg.StreamRecType >>
   );
 
 end architecture;
