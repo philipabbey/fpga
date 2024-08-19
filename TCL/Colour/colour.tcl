@@ -18,9 +18,8 @@
 # Remove all highlighted colourings and marks for a blank canvas.
 #
 proc uncolor_registers {} {
-    set allcells [get_cells -hier *]
-    unhighlight_objects $allcells
-    unmark_objects $allcells
+    unhighlight_objects [get_highlighted_objects]
+    unmark_objects [get_marked_objects]
 }
  
 # Colourise just the currently selected objects, and mark the ASYNC_REG registers.
