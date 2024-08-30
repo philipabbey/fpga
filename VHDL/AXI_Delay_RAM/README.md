@@ -9,8 +9,8 @@ Please read the following blog posts for an explanation:
 
 ## Compilation
 
-2. Compile [OSVVM](../compile_osvvm.cmd).
-3. Run the [modelsim_compile.cmd](modelsim_compile.cmd) Windows batch file.
+1. Compile [OSVVM](../compile_osvvm.cmd).
+2. Run the [modelsim_compile.cmd](modelsim_compile.cmd) Windows batch file.
 
 Assumes the following directory already exists and hence will fail to compile if it does not. Amend to suit your needs.
 
