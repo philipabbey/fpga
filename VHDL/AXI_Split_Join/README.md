@@ -4,7 +4,7 @@ Working examples of how to split and join a pair of AXI Streams. Both the splitt
 
 Please read the following blog posts for an explanation:
 
-* [Blog Pending](https://blog.abbey1.org.uk/index.php/technology/)
+* [AXI-Stream Split & Join Components](https://blog.abbey1.org.uk/index.php/technology/axi-stream-split-join-components)
 
 
 ## Compilation

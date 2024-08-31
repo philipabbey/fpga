@@ -49,7 +49,9 @@ begin
 
   s_axi_ready  <= m1_axi_ready and m2_axi_ready;
 
+  -- synthesis translate_off
   -- NB. Invert this logic when using in an assert statement.
-  backpressure <= s_axi_valid and not s_axi_ready;
+  backpressure <= s_axi_valid and not s_axi_ready after 1 ps;
+  -- synthesis translate_on
 
 end architecture;

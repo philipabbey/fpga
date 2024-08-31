@@ -26,29 +26,32 @@ architecture test of test_axi_split_join is
   constant data_width_c  : positive := 16;
   constant max_loops_c   : positive := 128;
 
-  signal clk             : std_logic;
-  signal s_axi_data      : std_logic_vector(data_width_c-1 downto 0)   := (others => '0');
-  signal s_axi_valid     : std_logic                                   := '0';
-  signal s_axi_ready     : std_logic                                   := '0';
-  signal asad1_axi_data  : std_logic_vector(data_width_c-1 downto 0)   := (others => '0');
-  signal asad1_axi_valid : std_logic                                   := '0';
-  signal asad1_axi_ready : std_logic                                   := '0';
-  signal asad2_axi_data  : std_logic_vector(data_width_c-1 downto 0)   := (others => '0');
-  signal asad2_axi_valid : std_logic                                   := '0';
-  signal asad2_axi_ready : std_logic                                   := '0';
-  signal adaj1_axi_data  : std_logic_vector(data_width_c-1 downto 0)   := (others => '0');
-  signal adaj1_axi_valid : std_logic                                   := '0';
-  signal adaj_axi_ready : std_logic                                    := '0';
-  signal adaj2_axi_data  : std_logic_vector(data_width_c-1 downto 0)   := (others => '0');
-  signal adaj2_axi_valid : std_logic                                   := '0';
-  signal m_axi_data      : std_logic_vector(2*data_width_c-1 downto 0) := (others => '0');
-  signal m_axi_valid     : std_logic                                   := '0';
-  signal m_axi_ready     : std_logic                                   := '0';
+  signal clk               : std_logic;
+  signal s_axi_data        : std_logic_vector(data_width_c-1 downto 0)   := (others => '0');
+  signal s_axi_valid       : std_logic                                   := '0';
+  signal s_axi_ready       : std_logic                                   := '0';
+  signal asad1_axi_data    : std_logic_vector(data_width_c-1 downto 0)   := (others => '0');
+  signal asad1_axi_valid   : std_logic                                   := '0';
+  signal asad1_axi_ready   : std_logic                                   := '0';
+  signal asad2_axi_data    : std_logic_vector(data_width_c-1 downto 0)   := (others => '0');
+  signal asad2_axi_valid   : std_logic                                   := '0';
+  signal asad2_axi_ready   : std_logic                                   := '0';
+  signal adaj1_axi_data    : std_logic_vector(data_width_c-1 downto 0)   := (others => '0');
+  signal adaj1_axi_valid   : std_logic                                   := '0';
+  signal adaj_axi_ready    : std_logic                                   := '0';
+  signal adaj2_axi_data    : std_logic_vector(data_width_c-1 downto 0)   := (others => '0');
+  signal adaj2_axi_valid   : std_logic                                   := '0';
+  signal m_axi_data        : std_logic_vector(2*data_width_c-1 downto 0) := (others => '0');
+  signal m_axi_valid       : std_logic                                   := '0';
+  signal m_axi_ready       : std_logic                                   := '0';
+  signal backpressure_src  : std_logic;
+  signal backpressure_sink : std_logic;
 
 begin
 
   clkgen : clock(clk, 10 ns);
 
+  backpressure_src <= s_axi_valid and not s_axi_ready after 1 ps;
 
   axi_split_i : entity work.axi_split
     generic map (
@@ -69,7 +72,7 @@ begin
 
   axi_delay1 : entity work.axi_delay(simple)
     generic map (
-      delay_g      => 3,
+      delay_g      => 20,
       data_width_g => data_width_c
     )
     port map (
@@ -85,7 +88,7 @@ begin
 
   axi_delay2 : entity work.axi_delay(itdev)
     generic map (
-      delay_g      => 3,
+      delay_g      => 19,
       data_width_g => data_width_c
     )
     port map (
@@ -115,6 +118,7 @@ begin
       m_axi_ready  => m_axi_ready
     );
 
+  backpressure_sink <= m_axi_valid and not m_axi_ready after 1 ps;
 
   source : process
     variable i : natural := 1;
