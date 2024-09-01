@@ -7,8 +7,8 @@ Please read the blog post [Dynamic Timing Check For A Standard Clock Domain Cros
 
 2. Two synchronisers [taught by Doulos](https://www.doulos.com/webinars/on-demand/clock-domain-crossing/) coded and examined.
 
-1. CDC for Registers
-2. CDC for Counters
+   1. CDC for Registers
+   2. CDC for Counters
 
 Please read the blog post [Doulos Clock Domain Crossing Material](https://blog.abbey1.org.uk/index.php/technology/doulos-clock-domain-crossing-material) for an explanation of how the code works in detail.
 
