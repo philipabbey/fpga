@@ -34,16 +34,25 @@ vmap others %SIM:\=/%/libraries/modelsim.ini
 vcom -quiet -2008 ^
   %SRC%\bus_data_valid_synch.vhdl ^
   %SRC%\sent_pkg.vhdl ^
-  %SRC%\test_bus_data_valid_synch.vhdl
+  %SRC%\test_bus_data_valid_synch.vhdl ^
+  %SRC%\toggle_synchroniser.vhdl ^
+  %SRC%\test_toggle_synchroniser.vhdl ^
+  %SRC%\counter_synchroniser.vhdl ^
+  %SRC%\test_counter_synchroniser.vhdl ^
+  %SRC%\counter_synch_dut.vhdl ^
+  %SRC%\test_counter_synch_dut.vhdl
 set ec=%ERRORLEVEL%
 
 echo.
-echo =======================================================
+echo ==============================================================
 echo.
 echo   cd {%DEST%}
-echo   vsim -t ns work.test_bus_data_valid_synch
+echo   vsim work.test_bus_data_valid_synch -voptargs="+acc" -t ps
+echo   vsim work.test_toggle_synchroniser  -voptargs="+acc" -t ps
+echo   vsim work.test_counter_synchroniser -voptargs="+acc" -t ps
+echo   vsim work.test_counter_synch_dut    -voptargs="+acc" -t ps
 echo.
-echo =======================================================
+echo ==============================================================
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
 if not "%TERM_PROGRAM%"=="vscode" pause

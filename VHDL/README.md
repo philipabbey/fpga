@@ -177,10 +177,13 @@ Familiarisation with VHDL-2008 "_External Signals_" and ModelSim "_Signal Spies_
  * Testing
 
 ### Description
-Implementing dynamic timing checks for a standard clock domain crossing solution.
+
+1. Implementing dynamic timing checks for a standard clock domain crossing solution.
+2. Two synchronisers taught by Doulos coded and examined.
 
 ### References:
- * [](https://blog.abbey1.org.uk/index.php/technology/)
+ * [Dynamic Timing Check For A Standard Clock Domain Crossing Solution](https://blog.abbey1.org.uk/index.php/technology/dynamic-timing-check-for-a-standard-clock-domain)
+ * [Doulos Clock Domain Crossing Material](https://blog.abbey1.org.uk/index.php/technology/doulos-clock-domain-crossing-material)
 
 
 ## XPM
