@@ -161,14 +161,23 @@ VHDL code to illustrate a number of incorrect clock domain crossing topologies i
 
 ## Signal Spies
 
+### Themes:
+ * Testing
+ 
+### Description
+Familiarisation with VHDL-2008 "_External Signals_" and ModelSim "_Signal Spies_". Trying to understand some superficial explanations.
+
+### References:
+ * [Comparison of ModelSim 'Signal Spies' and VHDL 'External Signals'](https://blog.abbey1.org.uk/index.php/technology/comparison-of-modelsim-signal-spies-and-vhdl-external)
+
+
+## Speed Test
+
 ### Description
 A proposed method for checking attainable clock speeds comparatively and ability to achieve timing closure on different devices.
 
 ### References:
  * [Determining A Device's Maximum Clock Speed](https://blog.abbey1.org.uk/index.php/technology/determining-a-device-s-maximum-clock-speed)
-
-
-## Speed Test
 
 
 ## Sychroniser
