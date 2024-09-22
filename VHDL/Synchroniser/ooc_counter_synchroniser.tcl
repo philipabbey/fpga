@@ -8,6 +8,10 @@
 # Out of context constraints for 'toggle_synchroniser' synchroniser solution gleaned
 # from a Doulos training video
 #
+# References:
+#  * Doulos Clock Domain Crossing Material
+#    https://blog.abbey1.org.uk/index.php/technology/doulos-clock-domain-crossing-material
+#
 # P A Abbey, 31 August 2024
 #
 #####################################################################################

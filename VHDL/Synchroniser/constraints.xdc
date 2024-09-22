@@ -12,7 +12,8 @@
 #   set_property SCOPED_TO_REF bus_data_valid_synch [get_files constraints.xdc]
 #
 # References:
-#  * Blog yet to be writen
+#  * Dynamic Timing Check For A Standard Clock Domain Crossing Solution
+#    https://blog.abbey1.org.uk/index.php/technology/dynamic-timing-check-for-a-standard-clock-domain
 #
 # P A Abbey, 4 November 2023
 #
