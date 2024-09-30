@@ -11,7 +11,7 @@ rem Batch file's directory where the source code is
 set SRC=%~dp0
 rem drop last character '\'
 set SRC=%SRC:~0,-1%
-set DEST=%SIM%\libraries
+set DEST=%SIM%\vivado_23.1std
 
 echo Compile Source:   %SRC%\*
 echo Into Destination: %DEST%
