@@ -30,15 +30,24 @@ if exist work (
 vlib work
 vmap work ./work
 rem Convert back slashes to forward slashes
-vmap others %SIM:\=/%/libraries/modelsim.ini
+vmap others %SIM:\=/%/vivado_23.1std/modelsim.ini
+
+vlog -quiet -work work ^
+  %SRC%\ip\axis_broadcaster\gen\axis_broadcaster_sim_netlist.v ^
+  %SRC%\ip\axis_combiner\gen\axis_combiner_sim_netlist.v
 
 vcom -quiet -2008 -work work ^
+  %SRC%\ip\axis_broadcaster\gen\axis_broadcaster_sim_netlist.vhdl ^
+  %SRC%\ip\axis_combiner\gen\axis_combiner_sim_netlist.vhdl ^
   %SRC%\axi_split.vhdl ^
   %SRC%\axi_join.vhdl ^
+  %SRC%\..\AXI_Delay\axi_delay.vhdl ^
+  %SRC%\axi_split_join.vhdl ^
+  %SRC%\axi_split_join_ip.vhdl ^
   %SRC%\test_axi_split.vhdl ^
   %SRC%\test_axi_join.vhdl ^
-  %SRC%\..\AXI_Delay\axi_delay.vhdl ^
-  %SRC%\test_axi_split_join.vhdl
+  %SRC%\test_axi_split_join.vhdl ^
+  %SRC%\test_axi_split_join_ip.vhdl
 set ec=%ERRORLEVEL%
 
 echo.
@@ -46,9 +55,10 @@ echo ========================================================
 echo To run the simulation in ModelSim:
 echo.
 echo   cd {%DEST%}
-echo   vsim work.test_axi_split      -voptargs="+acc" -t ps
-echo   vsim work.test_axi_join       -voptargs="+acc" -t ps
-echo   vsim work.test_axi_split_join -voptargs="+acc" -t ps
+echo   vsim work.test_axi_split         -voptargs="+acc" -t ps
+echo   vsim work.test_axi_join          -voptargs="+acc" -t ps
+echo   vsim work.test_axi_split_join    -voptargs="+acc" -t ps
+echo   vsim work.test_axi_split_join_ip -voptargs="+acc" -t ps
 echo.
 echo ========================================================
 echo.

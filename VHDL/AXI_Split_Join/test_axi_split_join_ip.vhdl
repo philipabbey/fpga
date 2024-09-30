@@ -11,7 +11,7 @@
 --
 -------------------------------------------------------------------------------------
 
-entity test_axi_split_join is
+entity test_axi_split_join_ip is
 end entity;
 
 
@@ -21,12 +21,13 @@ library ieee;
 library local;
   use local.testbench_pkg.all;
 
-architecture test of test_axi_split_join is
+architecture test of test_axi_split_join_ip is
 
-  constant data_width_c  : positive := 16;
-  constant max_loops_c   : positive := 128;
+  constant data_width_c : positive := 16;
+  constant max_loops_c  : positive := 128;
 
   signal clk               : std_logic;
+  signal resetn            : std_logic := '1';
   signal s_axi_data        : std_logic_vector(data_width_c-1 downto 0)   := (others => '0');
   signal s_axi_valid       : std_logic                                   := '0';
   signal s_axi_ready       : std_logic                                   := '0';
@@ -42,12 +43,10 @@ begin
 
   backpressure_src <= s_axi_valid and not s_axi_ready after 1 ps;
 
-  dut : entity work.axi_split_join
-    generic map (
-      data_width_g => data_width_c
-    )
+  dut : entity work.axi_split_join_ip
     port map (
       clk         => clk,
+      resetn      => resetn,
       s_axi_data  => s_axi_data,
       s_axi_valid => s_axi_valid,
       s_axi_ready => s_axi_ready,
@@ -61,6 +60,10 @@ begin
   source : process
     variable i : natural := 1;
   begin
+    resetn <= '1';
+    wait_nr_ticks(clk, 4);
+    resetn <= '1';
+    wait_nr_ticks(clk, 4);
     s_axi_data  <= (others => '0');
     s_axi_valid <= '0';
     wait_nr_ticks(clk, 1);

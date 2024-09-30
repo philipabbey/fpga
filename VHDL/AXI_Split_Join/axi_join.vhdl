@@ -35,7 +35,7 @@ entity axi_join is
 end entity;
 
 
-architecture rtl of axi_join is
+architecture rtl_reg of axi_join is
 
   signal backpressure1 : std_logic;
   signal backpressure2 : std_logic;
@@ -58,6 +58,26 @@ begin
   -- The following work in simulation too, but without the 'or not m_axi_valid' clause takes a few extra
   -- clock cycles, i.e. lower throughput:
   --   s_axi_ready <= m_axi_ready and s1_axi_valid and s2_axi_valid;
+
+  -- synthesis translate_off
+  -- NB. Invert this logic when using in an assert statement.
+  backpressure1 <= s1_axi_valid and not s_axi_ready after 1 ps;
+  backpressure2 <= s2_axi_valid and not s_axi_ready after 1 ps;
+  -- synthesis translate_on
+
+end architecture;
+
+
+architecture rtl_comb of axi_join is
+
+  signal backpressure1 : std_logic;
+  signal backpressure2 : std_logic;
+
+begin
+
+  m_axi_valid <= s1_axi_valid and s2_axi_valid;
+  s_axi_ready <= s1_axi_valid and s2_axi_valid and m_axi_ready;
+  m_axi_data  <= s1_axi_data & s2_axi_data;
 
   -- synthesis translate_off
   -- NB. Invert this logic when using in an assert statement.
