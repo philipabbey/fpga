@@ -34,11 +34,13 @@ vmap others %SIM:\=/%/vivado_23.1std/modelsim.ini
 
 vlog -quiet -work work ^
   %SRC%\ip\axis_broadcaster\gen\axis_broadcaster_sim_netlist.v ^
-  %SRC%\ip\axis_combiner\gen\axis_combiner_sim_netlist.v
+  %SRC%\ip\axis_combiner\gen\axis_combiner_sim_netlist.v ^
+  %SRC%\ip\axis_register_slice\gen\axis_register_slice_sim_netlist.v
 
 vcom -quiet -2008 -work work ^
   %SRC%\ip\axis_broadcaster\gen\axis_broadcaster_sim_netlist.vhdl ^
   %SRC%\ip\axis_combiner\gen\axis_combiner_sim_netlist.vhdl ^
+  %SRC%\ip\axis_register_slice\gen\axis_register_slice_sim_netlist.vhdl ^
   %SRC%\axi_split.vhdl ^
   %SRC%\axi_join.vhdl ^
   %SRC%\..\AXI_Delay\axi_delay.vhdl ^
