@@ -250,7 +250,6 @@ architecture test of test_adder_tree_pipe is
     depth        : positive;
     num_operands : positive;
     divide       : positive;
-    output_width : positive;
   end record;
 
   type level_array_t is array(natural range <>) of level_item_t;
@@ -372,8 +371,7 @@ begin
       others => (
         depth        => positive'high,
         num_operands => positive'high,
-        divide       => positive'high,
-        output_width => positive'high
+        divide       => positive'high
       )
     );
 
@@ -391,42 +389,36 @@ begin
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.depth_g        : positive>>;
         la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.num_operands_g : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.divide_c       : positive>>;
-        la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g2 : if p = 2 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
         la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
-        la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g3 : if p = 3 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
         la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
-        la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g4 : if p = 4 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
         la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
-        la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g5 : if p = 5 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
         la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
-        la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
       di_g6 : if p = 6 and p <= adder_tree_pipe_array_c(i).depth generate
         la(p).depth        <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.depth_g        : positive>>;
         la(p).num_operands <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.num_operands_g : positive>>;
         la(p).divide       <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.divide_c       : positive>>;
-        la(p).output_width <= <<constant .test_adder_tree_pipe.duts(i).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.recurse_g.divide_g(0).adder_tree_pipe_i.output_width_c : positive>>;
       end generate;
 
     end generate;
@@ -481,8 +473,6 @@ begin
           write(l, la(d).num_operands, right, 3);
           swrite(l, ", Divide: ");
           write(l, la(d).divide, right, 4);
-          swrite(l, ", Output Width: ");
-          write(l, la(d).output_width);
           writeline(OUTPUT, l);
         end if;
         if d > la'low then
