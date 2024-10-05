@@ -31,7 +31,7 @@ architecture point4 of test_fft_real is
 
   constant log_num_inputs_c : positive := 2;
 
-  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1);
+  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1) := (others => (0.0, 0.0));
 
 begin
 
@@ -103,7 +103,7 @@ architecture point8 of test_fft_real is
 
   constant log_num_inputs_c : positive := 3;
 
-  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1);
+  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1) := (others => (0.0, 0.0));
 
 begin
 
@@ -180,7 +180,7 @@ architecture point16 of test_fft_real is
 
   constant log_num_inputs_c : positive := 4;
 
-  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1);
+  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1) := (others => (0.0, 0.0));
 
 begin
 
@@ -257,7 +257,7 @@ architecture point32 of test_fft_real is
 
   constant log_num_inputs_c : positive := 5;
 
-  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1);
+  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1) := (others => (0.0, 0.0));
 
 begin
 
@@ -334,7 +334,7 @@ architecture point512 of test_fft_real is
 
   constant log_num_inputs_c : positive := 9;
 
-  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1);
+  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1) := (others => (0.0, 0.0));
 
 begin
 
@@ -413,7 +413,7 @@ architecture instance of test_fft_real is
   constant log_num_inputs_c : positive := 4;
   constant radix_l          : positive := 4; -- Ignore radix_c from entity
 
-  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1);
+  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1) := (others => (0.0, 0.0));
 
 begin
 

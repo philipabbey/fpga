@@ -60,7 +60,7 @@ begin
     constant log_num_inputs_c : positive := tests_c(t).log_num_inputs; -- 2**log_num_inputs_c points
     constant radix_c          : positive := tests_c(t).radix;
 
-    signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1);
+    signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1) := (others => (0.0, 0.0));
 
   begin
 
@@ -132,7 +132,7 @@ architecture instance of test_dft_multi_radix_real is
   constant log_num_inputs_c : positive := 6;
   constant radix_c          : positive := 64;
 
-  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1);
+  signal i, o : work.fft_real_pkg.complex_vector(0 to (2**log_num_inputs_c)-1) := (others => (0.0, 0.0));
 
 begin
 

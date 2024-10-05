@@ -30,8 +30,8 @@ entity dft_multi_radix_real is
     max_radix_g      : positive
   );
   port (
-    i : in  complex_vector(0 to (2**log_num_inputs_g)-1);
-    o : out complex_vector(0 to (2**log_num_inputs_g)-1)
+    i : in  complex_vector(0 to (2**log_num_inputs_g)-1) := (others => (0.0, 0.0));
+    o : out complex_vector(0 to (2**log_num_inputs_g)-1) := (others => (0.0, 0.0))
   );
 end entity;
 
@@ -45,8 +45,8 @@ entity dftr_multi_radix_real is
     max_radix_g      : positive  -- Not using the logarithm here which is inconsistent! Conventionally everyone refers to Radix-2, Radix-4, Radix-8 etc.
   );
   port (
-    i : in  complex_vector(0 to (2**log_num_inputs_g)-1);
-    o : out complex_vector(0 to (2**log_num_inputs_g)-1)
+    i : in  complex_vector(0 to (2**log_num_inputs_g)-1) := (others => (0.0, 0.0));
+    o : out complex_vector(0 to (2**log_num_inputs_g)-1) := (others => (0.0, 0.0))
   );
 end entity;
 
@@ -63,8 +63,8 @@ architecture radix_n of dftr_multi_radix_real is
   constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
   constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
   constant part_pwr      : natural_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := part_pwr_arr(powers_c, group_width_c);
-  signal   t             : complex_vector(0 to (2**log_num_inputs_g)-1);
-  signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1);
+  signal   t             : complex_vector(0 to (2**log_num_inputs_g)-1)               := (others => (0.0, 0.0));
+  signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := (others => (others => (0.0, 0.0)));
 
 begin
 
@@ -91,8 +91,8 @@ begin
   -- Reusable multiplications
   col_g : for j in m'range generate -- (1 to radix_c-1)
     row_g : for k in m(j)'range generate -- (0 to group_width_c-1)
-        constant id : string := m'instance_name & integer'image(j) & "," & integer'image(k);
-      begin
+      constant id : string := m'instance_name & integer'image(j) & "," & integer'image(k);
+    begin
       m(j)(k) <= operation(twid_c, part_pwr(j)(k), t(k+(j*group_width_c)), id);
     end generate;
   end generate;

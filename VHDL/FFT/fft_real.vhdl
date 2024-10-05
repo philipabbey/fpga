@@ -27,7 +27,7 @@ entity dftr_real is
   );
   port (
     i : in  complex_vector(0 to (2**log_num_inputs_g)-1);
-    o : out complex_vector(0 to (2**log_num_inputs_g)-1)
+    o : out complex_vector(0 to (2**log_num_inputs_g)-1) := (others => (0.0, 0.0))
   );
 end entity;
 
@@ -43,7 +43,7 @@ entity dft_real is
   );
   port (
     i : in  complex_vector(0 to (2**log_num_inputs_g)-1);
-    o : out complex_vector(0 to (2**log_num_inputs_g)-1)
+    o : out complex_vector(0 to (2**log_num_inputs_g)-1) := (others => (0.0, 0.0))
   );
 end entity;
 
@@ -60,7 +60,7 @@ begin
 
   recurse_g : if log_num_inputs_g = 1 generate
     constant radix_c : positive := 2;
-    signal   m       : complex;
+    signal   m       : complex  := (0.0, 0.0);
   begin
 
     assert false
@@ -79,8 +79,8 @@ begin
     constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
     constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
     constant part_pwr      : natural_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := part_pwr_arr(powers_c, group_width_c);
-    signal   t             : complex_vector(0 to (2**log_num_inputs_g)-1);
-    signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1);
+    signal   t             : complex_vector(0 to (2**log_num_inputs_g)-1)               := (others => (0.0, 0.0));
+    signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := (others => (others => (0.0, 0.0)));
 
   begin
 
@@ -164,7 +164,7 @@ begin
 
   recurse_g : if log_num_inputs_g = 1 generate
     constant radix_c : positive := 2;
-    signal   m       : complex;
+    signal   m       : complex  := (0.0, 0.0);
   begin
 
     -- Perform the Radix-2 FFT on two operands
@@ -178,7 +178,7 @@ begin
     constant group_width_c : positive                                                   := o'length/radix_c; -- Always 1
     constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
     constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
-    signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1);
+    signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := (others => (others => (0.0, 0.0)));
 
   begin
 
@@ -231,8 +231,8 @@ begin
     constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
     constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
     constant part_pwr      : natural_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := part_pwr_arr(powers_c, group_width_c);
-    signal   t             : complex_vector(0 to (2**log_num_inputs_g)-1);
-    signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1);
+    signal   t             : complex_vector(0 to (2**log_num_inputs_g)-1)               := (others => (0.0, 0.0));
+    signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := (others => (others => (0.0, 0.0)));
 
   begin
 
@@ -406,7 +406,7 @@ begin
   recurse_g : if log_num_inputs_g = 1 generate
 
     constant radix_c : positive := 2;
-    signal   m       : complex;
+    signal   m       : complex  := (0.0, 0.0);
 
   begin
 
@@ -421,11 +421,11 @@ begin
 
   elsif log_num_inputs_g = 2 generate
 
-    constant radix_c       : positive                                             := 4;
-    constant group_width_c : natural                                              := o'length/radix_c; -- Always 1
-    constant powers_c      : natural_vector                                       := twiddle_power(radix_c);
-    constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1) := opt_pwr_arr(powers_c, group_width_c);
-    signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1);
+    constant radix_c       : positive                                                   := 4;
+    constant group_width_c : natural                                                    := o'length/radix_c; -- Always 1
+    constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
+    constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
+    signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := (others => (others => (0.0, 0.0)));
 
   begin
 
@@ -478,11 +478,11 @@ begin
 
   elsif log_num_inputs_g = 3 generate
 
-    constant radix_c       : positive                                             := 8;
-    constant group_width_c : natural                                              := o'length/radix_c; -- Always 1
-    constant powers_c      : natural_vector                                       := twiddle_power(radix_c);
-    constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1) := opt_pwr_arr(powers_c, group_width_c);
-    signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1);
+    constant radix_c       : positive                                                   := 8;
+    constant group_width_c : natural                                                    := o'length/radix_c; -- Always 1
+    constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
+    constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
+    signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := (others => (others => (0.0, 0.0)));
 
   begin
 
@@ -604,8 +604,8 @@ begin
     constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
     constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
     constant part_pwr      : natural_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := part_pwr_arr(powers_c, group_width_c);
-    signal   t             : complex_vector(0 to (2**log_num_inputs_g)-1);
-    signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1);
+    signal   t             : complex_vector(0 to (2**log_num_inputs_g)-1)               := (others => (0.0, 0.0));
+    signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := (others => (others => (0.0, 0.0)));
 
   begin
 

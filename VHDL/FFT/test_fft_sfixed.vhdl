@@ -502,7 +502,7 @@ end architecture;
 architecture instance of test_fft_sfixed is
 
   constant log_num_inputs_c : positive := 3;
-  constant radix_l          : positive := 8; -- Ignore radix_c from entity
+  constant radix_l          : positive := 4; -- Ignore radix_c from entity
   constant template_c       : sfixed(9 downto -16) := to_sfixed(0.0, 9, -16);
 
   signal clk   : std_logic;
