@@ -24,13 +24,15 @@ rem vlib needs to be execute from the local directory, limited command line swit
 cd /d %DEST%
 if exist work (
   echo Deleting old work directory
-  vdel -modelsimini .\modelsim.ini -all
+  vdel -modelsimini .\modelsim.ini -all || rmdir /s /q work
 )
 
-vlib work
-vmap work ./work
+if not exist modelsim.ini (
+  vmap -c
+)
+
 rem Convert back slashes to forward slashes
-vmap others %SIM:\=/%/libraries/modelsim.ini
+vmap others %SIM:\=/%/modelsim.ini
 vcom -quiet -2008 -work work ^
   %SRC%\axi_delay_iterator.vhdl ^
   %SRC%\axi_delay_ram.vhdl ^
@@ -44,7 +46,7 @@ echo To run the simulation in ModelSim:
 echo.
 echo   cd {%DEST%}
 echo   vsim work.test_axi_delay_iterator -voptargs="+acc" -t ps
-echo   vsim work.test_delay_ram -voptargs="+acc" -t ps
+echo   vsim work.test_delay_ram          -voptargs="+acc" -t ps
 echo.
 echo ========================================================
 echo.

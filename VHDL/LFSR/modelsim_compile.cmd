@@ -24,13 +24,15 @@ rem vlib needs to be execute from the local directory, limited command line swit
 cd /d %DEST%
 if exist work (
   echo Deleting old work directory
-  vdel -modelsimini .\modelsim.ini -all
+  vdel -modelsimini .\modelsim.ini -all || rmdir /s /q work
 )
 
-vlib work
-vmap work ./work
+if not exist modelsim.ini (
+  vmap -c
+)
+
 rem Convert back slashes to forward slashes
-vmap others %SIM:\=/%/libraries/modelsim.ini
+vmap others %SIM:\=/%/modelsim.ini
 vcom -quiet -2008 ^
   %SRC%\counter.vhdl ^
   %SRC%\sync_counter_wrapper.vhdl ^
@@ -39,6 +41,17 @@ vcom -quiet -2008 ^
   %SRC%\test_counters.vhdl ^
   %SRC%\test_counter_wrapper.vhdl
 set ec=%ERRORLEVEL%
+
+echo.
+echo ========================================================
+echo To run the simulation in ModelSim:
+echo.
+echo   cd {%DEST%}
+echo   vsim work.test_counters        -voptargs="+acc" -t ps
+echo   vsim work.test_counter_wrapper -voptargs="+acc" -t ps
+echo.
+echo ========================================================
+echo.
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
 if not "%TERM_PROGRAM%"=="vscode" pause

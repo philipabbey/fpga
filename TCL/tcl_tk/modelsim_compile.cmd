@@ -27,8 +27,10 @@ if exist work (
   vdel -modelsimini .\modelsim.ini -all
 )
 
-vmap local %SIM%\libraries\local
 vlib work
+vmap work ./work
+rem Convert back slashes to forward slashes
+vmap others %SIM:\=/%/modelsim.ini
 vcom -quiet -2008 ^
   %SRC%\sevseg_pkg.vhdl ^
   %SRC%\sevseg_decode.vhdl ^

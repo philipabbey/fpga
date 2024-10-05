@@ -24,12 +24,15 @@ rem vlib needs to be execute from the local directory, limited command line swit
 cd /d %DEST%
 if exist work (
   echo Deleting old work directory
-  vdel -modelsimini .\modelsim.ini -all
+  vdel -modelsimini .\modelsim.ini -all || rmdir /s /q work
 )
 
-vmap xpm %SIM%/libraries/xpm
-vlib work
-vmap work ./work
+if not exist modelsim.ini (
+  vmap -c
+)
+
+rem Convert back slashes to forward slashes
+vmap others %SIM:\=/%/modelsim.ini
 vcom -quiet -2008 -work work ^
   %SRC%/sync_reg.vhdl ^
   %SRC%/sync_reg_bad.vhdl ^

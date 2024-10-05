@@ -64,6 +64,17 @@ vcom -quiet -93 -nowarn 3 -work ieee_proposed ^
   %SRC%\float_pkg_c.vhd
 set ec=%ERRORLEVEL%
 
+if not exist %SIM%\modelsim.ini (
+  rem Must change to the directory rather than specify a -modelsimini command line argument
+  pushd %SIM%
+  vmap -c
+  popd
+)
+
+rem Create a single modelsim.ini file for all "others"
+vmap -modelsimini %SIM%\modelsim.ini floatfixlib %DEST:\=/%/ieee_proposed
+vmap -modelsimini %SIM%\modelsim.ini ieee_proposed %DEST:\=/%/ieee_proposed
+
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
 if not "%TERM_PROGRAM%"=="vscode" pause
 exit /b %ec%

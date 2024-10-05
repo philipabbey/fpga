@@ -27,10 +27,15 @@ if exist work (
   vdel -modelsimini .\modelsim.ini -all
 )
 
-vmap local %SIM%/libraries/local
 vlib work
 vmap work ./work
-vcom -quiet -2008 -work work %SRC%/retime.vhdl %SRC%/transfer.vhdl %SRC%/test_transfer.vhdl %SRC%/multi_colour.vhdl
+rem Convert back slashes to forward slashes
+vmap others %SIM:\=/%/modelsim.ini
+vcom -quiet -2008 -work work ^
+  %SRC%/retime.vhdl ^
+  %SRC%/transfer.vhdl ^
+  %SRC%/test_transfer.vhdl ^
+  %SRC%/multi_colour.vhdl
 set ec=%ERRORLEVEL%
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.

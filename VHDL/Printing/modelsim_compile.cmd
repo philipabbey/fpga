@@ -12,7 +12,6 @@ set SRC=%~dp0
 rem drop last character '\'
 set SRC=%SRC:~0,-1%
 set DEST=%SIM%\projects\printing
-set PATH=D:\intelFPGA_lite\20.1\modelsim_ase\win32aloem;%PATH%
 
 echo Compile Source:   %SRC%\*
 echo Into Destination: %DEST%
@@ -25,15 +24,28 @@ rem vlib needs to be execute from the local directory, limited command line swit
 cd /d %DEST%
 if exist work (
   echo Deleting old work directory
-  vdel -modelsimini .\modelsim.ini -all
-  vlib work
+  vdel -modelsimini .\modelsim.ini -all || rmdir /s /q work
+)
+
+if not exist modelsim.ini (
+  vmap -c
 )
 
 rem Convert back slashes to forward slashes
-vmap others %SIM:\=/%/libraries/modelsim.ini
+vmap others %SIM:\=/%/modelsim.ini
 vcom -quiet -2008 ^
   %SRC%\printing.vhdl
 set ec=%ERRORLEVEL%
+
+echo.
+echo ========================================================
+echo To run the simulation in ModelSim:
+echo.
+echo   cd {%DEST%}
+echo   vsim work.printing_tb -voptargs="+acc" -t ps
+echo.
+echo ========================================================
+echo.
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
 if not "%TERM_PROGRAM%"=="vscode" pause

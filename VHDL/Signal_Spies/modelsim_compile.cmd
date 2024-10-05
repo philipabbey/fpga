@@ -24,13 +24,15 @@ rem vlib needs to be execute from the local directory, limited command line swit
 cd /d %DEST%
 if exist work (
   echo Deleting old work directory
-  vdel -modelsimini .\modelsim.ini -all
+  vdel -modelsimini .\modelsim.ini -all || rmdir /s /q work
 )
 
-vlib work
-vmap work ./work
+if not exist modelsim.ini (
+  vmap -c
+)
+
 rem Convert back slashes to forward slashes
-vmap others %SIM:\=/%/libraries/modelsim.ini
+vmap others %SIM:\=/%/modelsim.ini
 vcom -quiet -2008 ^
   %SRC%\dut_register.vhdl ^
   %SRC%\external_signals_pkg.vhdl ^
@@ -42,6 +44,22 @@ vcom -quiet -2008 ^
   %SRC%\signal_spies_pkg.vhdl ^
   %SRC%\test_signal_spies.vhdl
 set ec=%ERRORLEVEL%
+
+echo.
+echo ========================================================
+echo To run the simulation in ModelSim:
+echo.
+echo   cd {%DEST%}
+echo   vsim work.test_external_signals_process   -voptargs="+acc" -t ps
+echo   vsim work.test_external_signals_procedure -voptargs="+acc" -t ps
+echo   vsim work.test_force                      -voptargs="+acc" -t ps
+echo   vsim work.test_util_comands               -voptargs="+acc" -t ps
+echo   vsim work.test_signal_spies               -voptargs="+acc" -t ps
+echo.
+echo NB. Needs updating for Intel's Free QuestaSim 2023.3
+echo.
+echo ========================================================
+echo.
 
 rem Do not pause inside MS Visual Studio Code, it has its own prompt on completion.
 if not "%TERM_PROGRAM%"=="vscode" pause
