@@ -164,7 +164,7 @@ package body math_pkg is
   function int_ceil_div(x, y : time) return integer is
   begin
     -- (x + y - 1 fs) / y, but to avoid overflow in x+y use:
-    return 1 + ((x - 1 fs) / y);
+    return 1 + ((x - std.env.resolution_limit) / y);
   end function;
 
 
