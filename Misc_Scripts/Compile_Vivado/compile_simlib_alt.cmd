@@ -15,10 +15,11 @@ rem set SRC=%~dp0
 rem drop last character '\'
 rem set SRC=%SRC:~0,-1%
 set DEST=%SIM%\vivado_23.2
+set VIVADO_INSTALL=C:\Xilinx\Vivado\2023.2\data
 
-echo Compile Source   : Xilinx primitives
-echo Into Destination : %DEST%
-echo Started          : %date% %time%
+echo Compile Xilinx primitives : %VIVADO_INSTALL%
+echo Into Destination          : %DEST%
+echo Started                   : %date% %time%
 echo.
 
 if not exist %DEST% (
@@ -52,7 +53,7 @@ vlib unisim
 vmap unisim %DEST:\=/%/unisim
 echo ** Compiling unisims
 
-set unisims=C:\Xilinx\Vivado\2023.2\data\vhdl\src\unisims
+set unisims=%VIVADO_INSTALL%\vhdl\src\unisims
 
 rem If you look into the unisim folder of your Common Libraries, you’ll see the following files:
 rem 
@@ -105,7 +106,7 @@ vlib unifast
 vmap unifast %DEST:\=/%/unifast
 echo ** Compiling unifast
 
-set unifast=C:\Xilinx\Vivado\2023.2\data\vhdl\src\unifast
+set unifast=%VIVADO_INSTALL%\vhdl\src\unifast
 
 set filelist=%unifast%\primitive\vhdl_analyze_order
 for %%F in (%filelist%) do set srcdir=%%~dpF
@@ -126,7 +127,7 @@ vlib unimacro
 vmap unimacro %DEST:\=/%/unimacro
 echo ** Compiling unimacro
 
-set unimacro=C:\Xilinx\Vivado\2023.2\data\vhdl\src\unimacro
+set unimacro=%VIVADO_INSTALL%\vhdl\src\unimacro
 
 set filelist=%unimacro%\vhdl_analyze_order
 for %%F in (%filelist%) do set srcdir=%%~dpF
@@ -147,7 +148,7 @@ vlib xpm
 vmap xpm %DEST:\=/%/xpm
 echo ** Compiling XPM
 
-set xpm=C:\Xilinx\Vivado\2023.2\data\ip\xpm
+set xpm=%VIVADO_INSTALL%\ip\xpm
 vcom -work xpm -93 -quiet "%xpm%\xpm_VCOMP.vhd"
 vlog -quiet -work xpm ^
   "%xpm%\xpm_cdc\hdl\xpm_cdc.sv" ^
