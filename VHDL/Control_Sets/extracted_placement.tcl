@@ -13,8 +13,10 @@
 #
 #####################################################################################
 
+puts "Manual Placement"
+
 set rows 4
-set offset_row 96
+set offset_row 89
 set offset_col 36
 
 # Manual placement into a single SliceL for width=128
