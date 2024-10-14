@@ -65,10 +65,10 @@ if {[string match "rtl*" [get_design -quiet]]} {
 } else {
     set_clock_uncertainty -quiet -setup $tcu_add [get_clocks]
 }
- 
-# Input Hold = Input Setup (slow corner)
+
+# Input Delay = Flop Hold Time (slow corner) + clock uncertainty
 set input_delay [expr $ths + $tcu + $txs]
-# Output Hold = Output Setup (slow corner)
+# Output Delay = Flop Setup Time (slow corner)
 set output_delay $tsus
 
 # Add manual constraints here for ports where the clock domain cannot be automatically determined.
