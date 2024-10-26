@@ -71,7 +71,7 @@ architecture test of test_polybitdiv is
 
 begin
 
-  dut : entity work.polybitdiv
+  dut : entity work.polybitdiv(rtl)
     generic map(
       len_g => poly_c'length
     )

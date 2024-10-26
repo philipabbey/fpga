@@ -33,7 +33,8 @@ architecture rtl of polydiv_wrapper is
 
 begin
 
-  polydiv_c : entity work.polydiv
+  polydiv_c : entity work.polydiv(rtl)
+--  polydiv_c : entity work.polydiv(rtl2)
     generic map(
       poly_g => "100000100110000010001110110110111"
     )

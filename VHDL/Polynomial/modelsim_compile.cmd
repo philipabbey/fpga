@@ -37,8 +37,10 @@ vcom -quiet -2008 ^
   %SRC%\polybitdiv.vhdl ^
   %SRC%\polydiv.vhdl ^
   %SRC%\polydiv_wrapper.vhdl ^
+  %SRC%\output_logic_crc.vhdl ^
   %SRC%\test_polybitdiv.vhdl ^
-  %SRC%\test_polydiv.vhdl
+  %SRC%\test_polydiv.vhdl ^
+  %SRC%\test_polydiv_cmp.vhdl
 set ec=%ERRORLEVEL%
 
 echo.
@@ -46,8 +48,9 @@ echo ========================================================
 echo To run the simulation in ModelSim:
 echo.
 echo   cd {%DEST%}
-echo   vsim work.test_polybitdiv -voptargs="+acc" -t ps
-echo   vsim work.test_polydiv    -voptargs="+acc" -t ps
+echo   vsim work.test_polybitdiv  -voptargs="+acc" -t ps
+echo   vsim work.test_polydiv     -voptargs="+acc" -t ps
+echo   vsim work.test_polydiv_cmp -voptargs="+acc" -t ps
 echo.
 echo ========================================================
 echo.
