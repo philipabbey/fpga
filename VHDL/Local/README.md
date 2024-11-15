@@ -10,6 +10,10 @@ Functions required for automatically selecting LFSR polynomials and determining 
 
 Functions typically used for initialising constants, e.g. from generics, in RTL code when constructing data types and structures.
 
+## rtl.vhdl
+
+Functions typically re-used for RTL code, e.g. common vector manipulations.
+
 ## testbench.vhdl
 
 Function include:
