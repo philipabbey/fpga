@@ -26,7 +26,7 @@ library local;
 
 architecture test of test_counters is
 
-  type compare_array_t is array(natural range <>) of positive range 2 TO positive'high;
+  type compare_array_t is array(natural range <>) of positive range 2 to positive'high;
   constant compare_array_c : compare_array_t := (
     2,
     2**2+1,
