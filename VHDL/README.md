@@ -123,6 +123,16 @@ A library of testing functions with which to build test benches for VHDL project
 ### Description
 Simple examples of working with VHDL-2008 packages. How close to inheritance-lie properties do  the new VHDL features get us? Protected types are class-like but how close?
 
+
+## PRBS
+
+### Themes:
+ * Automatic scaling
+
+### Description
+Generic Pseudorandom Binary Sequence (PRBS) Sequence Generator any polynomial or ITU-T O.150 standard generators for any number of bits per clock cycle. Useful for testing.
+
+
 ## Polynomial
 
 ### Themes:
