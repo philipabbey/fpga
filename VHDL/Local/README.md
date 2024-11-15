@@ -2,19 +2,19 @@
 
 A library of testing functions with which to build test benches for VHDL projects. This is required to be compiled before using any other VHDL sources in this repository.
 
-## lfsr.vhdl
+## lfsr_pkg.vhdl
 
 Functions required for automatically selecting LFSR polynomials and determining their terminal value for a given maximal count.
 
-## math.vhdl
+## math_pkg.vhdl
 
 Functions typically used for initialising constants, e.g. from generics, in RTL code when constructing data types and structures.
 
-## rtl.vhdl
+## rtl_pkg.vhdl
 
 Functions typically re-used for RTL code, e.g. common vector manipulations.
 
-## testbench.vhdl
+## testbench_pkg.vhdl
 
 Function include:
 
