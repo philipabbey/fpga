@@ -8,17 +8,16 @@ The `itu_prbs_generator` component instantiates the more general LFSR-based PRBS
 
 Parameters values for the ITU-T compliant PRBS polynomials:
 
-| Poly length | Poly tap | Inv pattern? | Number of |   Bit seq. |  Max 0   |
-|             |          |              |   stages  |    length  | sequence |
-|-------------|----------|--------------|-----------|------------|----------|
-|       7     |     6    |     false    |      7    |        127 |     6    |
-|       9     |     5    |     false    |      9    |        511 |     8    |
-|      11     |     9    |     false    |     11    |       2047 |    10    |
-|      15     |    14    |     true     |     15    |      32767 |    15    |
-|      20     |     3    |     false    |     20    |    1048575 |    19    |
-|      23     |    18    |     true     |     23    |    8388607 |    23    |
-|      29     |    27    |     true     |     29    |  536870911 |    29    |
-|      31     |    28    |     true     |     31    | 2147483647 |    31    |
+| Poly length | Poly tap | Inv pattern? | Number of stages | Bit seq. length |  Max 0 sequence |
+|-------------|----------|--------------|------------------|-----------------|-----------------|
+|       7     |     6    |     false    |          7       |          127    |         6       |
+|       9     |     5    |     false    |          9       |          511    |         8       |
+|      11     |     9    |     false    |         11       |         2047    |        10       |
+|      15     |    14    |     true     |         15       |        32767    |        15       |
+|      20     |     3    |     false    |         20       |      1048575    |        19       |
+|      23     |    18    |     true     |         23       |      8388607    |        23       |
+|      29     |    27    |     true     |         29       |    536870911    |        29       |
+|      31     |    28    |     true     |         31       |   2147483647    |        31       |
 
 Xilinx provide a checker version of this component, which I have removed as it is redundant. Simple employ a second generator and compare the received PRBS after transmision with the localy generated PRBS. An XOR of the pair of vectors will provide the bit location of each error. No separate checker is actually required, and the way it is used in XAPP1240 relies on users knowing how to set up the component and provide a constant `data_in` driven to "0..0", which requires additional study and reverse engineering. This version is minimal and simpler.
 
