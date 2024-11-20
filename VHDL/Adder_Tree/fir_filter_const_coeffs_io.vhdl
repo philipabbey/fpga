@@ -46,7 +46,7 @@ begin
 
   fir_filter_i : entity work.fir_filter_const_coeffs(Systolic)
     generic map (
-      coeffs_g      => to_input_arr_t(coeffs_g, input_width_g), -- Assume same range of values for both data_in and coefficient values.
+      coeffs_g      => to_signed_arr_t(coeffs_g, input_width_g), -- Assume same range of values for both data_in and coefficient values.
       input_width_g => input_width_g
     )
     port map (

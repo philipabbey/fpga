@@ -14,14 +14,15 @@
 library ieee;
   use ieee.numeric_std.all;
   use ieee.math_complex.all;
+library local;
+  use local.rtl_pkg.natural_vector;
 
 package fft_real_pkg is
 
   -- Local type as ModelSim 10.5b libraries are not up to date
   type complex_vector       is array (integer range <>) of complex;
-  type complex_vector_arr_t is array (integer range<>)  of complex_vector;
-  type natural_vector       is array (integer range <>) of natural;
-  type natural_vector_arr_t is array (integer range<>)  of natural_vector;
+  type complex_vector_arr_t is array (integer range <>) of complex_vector;
+  type natural_vector_arr_t is array (integer range <>) of natural_vector;
 
 
   -- Easiest illustrated through an example, here is the bit reversal of the indices of 8 values

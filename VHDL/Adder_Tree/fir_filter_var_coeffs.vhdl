@@ -18,6 +18,8 @@
 library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
+library local;
+  use local.rtl_pkg.signed_arr_t;
 library work; -- Implicit anyway, but acts to group.
   use work.adder_tree_pkg.all;
 
@@ -30,8 +32,8 @@ entity fir_filter_var_coeffs is
     clk      : in  std_logic;
     reset    : in  std_logic;
     -- ** Error: A:\Philip\Work\VHDL\Adder_Tree\test_fir_filter_var_coeffs.vhdl(119): Questa has encountered an unexpected internal error: ../../src/vcom/allocate.c(2658). Please contact Questa support at http://supportnet.mentor.com/
-    -- Don't define this as input_arr_t(open)(input_width_g-1 downto 0)
-    coeffs   : in  input_arr_t(num_coeffs_g-1 downto 0)(input_width_g-1 downto 0);
+    -- Don't define this as signed_arr_t(open)(input_width_g-1 downto 0)
+    coeffs   : in  signed_arr_t(num_coeffs_g-1 downto 0)(input_width_g-1 downto 0);
     data_in  : in  signed(input_width_g-1 downto 0);
     -- data_in'length can't be accessed at this point, so use an extra generic 'input_width_g'.
     -- coeffs'length can't be accessed at this point, so use an extra generic 'num_coeffs_g'.
@@ -43,8 +45,8 @@ end entity;
 
 architecture traditional of fir_filter_var_coeffs is
 
-  signal data_reg : input_arr_t(num_coeffs_g-2 downto 0)(data_in'range);
-  signal mult_arr : input_arr_t(coeffs'range)((2*input_width_g)- 1 downto 0);
+  signal data_reg : signed_arr_t(num_coeffs_g-2 downto 0)(data_in'range);
+  signal mult_arr : signed_arr_t(coeffs'range)((2*input_width_g)- 1 downto 0);
 
 begin
 
@@ -69,7 +71,7 @@ begin
 
   adder_tree_pipe_i : entity work.adder_tree_pipe
     generic map (
-      depth_g        => ceil_log(coeffs'length, 2), -- Best attempt at a binary tree with single adder between register stages
+      depth_g        => local.math_pkg.ceil_log(coeffs'length, 2), -- Best attempt at a binary tree with single adder between register stages
       num_operands_g => coeffs'length,
       input_width_g  => mult_arr(0)'length
     )
@@ -87,11 +89,11 @@ end architecture;
 architecture transpose of fir_filter_var_coeffs is
 
   -- Just need to passing a defined array of arrays, with a guaranteed range for coeffs_c'range.
-  constant coeffs_c    : input_arr_t(coeffs'length-1 downto 0)(input_width_g-1 downto 0) := (others => (others => '0'));
+  constant coeffs_c    : signed_arr_t(coeffs'length-1 downto 0)(input_width_g-1 downto 0) := (others => (others => '0'));
   constant sum_width_c : integer_vector(coeffs'range)                                    := calc_sum_width(coeffs_c, input_width_g);
 
-  signal mult_arr : input_arr_t(coeffs_c'range)(input_width_g + coeffs(0)'length - 1 downto 0);
-  signal sum      : input_arr_t(coeffs_c'range)(output_bits(input_width_g + coeffs(0)'length, coeffs'length)-1 downto 0);
+  signal mult_arr : signed_arr_t(coeffs_c'range)(input_width_g + coeffs(0)'length - 1 downto 0);
+  signal sum      : signed_arr_t(coeffs_c'range)(output_bits(input_width_g + coeffs(0)'length, coeffs'length)-1 downto 0);
 
 begin
 
@@ -128,13 +130,13 @@ architecture systolic of fir_filter_var_coeffs is
 
   -- Just need to passing a defined array of arrays, with a guaranteed range for coeffs_c'range.
   -- Compiler error: 'calc_sum_width' can't be dependent on coeffs.
-  constant coeffs_c    : input_arr_t(num_coeffs_g-1 downto 0)(input_width_g-1 downto 0) := (others => (others => '0'));
+  constant coeffs_c    : signed_arr_t(num_coeffs_g-1 downto 0)(input_width_g-1 downto 0) := (others => (others => '0'));
   constant sum_width_c : integer_vector(coeffs_c'range)                                 := calc_sum_width(coeffs_c, input_width_g);
 
-  signal data_reg  : input_arr_t(num_coeffs_g-2 downto 0)(data_in'range);
-  signal data_pipe : input_arr_t(num_coeffs_g-2 downto 0)(data_in'range);
-  signal mult_arr  : input_arr_t(coeffs'range)(input_width_g + coeffs_c(0)'length - 1 downto 0);
-  signal sum       : input_arr_t(coeffs'range)(output_bits(input_width_g + coeffs(0)'length, coeffs'length)-1 downto 0);
+  signal data_reg  : signed_arr_t(num_coeffs_g-2 downto 0)(data_in'range);
+  signal data_pipe : signed_arr_t(num_coeffs_g-2 downto 0)(data_in'range);
+  signal mult_arr  : signed_arr_t(coeffs'range)(input_width_g + coeffs_c(0)'length - 1 downto 0);
+  signal sum       : signed_arr_t(coeffs'range)(output_bits(input_width_g + coeffs(0)'length, coeffs'length)-1 downto 0);
 
 begin
 

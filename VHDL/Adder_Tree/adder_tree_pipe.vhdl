@@ -15,11 +15,13 @@
 library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
+library local;
+  use local.rtl_pkg.signed_arr_t;
 library work; -- Implicit anyway, but acts to group.
   use work.adder_tree_pkg.all;
 
 -- An entity with:
--- i : in  input_arr_t(open)(input_width_g-1 downto 0);
+-- i : in  signed_arr_t(open)(input_width_g-1 downto 0);
 -- Broke the vcom compiler. Using fully constrained arrays which will aid length checking anyway.
 
 entity adder_tree_pipe is
@@ -31,7 +33,7 @@ entity adder_tree_pipe is
   port (
     clk   : in  std_logic;
     reset : in  std_logic;
-    i     : in  input_arr_t(0 to num_operands_g-1)(input_width_g-1 downto 0);
+    i     : in  signed_arr_t(0 to num_operands_g-1)(input_width_g-1 downto 0);
     o     : out signed(output_bits(input_width_g, num_operands_g)-1 downto 0)
   );
 end entity;
@@ -47,7 +49,7 @@ architecture rtl of adder_tree_pipe is
   constant part_length_c    : positive := positive(ceil(real(num_operands_g) / real(divide_c)));
   constant sum_input_bits_c : positive := output_bits(input_width_g, part_length_c);
 
-  signal sum  : input_arr_t(0 to divide_c-1)(sum_input_bits_c-1 downto 0);
+  signal sum  : signed_arr_t(0 to divide_c-1)(sum_input_bits_c-1 downto 0);
   signal lsum : signed(output_bits(sum_input_bits_c, divide_c)-1 downto 0);
 
 begin
@@ -59,7 +61,7 @@ begin
 
       constant ilow_c        : natural  := l * part_length_c;
       -- Remaining coefficients might be less than 'part_length_c'
-      constant ihigh_c       : natural  := work.adder_tree_pkg.minimum(num_operands_g, ilow_c + part_length_c)-1;
+      constant ihigh_c       : natural  := local.math_pkg.minimum(num_operands_g, ilow_c + part_length_c)-1;
       constant output_bits_c : positive := output_bits(input_width_g, (ihigh_c - ilow_c + 1));
 
     begin

@@ -64,6 +64,7 @@ entity comparator is
 end entity;
 
 
+library local;
 library work; -- Implicit anyway, but acts to group.
   use work.comp_pkg.all;
 
@@ -126,7 +127,7 @@ begin
 
       -- Divide up the data buses for the i'th sibling of recursion and setup the generic
       -- values for the next level in the hierarchy.
-      constant upper_c    : positive := work.comp_pkg.minimum((i+1)*rc_c.maxwidth, data_width_g);
+      constant upper_c    : positive := local.math_pkg.minimum((i+1)*rc_c.maxwidth, data_width_g);
       constant buslow_c   : natural  := rc_c.maxwidth*i;
       constant bushigh_c  : natural  := upper_c-1;
       constant recwidth_c : positive := upper_c-buslow_c;

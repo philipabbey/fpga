@@ -16,6 +16,8 @@ library ieee;
   use ieee.math_complex.all;
 library ieee_proposed;
   use ieee_proposed.fixed_pkg.all;
+library local;
+  use local.rtl_pkg.natural_vector;
 
 package fft_sfixed_pkg is
 
@@ -24,11 +26,9 @@ package fft_sfixed_pkg is
     im : sfixed; -- Imaginary part
   end record;
 
-  type complex_arr_t   is array (integer range <>) of complex_t;
-  type complex_2darr_t is array (integer range<>)  of complex_arr_t;
-
-  type natural_vector       is array (integer range <>) of natural;
-  type natural_vector_arr_t is array (integer range<>)  of natural_vector;
+  type complex_arr_t        is array (integer range <>) of complex_t;
+  type complex_2darr_t      is array (integer range <>) of complex_arr_t;
+  type natural_vector_arr_t is array (integer range <>) of natural_vector;
 
 
   -- Addition operator for complex_t type.

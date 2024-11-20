@@ -90,7 +90,7 @@ architecture radix_n of dftr_multi_radix_sfixed is
   constant radix_c       : positive                                                   := minimum(max_radix_g, 2**log_num_inputs_g);
   constant group_width_c : natural                                                    := o'length/radix_c;
   constant twid_c        : complex_arr_t(0 to (2**(log_num_inputs_g-1))-1)            := init_twiddles_half(2**(log_num_inputs_g-1), template_g);
-  constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
+  constant powers_c      : local.rtl_pkg.natural_vector                               := twiddle_power(radix_c);
   constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
   constant part_pwr      : natural_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := part_pwr_arr(powers_c, group_width_c);
 

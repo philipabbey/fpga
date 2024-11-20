@@ -19,13 +19,15 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
   use work.adder_tree_pkg.all;
+library local;
+  use local.rtl_pkg.signed_arr_t;
 
 entity fir_filter_const_coeffs is
   generic (
     -- Quartus Prime
     -- Error (10802): VHDL Unconstrained Array error at fir_filter_const_coeffs.vhdl(6): formal "coeffs_g" must be constrained
     -- Error (12153): Can't elaborate top-level user hierarchy
-    coeffs_g      : input_arr_t;
+    coeffs_g      : signed_arr_t;
     input_width_g : positive
   );
   port (
@@ -42,10 +44,10 @@ end entity;
 architecture traditional of fir_filter_const_coeffs is
 
   -- Re-map the array ranges to something we can guarantee.
-  constant coeffs_c : input_arr_t(coeffs_g'length-1 downto 0)(coeffs_g(0)'length-1 downto 0) := coeffs_g;
+  constant coeffs_c : signed_arr_t(coeffs_g'length-1 downto 0)(coeffs_g(0)'length-1 downto 0) := coeffs_g;
 
-  signal data_reg : input_arr_t(coeffs_c'range)(data_in'range);
-  signal mult_arr : input_arr_t(coeffs_c'range)(input_width_g + coeffs_c(0)'length - 1 downto 0);
+  signal data_reg : signed_arr_t(coeffs_c'range)(data_in'range);
+  signal mult_arr : signed_arr_t(coeffs_c'range)(input_width_g + coeffs_c(0)'length - 1 downto 0);
 
 begin
 
@@ -66,7 +68,7 @@ begin
 
   adder_tree_pipe_i : entity work.adder_tree_pipe
     generic map (
-      depth_g        => ceil_log(coeffs_c'length, 2), -- Best attempt at a binary tree with single adder between register stages
+      depth_g        => local.math_pkg.ceil_log(coeffs_c'length, 2), -- Best attempt at a binary tree with single adder between register stages
       num_operands_g => coeffs_c'length,
       input_width_g  => mult_arr(0)'length
     )
@@ -83,11 +85,11 @@ end architecture;
 architecture transpose of fir_filter_const_coeffs is
 
   -- Re-map the array ranges to something we can guarantee.
-  constant coeffs_c    : input_arr_t(coeffs_g'length-1 downto 0)(coeffs_g(0)'length-1 downto 0) := reverse(coeffs_g);
-  constant sum_width_c : integer_vector(coeffs_c'range)                                         := calc_sum_width(coeffs_c, input_width_g);
+  constant coeffs_c    : signed_arr_t(coeffs_g'length-1 downto 0)(coeffs_g(0)'length-1 downto 0) := reverse(coeffs_g);
+  constant sum_width_c : integer_vector(coeffs_c'range)                                          := calc_sum_width(coeffs_c, input_width_g);
 
-  signal mult_arr : input_arr_t(coeffs_c'range)(input_width_g + coeffs_c(0)'length - 1 downto 0);
-  signal sum      : input_arr_t(coeffs_c'range)(output_bits(input_width_g + coeffs_c(0)'length, coeffs_c'length)-1 downto 0);
+  signal mult_arr : signed_arr_t(coeffs_c'range)(input_width_g + coeffs_c(0)'length - 1 downto 0);
+  signal sum      : signed_arr_t(coeffs_c'range)(output_bits(input_width_g + coeffs_c(0)'length, coeffs_c'length)-1 downto 0);
 
 begin
 
@@ -123,13 +125,13 @@ end architecture;
 architecture systolic of fir_filter_const_coeffs is
 
   -- Re-map the array ranges to something we can guarantee.
-  constant coeffs_c    : input_arr_t(coeffs_g'length-1 downto 0)(coeffs_g(0)'length-1 downto 0) := coeffs_g;
+  constant coeffs_c    : signed_arr_t(coeffs_g'length-1 downto 0)(coeffs_g(0)'length-1 downto 0) := coeffs_g;
   constant sum_width_c : integer_vector(coeffs_c'range)                                         := calc_sum_width(coeffs_c, input_width_g);
 
-  signal data_reg  : input_arr_t(coeffs_c'range)(data_in'range);
-  signal data_pipe : input_arr_t(coeffs_c'length-2 downto 0)(data_in'range);
-  signal mult_arr  : input_arr_t(coeffs_c'range)(input_width_g + coeffs_c(0)'length - 1 downto 0);
-  signal sum       : input_arr_t(coeffs_c'range)(output_bits(input_width_g + coeffs_c(0)'length, coeffs_c'length)-1 downto 0);
+  signal data_reg  : signed_arr_t(coeffs_c'range)(data_in'range);
+  signal data_pipe : signed_arr_t(coeffs_c'length-2 downto 0)(data_in'range);
+  signal mult_arr  : signed_arr_t(coeffs_c'range)(input_width_g + coeffs_c(0)'length - 1 downto 0);
+  signal sum       : signed_arr_t(coeffs_c'range)(output_bits(input_width_g + coeffs_c(0)'length, coeffs_c'length)-1 downto 0);
 
 begin
 

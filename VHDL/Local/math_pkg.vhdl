@@ -32,7 +32,7 @@ package math_pkg is
   -- Usage:
   --   constant min : positive := minimum(4, width_g);
   --
-  function minimum(a, b : positive) return positive;
+  function minimum(constant a, b : positive) return positive;
 
 
   -- Truncate real value, r, to d decimal places. A simple extention to the IEEE
@@ -43,7 +43,10 @@ package math_pkg is
   -- Usage:
   --   trunc(1.2345, 2) => 1.23
   --
-  function trunc(r : real; d : natural) return real;
+  function trunc(
+    constant r : real;
+    constant d : natural
+  ) return real;
 
 
   -- Truncate real value, r, to d decimal places. A simple extention to the IEEE
@@ -54,7 +57,10 @@ package math_pkg is
   -- Usage:
   --   trunc(1.2345, 2) => 2.0
   --
-  function trunc_ceil(r : real; d : natural) return real;
+  function trunc_ceil(
+    constant r : real;
+    constant d : natural
+  ) return real;
 
 
   -- Truncate real value, r, to d decimal places. A simple extention to the IEEE
@@ -65,7 +71,10 @@ package math_pkg is
   -- Usage:
   --   trunc(1.2345, 2) => 2
   --
-  function trunc_ceil(r : real; d : natural) return integer;
+  function trunc_ceil(
+    constant r : real;
+    constant d : natural
+  ) return integer;
 
 
   -- Integer ceil(x/y), perform ceil() without using a conversion to real.
@@ -75,32 +84,60 @@ package math_pkg is
   --   int_ceil_div(16,    10)    => 2
   --   int_ceil_div(16 ns, 10 ns) => 2
   --
-  function int_ceil_div(x, y : natural) return integer;
-  function int_ceil_div(x, y : time) return integer;
+  function int_ceil_div(constant x, y : natural) return integer;
+  function int_ceil_div(constant x, y : time) return integer;
 
 
   -- Return the ceil(log(n, base)), i.e. round up the result of log(n, base).
   --
+  -- Example results:
+  --
+  --   v  base   log_b(v) Return(r)  b^r
+  -- ------------------------------------
+  --   4  2        2.00      2         4
+  --   7  2        2.81      3         8
+  --  13  2        3.70      4        16
+  --   8  3        1.89      2         9
+  --   9  3        2.00      2         9
+  --  26  3        2.97      3        27
+  --  27  3        3.00      3        27
+  --  28  3        3.03      4        81
+  --  16  4        2.00      2        16
+  --  17  4        2.04      3        64
+  --
   function ceil_log(
-    n    : positive;
-    base : positive := 2
+    constant n    : positive;
+    constant base : positive := 2
   ) return positive;
 
 
   -- Return the floor(log(n, base)), i.e. round down the result of log(n, base).
   --
   function floor_log(
-    n    : positive;
-    base : positive := 2
+    constant n    : positive;
+    constant base : positive := 2
   ) return natural;
 
 
   -- Return the ceil(root'th root of n), i.e. round up the result of taking the root.
   -- This overloaded version only allows positive integer roots.
   --
+  --   n  root  ans  Return(r)  r^b
+  -- ------------------------------
+  --   4    2  2.00      2        4
+  --   8    3  2.00      2        8
+  --  26    3  2.96      3       27
+  --  27    3  3.00      3       27
+  --  28    3  3.04      4       64
+  --  40    3  3.42      4       64
+  --  40    4  2.51      3       81
+  --  40    5  2.09      3      243
+  --  40    6  1.85      2       64
+  --  80    5  2.40      3      243
+  --
   function ceil_root(
-    n    : positive;
-    root : positive := 2
+    constant n    : positive;
+    constant root : positive := 2
   ) return positive;
 
 
@@ -108,8 +145,8 @@ package math_pkg is
   -- This overloaded version allows for real roots.
   --
   function ceil_root(
-    n    : positive;
-    root : real := 2.0
+    constant n    : positive;
+    constant root : real := 2.0
   ) return positive;
 
 end package;
@@ -120,7 +157,7 @@ library ieee;
 
 package body math_pkg is
 
-  function minimum(a, b : positive) return positive is
+  function minimum(constant a, b : positive) return positive is
   begin
     if a < b then
       return a;
@@ -130,7 +167,10 @@ package body math_pkg is
   end function;
 
 
-  function trunc(r : real; d : natural) return real is
+  function trunc(
+    constant r : real;
+    constant d : natural
+  ) return real is
     constant exp : real := (1.0 * 10.0**d);
   begin
 --    report "trunc(" & real'image(r) & ", " & integer'image(d) & ") = " & real'image(trunc(r * exp));
@@ -139,7 +179,10 @@ package body math_pkg is
 
 
   -- Truncate real value, r, to d decimal places then round up to nearest integer.
-  function trunc_ceil(r : real; d : natural) return real is
+  function trunc_ceil(
+    constant r : real;
+    constant d : natural
+  ) return real is
     constant exp : real := (1.0 * 10.0**d);
   begin
     return ceil(trunc(r * exp) / exp);
@@ -147,7 +190,10 @@ package body math_pkg is
 
 
   -- Truncate real value, r, to d decimal places then round up to nearest integer.
-  function trunc_ceil(r : real; d : natural) return integer is
+  function trunc_ceil(
+    constant r : real;
+    constant d : natural
+  ) return integer is
     constant exp : real := (1.0 * 10.0**d);
   begin
     return integer(ceil(trunc(r * exp) / exp));
@@ -155,13 +201,13 @@ package body math_pkg is
 
 
   -- Integer ceil(x/y)
-  function int_ceil_div(x, y : natural) return integer is
+  function int_ceil_div(constant x, y : natural) return integer is
   begin
     -- (x + y - 1) / y, but to avoid overflow in x+y use:
     return 1 + ((x - 1) / y);
   end function;
 
-  function int_ceil_div(x, y : time) return integer is
+  function int_ceil_div(constant x, y : time) return integer is
   begin
     -- (x + y - 1 fs) / y, but to avoid overflow in x+y use:
     return 1 + ((x - std.env.resolution_limit) / y);
@@ -170,17 +216,17 @@ package body math_pkg is
 
   -- https://stackoverflow.com/questions/44717034/function-clogb2-generated-by-vivado-cant-synthesize-with-loop-limit-error
   function ceil_log(
-    n    : positive;
-    base : positive := 2
-  ) return positive is
+    constant n    : positive;
+    constant base : positive := 2
+  ) return natural is
   begin
-    return positive(ceil(log(real(n), real(base))));
+    return natural(ceil(log(real(n), real(base))));
   end function;
 
 
   function floor_log(
-    n    : positive;
-    base : positive := 2
+    constant n    : positive;
+    constant base : positive := 2
   ) return natural is
   begin
     return natural(floor(log(real(n), real(base))));
@@ -188,16 +234,16 @@ package body math_pkg is
 
 
   function ceil_root(
-    n    : positive;
-    root : positive := 2
+    constant n    : positive;
+    constant root : positive := 2
   ) return positive is
   begin
     return positive(ceil(n ** (1.0/real(root))));
   end function;
 
   function ceil_root(
-    n    : positive;
-    root : real := 2.0
+    constant n    : positive;
+    constant root : real := 2.0
   ) return positive is
   begin
     return positive(ceil(n ** (1.0/root)));

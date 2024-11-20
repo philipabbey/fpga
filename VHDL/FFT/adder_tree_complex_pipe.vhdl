@@ -44,6 +44,7 @@ end entity;
 
 library ieee;
   use ieee.math_real.all;
+library local;
 
 architecture rtl of adder_tree_complex_pipe is
 
@@ -72,7 +73,7 @@ begin
 
       constant ilow_c         : natural := l * part_length_c;
       -- Remaining coefficients might be less than 'part_length_c'
-      constant ihigh_c        : natural := work.adder_tree_pkg.minimum(num_operands_g, ilow_c + part_length_c)-1;
+      constant ihigh_c        : natural := local.math_pkg.minimum(num_operands_g, ilow_c + part_length_c)-1;
       constant output_range_c : sfixed(output_bits(template_g'high, (ihigh_c - ilow_c + 1)) downto template_g'low) := (others => '0');
 
       signal z : complex_t(

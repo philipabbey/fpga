@@ -23,6 +23,7 @@ library ieee_proposed;
 library std;
   use std.textio.all;
 library local;
+  use local.math_pkg.ceil_root;
   use local.testbench_pkg.all;
 library work; -- Implicit anyway, but acts to group.
   use work.fft_sfixed_pkg.all;

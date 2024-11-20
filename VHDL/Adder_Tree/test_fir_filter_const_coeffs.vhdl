@@ -75,7 +75,7 @@ begin
 
   dut_trad : entity work.fir_filter_const_coeffs(traditional)
     generic map (
-      coeffs_g      => to_input_arr_t(coeffs_c, data_in'length),
+      coeffs_g      => to_signed_arr_t(coeffs_c, data_in'length),
       input_width_g => data_in'length
     )
     port map (
@@ -87,7 +87,7 @@ begin
 
   dut_trans : entity work.fir_filter_const_coeffs(transpose)
     generic map (
-      coeffs_g      => to_input_arr_t(coeffs_c, data_in'length),
+      coeffs_g      => to_signed_arr_t(coeffs_c, data_in'length),
       input_width_g => data_in'length
     )
     port map (
@@ -99,7 +99,7 @@ begin
 
   dut_syst : entity work.fir_filter_const_coeffs(systolic)
     generic map (
-      coeffs_g      => to_input_arr_t(coeffs_c, data_in'length),
+      coeffs_g      => to_signed_arr_t(coeffs_c, data_in'length),
       input_width_g => data_in'length
     )
     port map (

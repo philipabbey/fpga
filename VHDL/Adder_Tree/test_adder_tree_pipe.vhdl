@@ -202,6 +202,7 @@ library std;
   use std.textio.all;
 library local;
   use local.testbench_pkg.all;
+  use local.rtl_pkg.signed_arr_t;
 library work; -- Implicit anyway, but acts to group.
   use work.adder_tree_pkg.all;
 
@@ -230,7 +231,7 @@ architecture test of test_adder_tree_pipe is
 
   constant ones_c : std_logic_vector(adder_tree_pipe_array_c'range) := (others => '1');
 
-  function sum_inputs(i : input_arr_t) return integer is
+  function sum_inputs(i : signed_arr_t) return integer is
     variable sum : integer := 0;
   begin
     for j in i'range loop
@@ -281,7 +282,7 @@ begin
 
   duts : for l in adder_tree_pipe_array_c'range generate
 
-    signal i : input_arr_t(0 to adder_tree_pipe_array_c(l).num_operands-1)(adder_tree_pipe_array_c(l).input_width-1 downto 0);
+    signal i : signed_arr_t(0 to adder_tree_pipe_array_c(l).num_operands-1)(adder_tree_pipe_array_c(l).input_width-1 downto 0);
     signal o : signed(output_bits(adder_tree_pipe_array_c(l).input_width, adder_tree_pipe_array_c(l).num_operands)-1 downto 0);
 
   begin
@@ -429,7 +430,10 @@ begin
       -- parameters to check that the one constructed has not exceeded the value at any level of
       -- hierarchy. This is a basic check for even construction between flops. A separate check is made
       -- later for erring on the side of bottom-heavy.
-      variable expdepth : positive := ceil_root(adder_tree_pipe_array_c(i).num_operands, adder_tree_pipe_array_c(i).depth);
+      variable expdepth : positive := local.math_pkg.ceil_root(
+        adder_tree_pipe_array_c(i).num_operands,
+        adder_tree_pipe_array_c(i).depth
+      );
       variable l        : line;
     begin
       wait until la'event;

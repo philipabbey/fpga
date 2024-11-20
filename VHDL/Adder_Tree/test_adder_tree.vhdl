@@ -20,6 +20,7 @@ library ieee;
   use ieee.numeric_std.all;
 library local;
   use local.testbench_pkg.all;
+  use local.rtl_pkg.signed_arr_t;
 library work; -- Implicit anyway, but acts to group.
   use work.adder_tree_pkg.all;
 
@@ -44,7 +45,7 @@ architecture test of test_adder_tree is
 
   constant ones : std_logic_vector(adder_tree_array_c'range) := (others => '1');
 
-  function sum_inputs(i : input_arr_t) return signed is
+  function sum_inputs(i : signed_arr_t) return signed is
     variable sum : signed(i(0)'range) := (others => '0');
   begin
     for j in i'range loop
@@ -60,7 +61,7 @@ begin
 
   duts : for l in adder_tree_array_c'range generate
 
-    signal i : input_arr_t(0 to adder_tree_array_c(l).num_operands-1)(adder_tree_array_c(l).input_width-1 downto 0);
+    signal i : signed_arr_t(0 to adder_tree_array_c(l).num_operands-1)(adder_tree_array_c(l).input_width-1 downto 0);
     signal o : signed(output_bits(adder_tree_array_c(l).input_width, adder_tree_array_c(l).num_operands)-1 downto 0);
 
   begin

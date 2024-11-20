@@ -20,6 +20,7 @@ library ieee;
   use ieee.numeric_std.all;
 library local;
   use local.testbench_pkg.all;
+  use local.rtl_pkg.signed_arr_t;
 library work; -- Implicit anyway, but acts to group.
   use work.adder_tree_pkg.all;
 
@@ -68,13 +69,13 @@ architecture test of test_fir_filter_var_coeffs is
   signal data_out_trad  : signed(output_bits(2 * data_in'length, coeffs_c'length)-1 downto 0);
   signal data_out_trans : signed(output_bits(2 * data_in'length, coeffs_c'length)-1 downto 0);
   signal data_out_syst  : signed(output_bits(2 * data_in'length, coeffs_c'length)-1 downto 0);
-  signal coeffs         : input_arr_t(coeffs_c'range)(data_in'range);
+  signal coeffs         : signed_arr_t(coeffs_c'range)(data_in'range);
 
 begin
 
   clkgen : clock(clk, 10 ns);
   
-  coeffs <= to_input_arr_t(coeffs_c, data_in'length);
+  coeffs <= to_signed_arr_t(coeffs_c, data_in'length);
 
   dut_trad : entity work.fir_filter_var_coeffs(traditional)
     generic map (

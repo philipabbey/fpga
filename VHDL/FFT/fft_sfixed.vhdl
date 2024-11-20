@@ -72,6 +72,7 @@ end entity;
 -------------
 -- Radix-2 --
 -------------
+library local;
 
 architecture radix2 of dftr_sfixed is
 
@@ -106,7 +107,7 @@ begin
   else generate
 
     constant group_width_c : positive                                                   := o'length/radix_c;
-    constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
+    constant powers_c      : local.rtl_pkg.natural_vector                               := twiddle_power(radix_c);
     constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
     constant part_pwr      : natural_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := part_pwr_arr(powers_c, group_width_c);
 
@@ -279,7 +280,7 @@ begin
 
     constant radix_c       : positive                                                   := 4;
     constant group_width_c : positive                                                   := o'length/radix_c; -- Always 1
-    constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
+    constant powers_c      : local.rtl_pkg.natural_vector                               := twiddle_power(radix_c);
     constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
     constant part_pwr      : natural_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := part_pwr_arr(powers_c, group_width_c);
 
@@ -365,7 +366,7 @@ begin
 
     constant radix_c       : positive                                                   := 4;
     constant group_width_c : natural                                                    := o'length/4;
-    constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
+    constant powers_c      : local.rtl_pkg.natural_vector                               := twiddle_power(radix_c);
     constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
     constant part_pwr      : natural_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := part_pwr_arr(powers_c, group_width_c);
 

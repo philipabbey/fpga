@@ -245,9 +245,12 @@ entity fir_filter_var_coeffs_io is
 end entity;
 
 
+library local;
+  use local.rtl_pkg.signed_arr_t;
+
 architecture rtl of fir_filter_var_coeffs_io is
 
-  subtype coeffs_arr_t is input_arr_t(num_coeffs_g-1 downto 0)(input_width_g-1 downto 0);
+  subtype coeffs_arr_t is signed_arr_t(num_coeffs_g-1 downto 0)(input_width_g-1 downto 0);
 
   signal reset_reg  : std_ulogic_vector(1 downto 0);
   signal coeffs_i   : coeffs_arr_t;

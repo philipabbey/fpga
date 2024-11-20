@@ -30,26 +30,6 @@ package comp_pkg is
   end record;
 
 
-  -- Return the minimum of 'a' and 'b'.
-  --
-  -- This function has not been implemented for 'positive' in some tools! Where it
-  -- has been implemented, the function's presence causes ambiguity. Helpful...
-  --
-  -- Quartus Prime:
-  -- Error (10482): VHDL error at file.vhdl(xx): object "minimum" is used but not declared
-  -- Error: Quartus Prime Analysis & Synthesis was unsuccessful. 1 error, 0 warnings
-  --
-  -- ModelSim: ** Error: file.vhdl(xx): Subprogram "minimum" is ambiguous.
-  --
-  -- Therefore qualification by full path name might be required,
-  --   e.g. 'local.math_pkg.minimum(..)'.
-  --
-  -- Usage:
-  --   constant min : positive := minimum(4, width_g);
-  --
-  function minimum(a, b : positive) return positive;
-
-
   -- For the height in the hierarchy given by 'depth', what is the expected depth of LUTs between
   -- flops for the tree below?
   --
@@ -172,16 +152,6 @@ library ieee;
   use ieee.math_real.all;
 
 package body comp_pkg is
-
-  function minimum(a, b : positive) return positive is
-  begin
-    if a < b then
-      return a;
-    else
-      return b;
-    end if;
-  end function;
-
 
   function lut_depth(
     constant depth   : positive;

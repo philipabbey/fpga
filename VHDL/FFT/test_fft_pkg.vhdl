@@ -38,8 +38,8 @@ package test_fft_pkg is
     input_low      : negative;
   end record;
 
-  type tests_real_arr_t   is array(natural range<>) of tests_real_t;
-  type tests_sfixed_arr_t is array(natural range<>) of tests_sfixed_t;
+  type tests_real_arr_t   is array(natural range <>) of tests_real_t;
+  type tests_sfixed_arr_t is array(natural range <>) of tests_sfixed_t;
 
 
   -- Compare two complex type values for equality within a tolerance.

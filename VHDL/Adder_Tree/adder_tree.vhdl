@@ -14,11 +14,12 @@
 
 library ieee;
   use ieee.numeric_std.all;
+library local;
 library work; -- Implicit anyway, but acts to group.
   use work.adder_tree_pkg.all;
 
 -- An entity with:
--- i : in  input_arr_t(open)(input_width_g-1 downto 0);
+-- i : in  signed_arr_t(open)(input_width_g-1 downto 0);
 -- Broke the vcom compiler. Using fully constrained arrays which will aid length checking anyway.
 
 entity adder_tree is
@@ -27,7 +28,7 @@ entity adder_tree is
     input_width_g  : positive := 18
   );
   port (
-    i : in  input_arr_t(0 to num_operands_g-1)(input_width_g-1 downto 0);
+    i : in  local.rtl_pkg.signed_arr_t(0 to num_operands_g-1)(input_width_g-1 downto 0);
     o : out signed(output_bits(input_width_g, num_operands_g)-1 downto 0)
   );
 end entity;

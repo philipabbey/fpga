@@ -51,6 +51,7 @@ end entity;
 -------------
 -- Radix-2 --
 -------------
+library local;
 
 architecture radix2 of dftr_real is
 
@@ -76,7 +77,7 @@ begin
 
     constant radix_c       : positive                                                   := 2;
     constant group_width_c : positive                                                   := o'length/radix_c;
-    constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
+    constant powers_c      : local.rtl_pkg.natural_vector                               := twiddle_power(radix_c);
     constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
     constant part_pwr      : natural_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := part_pwr_arr(powers_c, group_width_c);
     signal   t             : complex_vector(0 to (2**log_num_inputs_g)-1)               := (others => (0.0, 0.0));
@@ -155,6 +156,7 @@ end architecture;
 -------------
 -- Radix-4 --
 -------------
+library local;
 
 architecture radix4 of dftr_real is
 
@@ -176,7 +178,7 @@ begin
 
     constant radix_c       : positive                                                   := 4;
     constant group_width_c : positive                                                   := o'length/radix_c; -- Always 1
-    constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
+    constant powers_c      : local.rtl_pkg.natural_vector                               := twiddle_power(radix_c);
     constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
     signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := (others => (others => (0.0, 0.0)));
 
@@ -228,7 +230,7 @@ begin
 
     constant radix_c       : positive                                                   := 4;
     constant group_width_c : positive                                                   := o'length/radix_c;
-    constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
+    constant powers_c      : local.rtl_pkg.natural_vector                               := twiddle_power(radix_c);
     constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
     constant part_pwr      : natural_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := part_pwr_arr(powers_c, group_width_c);
     signal   t             : complex_vector(0 to (2**log_num_inputs_g)-1)               := (others => (0.0, 0.0));
@@ -396,6 +398,7 @@ end architecture;
 -------------
 -- Radix-8 --
 -------------
+library local;
 
 architecture radix8 of dftr_real is
 
@@ -423,7 +426,7 @@ begin
 
     constant radix_c       : positive                                                   := 4;
     constant group_width_c : natural                                                    := o'length/radix_c; -- Always 1
-    constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
+    constant powers_c      : local.rtl_pkg.natural_vector                               := twiddle_power(radix_c);
     constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
     signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := (others => (others => (0.0, 0.0)));
 
@@ -480,7 +483,7 @@ begin
 
     constant radix_c       : positive                                                   := 8;
     constant group_width_c : natural                                                    := o'length/radix_c; -- Always 1
-    constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
+    constant powers_c      : local.rtl_pkg.natural_vector                               := twiddle_power(radix_c);
     constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
     signal   m             : complex_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := (others => (others => (0.0, 0.0)));
 
@@ -601,7 +604,7 @@ begin
 
     constant radix_c       : positive                                                   := 8;
     constant group_width_c : natural                                                    := o'length/radix_c;
-    constant powers_c      : natural_vector                                             := twiddle_power(radix_c);
+    constant powers_c      : local.rtl_pkg.natural_vector                               := twiddle_power(radix_c);
     constant opt_pwr       : natural_vector_arr_t(1 to radix_c-1)(0 to radix_c-1)       := opt_pwr_arr(powers_c, group_width_c);
     constant part_pwr      : natural_vector_arr_t(1 to radix_c-1)(0 to group_width_c-1) := part_pwr_arr(powers_c, group_width_c);
     signal   t             : complex_vector(0 to (2**log_num_inputs_g)-1)               := (others => (0.0, 0.0));
