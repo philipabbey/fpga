@@ -26,10 +26,8 @@ if exist work (
   echo Deleting old work directory
   vdel -modelsimini .\modelsim.ini -all || rmdir /s /q work
 )
-
-if not exist modelsim.ini (
-  vmap -c
-)
+if exist modelsim.ini del /q modelsim.ini
+if not exist modelsim.ini vmap -c
 
 vcom -quiet -2008 ^
   %SRC%\prot_type_pkg.vhdl ^

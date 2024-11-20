@@ -27,10 +27,8 @@ if exist work (
   echo Deleting old work directory
   vdel -modelsimini .\modelsim.ini -all || rmdir /s /q work
 )
-
-if not exist modelsim.ini (
-  vmap -c
-)
+if exist modelsim.ini del /q modelsim.ini
+if not exist modelsim.ini vmap -c
 
 vmap others %SIM:\=/%/modelsim.ini
 vlog -quiet -work work "C:\Xilinx\Vivado\2023.2\data\verilog\src\glbl.v"

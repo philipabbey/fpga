@@ -29,8 +29,11 @@ if not exist %DEST% (
 rem vlib needs to be execute from the local directory, limited command line switches.
 cd /d %DEST%
 if exist ieee_proposed (
-  vdel -lib ieee_proposed -modelsimini ./modelsim.ini -all
+  echo Deleting old ieee_proposed directory
+  vdel -lib ieee_proposed -modelsimini ./modelsim.ini -all || rmdir /s /q ieee_proposed
 )
+if exist modelsim.ini del /q modelsim.ini
+if not exist modelsim.ini vmap -c
 
 rem $ verror 1907
 rem 

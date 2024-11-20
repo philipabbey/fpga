@@ -24,8 +24,11 @@ if not exist %DEST% (
 rem vlib needs to be execute from the local directory, limited command line switches.
 cd /d %DEST%
 if exist local (
-  vdel -lib local -modelsimini ./modelsim.ini -all
+  echo Deleting old local directory
+  vdel -lib local -modelsimini ./modelsim.ini -all || rmdir /s /q local
 )
+if exist modelsim.ini del /q modelsim.ini
+if not exist modelsim.ini vmap -c
 
 vlib local
 vmap local %DEST:\=/%/local
