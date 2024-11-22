@@ -93,6 +93,18 @@ VHDL-2008 has added types `sfixed` and `ufixed` for fixed point arithmetic, but 
  * [Compiling VHDL For The Missing Fixed And Floating Point Libraries](https://blog.abbey1.org.uk/index.php/technology/compiling-vhdl-for-the-missing-fixed-and-floating)
 
 
+## Large Barrel Shift Pipelined by Iteration or Recursion
+
+### Themes:
+ * Automatic scaling
+
+### Description
+Creating an excessively large barrel shift component that is arbitraily pipelined.
+
+### References:
+ * [Large Barrel Shift Pipelined by Iteration or Recursion](https://blog.abbey1.org.uk/index.php/technology/large-barrel-shift-pipelined-by-iteration-or-recursion)
+
+
 ## LFSR
 
 ### Themes:
@@ -130,7 +142,10 @@ Simple examples of working with VHDL-2008 packages. How close to inheritance-lie
  * Automatic scaling
 
 ### Description
-Generic Pseudorandom Binary Sequence (PRBS) Sequence Generator any polynomial or ITU-T O.150 standard generators for any number of bits per clock cycle. Useful for testing.
+Generic Pseudorandom Binary Sequence (PRBS) Sequence Generator any polynomial or [ITU-T O.150 standard](https://www.itu.int/rec/T-REC-O.150-199210-S) generators for any number of bits per clock cycle. Useful for testing.
+
+### References:
+ * [Multiple Bit Pseudorandom Binary Sequence](https://blog.abbey1.org.uk/index.php/technology/multiple-bit-pseudorandom-binary-sequence)
 
 
 ## Polynomial

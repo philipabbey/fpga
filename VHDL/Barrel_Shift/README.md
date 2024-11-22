@@ -17,4 +17,4 @@ set SIM=%USERPROFILE%\ModelSim
 
 ## References
 
-1. [Large Barrel Shift Pipelined by Iteration or Recursion](https://en.wikipedia.org/wiki/)
+1. [Large Barrel Shift Pipelined by Iteration or Recursion](https://blog.abbey1.org.uk/index.php/technology/large-barrel-shift-pipelined-by-iteration-or-recursion)
