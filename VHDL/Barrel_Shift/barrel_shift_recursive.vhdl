@@ -42,7 +42,7 @@ library local;
 
 architecture recursive of barrel_shift_recursive is
 
-  constant bits_c : natural := work.barrel_shift_pkg.register_stage(recurse_bits_g, num_clks_g);
+  constant bits_c : natural := work.barrel_shift_pkg.num_bits(recurse_bits_g, num_clks_g);
 
 begin
 

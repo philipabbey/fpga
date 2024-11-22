@@ -46,7 +46,7 @@ package barrel_shift_pkg is
   -- For recursive case.
   -- The number of shift bits to consume in the next clock cycle stage.
   --
-  function register_stage(
+  function num_bits(
     shift_len : natural;
     num_clks  : positive
   ) return natural;
@@ -89,7 +89,7 @@ package body barrel_shift_pkg is
   end function;
 
 
-  function register_stage(
+  function num_bits(
     shift_len : natural;
     num_clks  : positive
   ) return natural is
