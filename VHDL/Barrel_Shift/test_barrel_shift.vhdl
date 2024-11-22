@@ -120,7 +120,7 @@ begin
       data_in      <= (others => '0');
       run_test     <= '0';
       answer_valid <= '0';
-      wait until reset'event and reset = '0';
+      wait until falling_edge(reset);
       wait_nr_ticks(clk, 2);
       answer_valid <= '1';
       data_in(0)   <= '1';
@@ -202,6 +202,11 @@ begin
 
   process
   begin
+    if recursive_g then
+      report "Exercising recursive components";
+    else
+      report "Exercising iterative components";
+    end if;
     wait_nr_ticks(clk, 1);
     toggle_r(reset, clk, 2);
     wait until finished_all = '1';

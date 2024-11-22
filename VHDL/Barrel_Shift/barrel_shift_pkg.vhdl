@@ -100,7 +100,7 @@ package body barrel_shift_pkg is
     elsif num_clks >= shift_len then
       return 1;
     else
-      return maximum(0, int_ceil_div(shift_len, num_clks));
+      return int_ceil_div(shift_len, num_clks);
     end if;
   end function;
 
