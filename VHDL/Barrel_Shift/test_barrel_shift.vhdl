@@ -72,17 +72,18 @@ begin
     signal shift        : std_logic_vector(   shift_bits_c-1 downto 0);
     signal data_in      : std_logic_vector(2**shift_bits_c-1 downto 0);
     signal data_out     : std_logic_vector(2**shift_bits_c-1 downto 0);
-    signal shift_reg    : natural_vector(0 to num_clks_c-1);
+    signal shift_reg    : local.rtl_pkg.slv_arr_t(0 to num_clks_c-1)(2**shift_bits_c-1 downto 0);
     signal check_data   : std_logic_vector(2**shift_bits_c-1 downto 0);
-    signal tests_passed : boolean := true;
-    signal answer_valid : std_logic := '0';
+    signal tests_passed : boolean                           := true;
+    signal answer_valid : std_logic                         := '0';
     signal av_reg       : std_logic_vector(shift_reg'range) := (others => '0');
 
   begin
 
     choose : if recursive_g generate
 
-      dut : entity work.barrel_shift_recursive
+      --dut : entity work.barrel_shift_recursive(recursive)
+      dut : entity work.barrel_shift_recursive(recursive2)
         generic map (
           shift_bits_g => shift_bits_c,
           shift_left_g => shift_left_c,
@@ -98,7 +99,8 @@ begin
 
     else generate
 
-      dut : entity work.barrel_shift_iterative
+      --dut : entity work.barrel_shift_iterative(iterative)
+      dut : entity work.barrel_shift_iterative(iterative2)
         generic map (
           shift_bits_g => shift_bits_c,
           shift_left_g => shift_left_c,
@@ -124,15 +126,16 @@ begin
       wait_nr_ticks(clk, 2);
       answer_valid <= '1';
       data_in(0)   <= '1';
-      if data_in'high >= 3 then
-        data_in(3) <= '1';
-      end if;
-      run_test   <= '1';
+--      if data_in'high >= 3 then
+--        data_in(3) <= '1';
+--      end if;
+      run_test <= '1';
       for i in 0 to 2**shift_bits_c-1 loop
         shift <= to_slv(i, shift'length);
         wait_nr_ticks(clk, 1);
       end loop;
-      shift    <= to_slv(0, shift'length);
+      shift        <= (others => '1');
+      answer_valid <= '0';
       wait_nr_ticks(clk, num_clks_c);
       run_test <= '0';
       wait_nr_ticks(clk, 1);
@@ -150,10 +153,12 @@ begin
       wait;
     end process;
 
-    process(clk)
+    check_data <= (data_in rol to_integer(shift)) when shift_left_c else (data_in ror to_integer(shift));
 
-      function "&" (l : natural; r : natural_vector) return natural_vector is
-        variable ret : natural_vector(0 to r'length);
+    shft : process(clk)
+
+      function "&" (l : std_logic_vector; r : local.rtl_pkg.slv_arr_t) return local.rtl_pkg.slv_arr_t is
+        variable ret : local.rtl_pkg.slv_arr_t(0 to r'length)(l'range);
       begin
         ret(0)             := l;
         ret(1 to r'length) := r;
@@ -163,28 +168,25 @@ begin
     begin
       if rising_edge(clk) then
         if reset = '1' then
-          shift_reg <= (others => 0);
+          shift_reg <= (others => (others => '0'));
           av_reg    <= (others => '0');
         else
           if run_test = '1' then
-            shift_reg <= to_integer(shift) & shift_reg(0 to shift_reg'high-1);
+            shift_reg <= check_data & shift_reg(0 to shift_reg'high-1);
             av_reg    <= answer_valid & av_reg(0 to av_reg'high-1);
           end if;
         end if;
       end if;
     end process;
 
-    process(shift_reg)
+    check : process(clk)
     begin
-      check_data <= (data_in rol shift_reg(shift_reg'high)) when shift_left_c else (data_in ror shift_reg(shift_reg'high));
-    end process;
-
-    check : process(check_data)
-    begin
-      if av_reg(av_reg'high) = '1' and check_data /= data_out then
---        report "Test " & to_string(i) & ": check_data = " & to_hstring(check_data) & ", data_out = " & to_hstring(data_out) severity error;
-        tests_passed <= false;
-        success.set(false);
+      if falling_edge(clk) then
+        if av_reg(av_reg'high) = '1' and shift_reg(shift_reg'high) /= data_out then
+          report "Test " & to_string(i) & ": Expected: " & to_hstring(shift_reg(shift_reg'high)) & ", Data out: " & to_hstring(data_out) severity error;
+          tests_passed <= false;
+          success.set(false);
+        end if;
       end if;
     end process;
 
@@ -200,7 +202,7 @@ begin
     end loop;
   end process;
 
-  process
+  control : process
   begin
     if recursive_g then
       report "Exercising recursive components";
@@ -215,7 +217,7 @@ begin
     else
       report "FAILED - Some tests failed" severity error;
     end if;
-   stop_clocks;
+    stop_clocks;
     -- Prevent the process repeating after the simulation time has been manually extended.
     wait;
   end process;

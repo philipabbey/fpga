@@ -5,9 +5,10 @@
 --
 -------------------------------------------------------------------------------------
 --
--- The package required for efficient construction of the recursive adder tree.
+-- The package required for efficient construction of the iterative and recursive
+-- barrel shift component.
 --
--- P A Abbey, 28 August 2021
+-- P A Abbey, 15 November 2024
 --
 -------------------------------------------------------------------------------------
 
@@ -33,7 +34,7 @@ package barrel_shift_pkg is
   --  * Then use shift(3 downto 2) and register.
   --  * Lastly shift(1 downto 0) and register.
   --
-  -- Extra trailing '0' indexes means there are no shift bit left to use amd the
+  -- Extra trailing '0' indexes means there are no shift bit left to use and the
   -- output is just delay for another clock cycle without further rotation. It
   -- means more clock cycles have been requested than can be made use of.
   --
@@ -60,6 +61,11 @@ package barrel_shift_pkg is
     idx        : natural;
     shift_left : boolean
   ) return natural;
+
+
+  -- Generate a mask for which bits of the shift input to use in this pipeline stage.
+  --
+  function mask_gen(shift_bits, top, bot : natural) return std_logic_vector;
 
 end package;
 
@@ -116,6 +122,16 @@ package body barrel_shift_pkg is
     else
       return 2**idx-1;
     end if;
+  end function;
+
+
+  function mask_gen(shift_bits, top, bot : natural) return std_logic_vector is
+    variable ret : std_logic_vector(shift_bits-1 downto 0) := (others => '0');
+  begin
+    for i in top downto bot loop
+      ret(i) := '1';
+    end loop;
+    return ret;
   end function;
 
 end package body;
