@@ -34,6 +34,15 @@ package math_pkg is
   --
   function minimum(constant a, b : positive) return positive;
 
+  -- Return the maximum of 'a' and 'b'.
+  --
+  -- This function has not been implemented for Quartus Prime.
+  --
+  -- Quartus Prime:
+  -- Error (10482): VHDL error at file.vhdl(xx): object "maximum" is used but not declared
+  -- Error: Quartus Prime Analysis & Elaboration was unsuccessful. 1 error, 2 warnings
+  function maximum(constant a, b : integer) return integer;
+
 
   -- Truncate real value, r, to d decimal places. A simple extention to the IEEE
   -- 'trunc' function:
@@ -85,7 +94,10 @@ package math_pkg is
   --   int_ceil_div(16 ns, 10 ns) => 2
   --
   function int_ceil_div(constant x, y : natural) return integer;
+  -- This is for the benefit of Quartus Prime and its limited VHDL-2008 support
+  -- altera translate_off
   function int_ceil_div(constant x, y : time) return integer;
+  -- altera translate_on
 
 
   -- Return the ceil(log(n, base)), i.e. round up the result of log(n, base).
@@ -167,6 +179,16 @@ package body math_pkg is
   end function;
 
 
+  function maximum(constant a, b : integer) return integer is
+  begin
+    if a > b then
+      return a;
+    else
+      return b;
+    end if;
+  end function;
+
+
   function trunc(
     constant r : real;
     constant d : natural
@@ -207,12 +229,13 @@ package body math_pkg is
     return 1 + ((x - 1) / y);
   end function;
 
+  -- altera translate_off
   function int_ceil_div(constant x, y : time) return integer is
   begin
     -- (x + y - 1 fs) / y, but to avoid overflow in x+y use:
     return 1 + ((x - std.env.resolution_limit) / y);
   end function;
-
+  -- altera translate_on
 
   -- https://stackoverflow.com/questions/44717034/function-clogb2-generated-by-vivado-cant-synthesize-with-loop-limit-error
   function ceil_log(
