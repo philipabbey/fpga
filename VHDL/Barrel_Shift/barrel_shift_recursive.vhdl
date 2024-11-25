@@ -114,7 +114,7 @@ begin
       -- Resorting to assigning an intermediate signal
       shift_ii(shift_i'range) <= shift_i;
 
-      barrel_shift_i : entity work.barrel_shift_recursive
+      barrel_shift_i : entity work.barrel_shift_recursive(recursive)
         generic map (
           shift_bits_g   => shift_bits_g,
           shift_left_g   => shift_left_g,
@@ -156,7 +156,7 @@ begin
         end if;
       end process;
 
-      barrel_shift_i : entity work.barrel_shift_recursive
+      barrel_shift_i : entity work.barrel_shift_recursive(recursive)
         generic map (
           shift_bits_g   => shift_bits_g,
           shift_left_g   => shift_left_g,
@@ -252,7 +252,7 @@ begin
       -- Resorting to assigning an intermediate signal
       shift_ii(shift_i'range) <= shift_i;
 
-      barrel_shift_i : entity work.barrel_shift_recursive
+      barrel_shift_i : entity work.barrel_shift_recursive(recursive2)
         generic map (
           shift_bits_g   => shift_bits_g,
           shift_left_g   => shift_left_g,
@@ -293,7 +293,7 @@ begin
         end if;
       end process;
 
-      barrel_shift_i : entity work.barrel_shift_recursive
+      barrel_shift_i : entity work.barrel_shift_recursive(recursive2)
         generic map (
           shift_bits_g   => shift_bits_g,
           shift_left_g   => shift_left_g,

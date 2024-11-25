@@ -65,7 +65,8 @@ begin
 
   choose : if recursive_g generate
 
-    dut : entity work.barrel_shift_recursive
+    dut : entity work.barrel_shift_recursive(recursive)
+    --dut : entity work.barrel_shift_recursive(recursive2)
       generic map (
         shift_bits_g => shift_bits_g,
         shift_left_g => shift_left_g,
@@ -81,7 +82,8 @@ begin
 
   else generate
 
-    dut : entity work.barrel_shift_iterative
+    dut : entity work.barrel_shift_iterative(iterative)
+    --dut : entity work.barrel_shift_iterative(iterative2)
       generic map (
         shift_bits_g => shift_bits_g,
         shift_left_g => shift_left_g,
