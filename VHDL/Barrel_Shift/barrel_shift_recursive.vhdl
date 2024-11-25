@@ -194,6 +194,7 @@ end architecture;
 
 -- Tail recursive implementation.
 -- Uses rol and ror operators to perform multi-bit manipulations in one clock cycle.
+-- These operators implement inefficient logic in terms of LUTs, hampering clock speed.
 --
 library ieee;
   use ieee.numeric_std_unsigned.all;
