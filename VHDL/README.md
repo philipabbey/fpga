@@ -127,6 +127,18 @@ Substituting _Linear Feedback Shift Register_ (LFSR) counters for synchronous co
 A library of testing functions with which to build test benches for VHDL projects. This is required to be compiled before using any other VHDL sources in this repository.
 
 
+## Multiplexer
+
+### Themes:
+ * Automatic scaling
+
+### Description
+Creating an excessively large multiplexer component that is arbitraily pipelined.
+
+### References:
+ * [Large Multiplexer Pipelined by Recursion](https://blog.abbey1.org.uk/index.php/technology/large-multiplexer-pipelined-by-recursion)
+
+
 ## Packages
 
 ### Themes:
