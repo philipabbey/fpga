@@ -80,7 +80,7 @@ package body mux_pkg is
   begin
     remain := sel_len;
     for i in ret'range loop
-        remain := maximum(0, remain - int_ceil_div(remain, i+1));
+        remain := maximum(0, remain - num_bits(remain, i+1));
         ret(i) := remain;
     end loop;
     return ret;

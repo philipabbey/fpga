@@ -1,0 +1,1 @@
+As of March 15, 2024, the domain URL for the AMD Adaptive Computing Documentation portal has changed from https://docs.xilinx.com to https://docs.amd.com.
