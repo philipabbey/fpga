@@ -93,7 +93,10 @@ package math_pkg is
   --   int_ceil_div(16,    10)    => 2
   --   int_ceil_div(16 ns, 10 ns) => 2
   --
-  function int_ceil_div(constant x, y : natural) return integer;
+  function int_ceil_div(
+    constant x : natural;
+    constant y : positive -- Must not divide by zero
+  ) return integer;
   -- This is for the benefit of Quartus Prime and its limited VHDL-2008 support
   -- altera translate_off
   function int_ceil_div(constant x, y : time) return integer;
@@ -223,7 +226,10 @@ package body math_pkg is
 
 
   -- Integer ceil(x/y)
-  function int_ceil_div(constant x, y : natural) return integer is
+  function int_ceil_div(
+    constant x : natural;
+    constant y : positive -- Must not divide by zero
+  ) return integer is
   begin
     -- (x + y - 1) / y, but to avoid overflow in x+y use:
     return 1 + ((x - 1) / y);
