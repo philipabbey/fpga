@@ -58,7 +58,7 @@ begin
         constant bot : natural := num_inputs_c * i;
       begin
 
-        mux_i : entity work.mux_tree
+        mux_tree_i : entity work.mux_tree
           generic map (
             sel_bits_g   => sel'length-bits_c,
             data_width_g => data_width_g,
@@ -96,7 +96,7 @@ begin
     signal data_mux : std_logic_vector(data_width_g-1 downto 0);
   begin
 
-    mux_i : entity work.mux_tree
+    mux_tree_i : entity work.mux_tree
       generic map (
         sel_bits_g   => sel'length,
         data_width_g => data_width_g,

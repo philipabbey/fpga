@@ -66,7 +66,7 @@ begin
 
    end generate;
 
-  mux_i : entity work.mux_tree
+  mux_tree_i : entity work.mux_tree
     generic map (
       sel_bits_g   => sel_bits_g,
       data_width_g => data_width_g,
