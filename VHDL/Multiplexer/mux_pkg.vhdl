@@ -91,12 +91,16 @@ package body mux_pkg is
     sel_len  : natural;
     num_clks : positive
   ) return natural is
+    constant max : natural := local.math_pkg.int_ceil_div(sel_len, num_clks);
+    variable ret : natural := max;
   begin
-    if num_clks > sel_len then
-      return 0;
-    else
-      return local.math_pkg.int_ceil_div(sel_len, num_clks);
+    if num_clks > 1 then
+      -- Don't do now what you can leave for later
+      while ret > 0 and local.math_pkg.int_ceil_div(sel_len-ret+1, num_clks-1) = max loop
+        ret := ret - 1;
+      end loop;
     end if;
+    return ret;
   end function;
 
 end package body;
