@@ -22,7 +22,8 @@ entity mux_tree is
     sel_bits_g   : positive;
     data_width_g : positive;
     -- Pipeline stages
-    num_clks_g   : positive
+    num_clks_g   : positive;
+    sel_min_g    : positive
   );
   port (
     clk      : in  std_logic;
@@ -42,7 +43,11 @@ library ieee;
 
 architecture rtl of mux_tree is
 
-  constant bits_c       : natural := work.mux_pkg.num_bits(sel_bits_g, num_clks_g);
+  constant bits_c : natural := work.mux_pkg.num_bits(
+    sel_len  => sel_bits_g,
+    num_clks => num_clks_g,
+    sel_min  => sel_min_g
+  );
   constant num_inputs_c : natural := data_in'length / 2**bits_c;
 
 begin
@@ -62,7 +67,8 @@ begin
           generic map (
             sel_bits_g   => sel'length-bits_c,
             data_width_g => data_width_g,
-            num_clks_g   => num_clks_g-1
+            num_clks_g   => num_clks_g-1,
+            sel_min_g    => sel_min_g
           )
           port map (
             clk      => clk,
@@ -100,7 +106,8 @@ begin
       generic map (
         sel_bits_g   => sel'length,
         data_width_g => data_width_g,
-        num_clks_g   => num_clks_g-1
+        num_clks_g   => num_clks_g-1,
+        sel_min_g    => sel_min_g
       )
       port map (
         clk      => clk,

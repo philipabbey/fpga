@@ -90,13 +90,32 @@ package math_pkg is
   -- Ref: https://stackoverflow.com/questions/2745074/fast-ceiling-of-an-integer-division-in-c-c
   --
   -- Usage:
-  --   int_ceil_div(16,    10)    => 2
-  --   int_ceil_div(16 ns, 10 ns) => 2
+  --   int_ceil_div(16, 10) => 2
+  --
+  -- Equivalent to int_ceil_div(x, y, 1)
+  --
+--  function int_ceil_div(
+--    constant x : natural;
+--    constant y : positive -- Must not divide by zero
+--  ) return integer;
+
+  -- Integer round a division up to the nearest integer multiple
+  --
+  -- Usage:
+  --   int_ceil_div(11, 3, 3) => 6 (3.667 rounded up to 6)
   --
   function int_ceil_div(
     constant x : natural;
-    constant y : positive -- Must not divide by zero
+    constant y : positive;     -- Must not divide by zero
+    constant m : positive := 1 -- Must not divide by zero
   ) return integer;
+
+  -- Integer ceil(x/y), perform ceil() without using a conversion to real.
+  -- Ref: https://stackoverflow.com/questions/2745074/fast-ceiling-of-an-integer-division-in-c-c
+  --
+  -- Usage:
+  --   int_ceil_div(16 ns, 10 ns) => 2
+  --
   -- This is for the benefit of Quartus Prime and its limited VHDL-2008 support
   -- altera translate_off
   function int_ceil_div(constant x, y : time) return integer;
@@ -226,13 +245,24 @@ package body math_pkg is
 
 
   -- Integer ceil(x/y)
+  -- Equivalent to int_ceil_div(x, y, 1)
+--  function int_ceil_div(
+--    constant x : natural;
+--    constant y : positive -- Must not divide by zero
+--  ) return integer is
+--  begin
+--    -- (x + y - 1) / y, but to avoid overflow in x+y use:
+--    return 1 + ((x - 1) / y);
+--  end function;
+
   function int_ceil_div(
     constant x : natural;
-    constant y : positive -- Must not divide by zero
+    constant y : positive;     -- Must not divide by zero
+    constant m : positive := 1 -- Must not divide by zero
   ) return integer is
   begin
-    -- (x + y - 1) / y, but to avoid overflow in x+y use:
-    return 1 + ((x - 1) / y);
+    -- 
+    return m + (((x - 1) / (y * m)) * m);
   end function;
 
   -- altera translate_off

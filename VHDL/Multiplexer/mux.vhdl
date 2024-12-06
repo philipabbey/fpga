@@ -22,7 +22,8 @@ entity mux is
     sel_bits_g   : positive;
     data_width_g : positive;
     -- Pipeline stages
-    num_clks_g   : positive
+    num_clks_g   : positive;
+    sel_min_g    : positive := 2 -- Typically LUT inputs / 3
   );
   port (
     clk      : in  std_logic;
@@ -40,7 +41,8 @@ architecture rtl of mux is
 
   constant indexes_c : local.rtl_pkg.natural_vector := work.mux_pkg.register_stages(
     sel_len  => sel_bits_g,
-    num_clks => num_clks_g
+    num_clks => num_clks_g,
+    sel_min  => sel_min_g
   );
 
 begin
@@ -70,7 +72,8 @@ begin
     generic map (
       sel_bits_g   => sel_bits_g,
       data_width_g => data_width_g,
-      num_clks_g   => num_clks_g
+      num_clks_g   => num_clks_g,
+      sel_min_g    => sel_min_g
     )
     port map (
       clk      => clk,

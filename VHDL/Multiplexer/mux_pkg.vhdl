@@ -46,7 +46,8 @@ package mux_pkg is
   --
   function register_stages(
     sel_len  : positive;
-    num_clks : positive
+    num_clks : positive;
+    sel_min  : positive
   ) return natural_vector;
 
 
@@ -54,7 +55,8 @@ package mux_pkg is
   --
   function num_bits(
     sel_len  : natural;
-    num_clks : positive
+    num_clks : positive;
+    sel_min  : positive -- Typically LUT inputs / 3
   ) return natural;
 
 end package;
@@ -72,7 +74,8 @@ package body mux_pkg is
 
   function register_stages(
     sel_len  : positive;
-    num_clks : positive
+    num_clks : positive;
+    sel_min  : positive
   ) return natural_vector is
     -- If num_clks > sel_len we must not delay 'sel' any more than 'sel_len'.
     variable ret    : natural_vector(minimum(sel_len, num_clks)-1 downto 1) := (others => 0);
@@ -80,27 +83,34 @@ package body mux_pkg is
   begin
     remain := sel_len;
     for i in ret'range loop
-        remain := maximum(0, remain - num_bits(remain, i+1));
+        remain := maximum(0, remain - num_bits(remain, i+1, sel_min));
         ret(i) := remain;
     end loop;
     return ret;
   end function;
 
 
+  -- A single bit multiplexer has 3 inputs. A 6 input LUT can achieve two bits of selection at
+  -- no extra cost over 1-bit. Set 'sel_min' to (lutsize / 3) where 'lutsize' = number of
+  -- inputs in a device's LUT primitive.
+  --
   function num_bits(
     sel_len  : natural;
-    num_clks : positive
+    num_clks : positive;
+    sel_min  : positive
   ) return natural is
-    constant max : natural := local.math_pkg.int_ceil_div(sel_len, num_clks);
+    constant max : natural := local.math_pkg.int_ceil_div(sel_len, num_clks, sel_min);
     variable ret : natural := max;
   begin
     if num_clks > 1 then
       -- Don't do now what you can leave for later
-      while ret > 0 and local.math_pkg.int_ceil_div(sel_len-ret+1, num_clks-1) = max loop
+      while ret > 0 and local.math_pkg.int_ceil_div(sel_len-ret+1, num_clks-1, sel_min) = max loop
         ret := ret - 1;
       end loop;
+      return ret;
+    else
+      return local.math_pkg.int_ceil_div(sel_len, num_clks);
     end if;
-    return ret;
   end function;
 
 end package body;
