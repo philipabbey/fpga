@@ -1,0 +1,55 @@
+-------------------------------------------------------------------------------------
+--
+-- Distributed under MIT Licence
+--   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+--
+-------------------------------------------------------------------------------------
+--
+-- PSL for the simple architecture of the AXI delay component.
+--
+-- Reference: Assertion-based Verification in Intel's Free QuestaSim
+--            https://blog.abbey1.org.uk/index.php/technology/assertion-based-verification-in-intel-s-free-questasim
+--
+-- P A Abbey, 16 December 2024
+--
+-------------------------------------------------------------------------------------
+
+vunit axi_delay_simple(axi_delay(simple)) {
+  signal take : std_logic := '0';
+  signal give : std_logic := '0';
+  take <= s_axi_valid and s_axi_ready;
+  give <= m_axi_valid and m_axi_ready;
+
+  default clock is rising_edge(clk);
+
+  -- Input valid/data must be stable until accepted.
+  f1_in_data_stable : assume always
+    {s_axi_valid and not s_axi_ready} |=>
+    {stable(s_axi_valid) and stable(s_axi_data)};
+
+  -- The above written an alternative way
+--  f1_in_data_stable2 : assume always
+--    {s_axi_valid and not s_axi_ready} |=>
+--    {s_axi_valid = '1' and stable(s_axi_data)};
+
+  f1_in_data_stall1_cover : cover {s_axi_valid and not s_axi_ready};
+  f1_in_data_stall2_cover : cover {not s_axi_valid and s_axi_ready};
+
+  f1_in_ready_retracted : cover {
+    s_axi_valid = '0' and s_axi_ready = '1';
+    s_axi_ready = '0'
+  };
+
+  -- Output valid/data must be stable until accepted.
+  f1_out_data_stable : assert always
+    {m_axi_valid and not m_axi_ready} |=>
+    {stable(m_axi_valid) and stable(m_axi_data)};
+
+  f1_out_data_stall1_cover : cover {m_axi_valid and not m_axi_ready};
+  f1_out_data_stall2_cover : cover {not m_axi_valid and m_axi_ready};
+
+  f1_out_ready_retracted : cover {
+    m_axi_valid = '0' and m_axi_ready = '1';
+    m_axi_ready = '0'
+  };
+}

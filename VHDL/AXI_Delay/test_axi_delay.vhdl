@@ -57,7 +57,7 @@ begin
   clkgen : clock(clk, 10 ns);
 
 
-  axi_delay_i : axi_delay 
+  axi_delay_i : axi_delay
     generic map (
       delay_g      => delay_c,
       data_width_g => data_width_c
@@ -146,7 +146,7 @@ begin
 end architecture;
 
 
-configuration simple of test_axi_delay is
+configuration test_axi_delay_simple of test_axi_delay is
   for test
     for axi_delay_i : axi_delay
       use entity work.axi_delay(simple);
@@ -155,7 +155,7 @@ configuration simple of test_axi_delay is
 end configuration;
 
 
-configuration itdev of test_axi_delay is
+configuration test_axi_delay_itdev of test_axi_delay is
   for test
     for axi_delay_i : axi_delay
       use entity work.axi_delay(itdev);

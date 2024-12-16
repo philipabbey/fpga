@@ -32,6 +32,7 @@ if not exist modelsim.ini vmap -c
 rem Convert back slashes to forward slashes
 vmap others %SIM:\=/%/modelsim.ini
 vcom -quiet -2008 ^
+  -pslfile %SRC%\axi_delay.psl ^
   %SRC%\axi_delay.vhdl ^
   %SRC%\test_axi_delay.vhdl ^
   %SRC%\axi_delay_stage.vhdl ^
@@ -56,7 +57,14 @@ echo ========================================================
 echo To run the simulation in ModelSim:
 echo.
 echo   cd {%DEST%}
-echo   vsim work.test_axi_edit -voptargs="+acc" -t ps
+echo   vsim work.test_axi_delay_simple            -voptargs="+acc" -t ps
+echo   vsim work.test_axi_delay_itdev             -voptargs="+acc" -t ps
+echo   vsim work.test_axi_delay_mixed             -voptargs="+acc" -t ps
+echo   vsim work.test_axi_pause                   -voptargs="+acc" -t ps
+echo   vsim work.test_axi_width_conv_pause        -voptargs="+acc" -t ps
+echo   vsim work.test_axi_width_conv_pause_filter -voptargs="+acc" -t ps
+echo   vsim work.test_axi_edit                    -voptargs="+acc" -t ps
+echo   vsim work.test_protocol_edit               -voptargs="+acc" -t ps
 echo.
 echo ========================================================
 echo.
