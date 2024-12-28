@@ -127,6 +127,15 @@ Substituting _Linear Feedback Shift Register_ (LFSR) counters for synchronous co
 A library of testing functions with which to build test benches for VHDL projects. This is required to be compiled before using any other VHDL sources in this repository.
 
 
+## Low Speed Serial I/O
+
+### Themes:
+ * I/O
+
+### Description
+Code to implement and test an implementation of Low Speed Serial I/O.
+
+
 ## Multiplexer
 
 ### Themes:
