@@ -49,13 +49,13 @@ architecture idelay of zybo_z7_10 is
   signal reset          : std_logic                                       := '1';
   signal reset_rx       : std_logic                                       := '1';
   signal reset_ref      : std_logic                                       := '1';
-  signal locked         : std_logic;                                      
-  signal locked_clk     : std_logic;                                      
-  signal locked_ref     : std_logic;                                      
-  signal locked_clk_ref : std_logic;                                      
-  signal rx_enable_rx   : std_logic;                                      
-  signal rx_locked      : std_logic;                                      
-  signal rx_locked_rx   : std_logic;                                      
+  signal locked         : std_logic;
+  signal locked_clk     : std_logic;
+  signal locked_ref     : std_logic;
+  signal locked_clk_ref : std_logic;
+  signal rx_enable_rx   : std_logic;
+  signal rx_locked      : std_logic;
+  signal rx_locked_rx   : std_logic;
   signal rst_reg        : std_logic_vector(3 downto 0)                    := (others => '1');
   signal rst_reg_ref    : std_logic_vector(3 downto 0)                    := (others => '1');
   signal rst_reg_rx     : std_logic_vector(3 downto 0)                    := (others => '1');
@@ -77,12 +77,10 @@ architecture idelay of zybo_z7_10 is
   signal rx_f1          : std_logic_vector(rx'range)                      := (others => '0');
   signal rx_f2          : std_logic_vector(rx'range)                      := (others => '0');
   signal rx_r           : std_logic_vector(rx'range)                      := (others => '0');
-  signal rx_gated       : std_logic_vector(rx'range);                     
-  signal check_gated    : std_logic_vector(rx'range);                     
+  signal rx_gated       : std_logic_vector(rx'range);
+  signal check_gated    : std_logic_vector(rx'range);
   signal empty          : std_logic_vector(0 to 1)                        := (others => '1');
---  signal correct        : count_vector(2 downto 0)                        := (others => 0);
   signal wrong          : count_vector(2 downto 0)                        := (others => 0);
---  signal correct_r      : count_vector(2 downto 0)                        := (others => 0);
   signal wrong_r        : count_vector(2 downto 0)                        := (others => 0);
   signal total_idelay   : total_vector(2 downto 0)                        := (others => 0);
 
@@ -227,11 +225,6 @@ begin
       rx_f2 <= rx_f1;
     end if;
   end process;
-
-  -- Average two numbers, drop bottom bit to divide by 2. Do not register.
---  dm_g : for i in idelay_mux'range generate
---    idelay_mux(i) <= to_slv(total_idelay(i), 6)(5 downto 1) when (state = eye or state = running) else idelay;
---  end generate;
 
   -- State Machine to control IDELAY
   process(clk)
@@ -401,9 +394,7 @@ begin
       if reset = '1' then
         led                              <= "1000";
         empty(empty'low+1 to empty'high) <= (others => '1');
---        correct                          <= (others => 0);
         wrong                            <= (others => 0);
---        correct_r                        <= (others => 0);
         wrong_r                          <= (others => 0);
       else
         empty(empty'low+1 to empty'high) <= empty(empty'low to empty'high-1);
@@ -418,7 +409,6 @@ begin
           end if;
 
           if save_cnt_d = '1' then
---            correct_r <= correct;
             wrong_r   <= wrong;
           end if;
 
@@ -426,14 +416,11 @@ begin
             for i in check_gated'range loop
               if rx_gated(i) = check_gated(i) then
                 if save_cnt_d = '1' then
---                  correct(i) <= 1;
                   wrong(i)   <= 0;
                 else
---                  correct(i) <= correct(i) + 1;
                 end if;
               else
                 if save_cnt_d = '1' then
---                  correct(i) <= 0;
                   wrong(i)   <= 1;
                 else
                   wrong(i) <= wrong(i) + 1;
@@ -444,7 +431,6 @@ begin
         else
           led(0)  <= '0';
           led(1)  <= '0';
---          correct <= (others => 0);
           wrong   <= (others => 0);
         end if;
         led(2) <= not empty(1);
@@ -468,7 +454,7 @@ begin
         else
           if save_cnt_d = '1' then
             case state_qty is
-    
+
               when waiting =>
                 if wrong_r(i) = 0 then
                   state_qty       <= good;
@@ -476,13 +462,13 @@ begin
                 else
                   state_qty <= bads;
                 end if;
-    
+
               when bads =>
                 if wrong_r(i) = 0 then
                   state_qty       <= good;
                   total_idelay(i) <= idelay_d;
                 end if;
-    
+
               when good =>
                 if wrong_r(i) /= 0 then
                   state_qty       <= bade;
@@ -491,15 +477,15 @@ begin
                   state_qty       <= complete;
                   total_idelay(i) <= total_idelay(i) + 31;
                 end if;
-    
+
               when bade =>
                 if idelay_d = 31 then
                   state_qty <= complete;
                 end if;
-    
+
               when complete =>
                 state_qty <= complete;
-    
+
             end case;
           end if;
         end if;
