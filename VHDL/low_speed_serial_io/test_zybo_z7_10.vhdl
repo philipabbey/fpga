@@ -149,13 +149,7 @@ begin
       rx       => data_delayed      -- Transmission
     );
 
---  clk_data_delayed <= transport clk_data after 8.5 ns;
---  data_delayed(0)  <= transport data(0)  after random_integer(44, 46) * 0.5 ns;
---  data_delayed(1)  <= transport data(1)  after random_integer(46, 47) * 0.5 ns;
---  data_delayed(2)  <= transport data(2)  after random_integer(47, 49) * 0.5 ns;
-
   clk_data_delayed <= transport clk_data after 4.0 ns;
---  data_delayed     <= transport data     after 6 ns;
   data_delayed(0)  <= transport data(0)  after 4.0 ns + 2.0 ns + random_integer(0, 2) * 0.5 ns;
   data_delayed(1)  <= transport data(1)  after 4.0 ns + 3.0 ns + random_integer(0, 1) * 0.5 ns;
   data_delayed(2)  <= transport data(2)  after 4.0 ns + 3.5 ns + random_integer(0, 2) * 0.5 ns;

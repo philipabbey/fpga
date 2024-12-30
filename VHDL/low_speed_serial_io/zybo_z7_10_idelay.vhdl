@@ -416,12 +416,12 @@ begin
             for i in check_gated'range loop
               if rx_gated(i) = check_gated(i) then
                 if save_cnt_d = '1' then
-                  wrong(i)   <= 0;
+                  wrong(i) <= 0;
                 else
                 end if;
               else
                 if save_cnt_d = '1' then
-                  wrong(i)   <= 1;
+                  wrong(i) <= 1;
                 else
                   wrong(i) <= wrong(i) + 1;
                 end if;
@@ -429,9 +429,9 @@ begin
             end loop;
           end if;
         else
-          led(0)  <= '0';
-          led(1)  <= '0';
-          wrong   <= (others => 0);
+          led(0) <= '0';
+          led(1) <= '0';
+          wrong  <= (others => 0);
         end if;
         led(2) <= not empty(1);
         led(3) <= empty(1);
