@@ -44,7 +44,7 @@ begin
   clkgen : clock(clk, 8 ns);
   dut_clk <= << signal dut.clk : std_logic >>;
 
-  dut : entity work.zybo_z7_10
+  dut : entity work.zybo_z7_10(rtl)
     port map (
       clk_port => clk,
       sw       => sw,
@@ -137,7 +137,7 @@ begin
   clkgen : clock(clk, 8 ns);
   dut_clk <= << signal dut.clk : std_logic >>;
 
-  dut : entity work.zybo_z7_10
+  dut : entity work.zybo_z7_10(idelay)
     port map (
       clk_port => clk,
       sw       => sw,
@@ -199,5 +199,100 @@ begin
   end process;
 
   rx_shifted <= << signal dut.rx : std_logic_vector(2 downto 0) >> XOR << signal dut.rx_f1 : std_logic_vector(2 downto 0) >>;
+
+end architecture;
+
+
+library ieee;
+  use ieee.std_logic_1164.all;
+library std;
+library local;
+  use local.testbench_pkg.all;
+
+architecture test_samp of test_zybo_z7_10 is
+
+  signal clk              : std_logic                    := '0';
+  signal dut_clk          : std_logic                    := '0';
+  signal sw               : std_logic_vector(3 downto 0) := "0000";
+  signal btn              : std_logic_vector(3 downto 0) := "0000";
+  signal leds             : std_logic_vector(3 downto 0) := "0000";
+  signal clk_data         : std_logic                    := '0';
+  signal clk_data_delayed : std_logic                    := '0';
+  signal data             : std_logic_vector(2 downto 0) := "000";
+  signal data_delayed     : std_logic_vector(2 downto 0) := "000";
+  signal all_test_pass    : boolean                      := true;
+
+begin
+
+  clkgen : clock(clk, 8 ns);
+  dut_clk <= << signal dut.clk : std_logic >>;
+
+  dut : entity work.zybo_z7_10(sampling)
+    port map (
+      clk_port => clk,
+      sw       => sw,
+      btn      => btn,
+      led      => leds,
+      clk_tx   => clk_data,         -- Transmission
+      tx       => data,             -- Transmission
+      clk_rx   => clk_data_delayed, -- Transmission
+      rx       => data_delayed      -- Transmission
+    );
+
+--  clk_data_delayed <= transport clk_data after 2 ns;
+--  data_delayed     <= transport data     after 6 ns;
+  clk_data_delayed <= transport clk_data after 4.0 ns;
+  data_delayed(0)  <= transport data(0)  after 0.0 ns + 2.5 ns + random_integer(0, 20) * 0.05 ns;
+  data_delayed(1)  <= transport data(1)  after 0.0 ns + 4.0 ns + random_integer(0, 10) * 0.05 ns;
+  data_delayed(2)  <= transport data(2)  after 0.0 ns + 6.5 ns + random_integer(0, 20) * 0.05 ns;
+
+
+  process
+  begin
+    sw  <= "0000";
+    btn <= "0000";
+    wait_nr_ticks(clk, 10);
+
+    wait until << signal dut.reset : std_logic >> = '0';
+    wait_nr_ticks(clk, 100);
+    btn <= "1000";
+    wait_nr_ticks(clk, 400);
+    btn <= "1100";
+    wait_nr_ticks(clk, 400);
+    btn <= "1010";
+    wait_nr_ticks(clk, 400);
+    btn <= "1001";
+    wait_nr_ticks(clk, 400);
+    btn <= "1111";
+    wait_nr_ticks(clk, 400);
+    btn <= "1000";
+    wait_nr_ticks(clk, 400);
+    btn <= "0000";
+    wait_nr_ticks(clk, 400);
+    btn <= "1000";
+    wait_nr_ticks(clk, 100);
+    btn <= "0000";
+
+    wait_nr_ticks(clk, 100);
+    --stop_clocks;
+    -- PLL IP Core won't stop creating events, must use 'stop' instead of 'stop_clocks'.
+    if all_test_pass then
+      report "All tests PASSED" severity note;
+    else
+      report "Some tests FAILED" severity error;
+    end if;
+    std.env.stop;
+    wait;
+  end process;
+
+  process(dut_clk)
+  begin
+    if falling_edge(dut_clk) then
+      if leds(2) = '1' and leds(0) = '0' then
+        report "PRBS Check error" severity error;
+        all_test_pass <= false;
+      end if;
+    end if;
+  end process;
 
 end architecture;

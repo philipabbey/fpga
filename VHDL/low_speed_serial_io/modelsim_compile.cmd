@@ -45,6 +45,7 @@ vcom -quiet -2008 ^
   %SRC%\ip\fifo_rx\fifo_rx_sim_netlist.vhdl ^
   %SRC%\zybo_z7_10.vhdl ^
   %SRC%\zybo_z7_10_idelay.vhdl ^
+  %SRC%\zybo_z7_10_01sampling.vhdl ^
   %SRC%\test_zybo_z7_10.vhdl
 set ec=%ERRORLEVEL%
 
@@ -55,6 +56,7 @@ echo.
 echo   cd {%DEST%}
 echo   vsim work.test_zybo_z7_10(test_rtl)    -voptargs="+acc" -t ps
 echo   vsim work.test_zybo_z7_10(test_idelay) -voptargs="+acc" -t ps
+echo   vsim work.test_zybo_z7_10(test_samp)   -voptargs="+acc" -t ps
 echo.
 echo ========================================================
 echo.
