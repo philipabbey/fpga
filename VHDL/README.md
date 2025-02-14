@@ -68,6 +68,15 @@ Testing Vivado's control set remapping ability in order to increase packing dens
  * [Practical Control Set Reduction](https://blog.abbey1.org.uk/index.php/technology/practical-control-set-reduction)
 
 
+## Dynamic Function eXchange (DFX)
+
+### Description
+A minimal design to demonstrate DFX on a Zybo Z7 development board.
+
+### References:
+ * [Dynamic Function eXchange](https://blog.abbey1.org.uk/index.php/technology/dynamic-function-exchange)
+
+
 ## Fast Fourier Transform (FFT)
 
 ### Themes:
