@@ -11,4 +11,4 @@ C:\Xilinx\Vivado\2023.2\bin\vivado.bat ^
   -notrace ^
   -nojournal ^
   -nolog ^
-  -source {A:\Philip\Work\VHDL\Public\VHDL\DFX\tcl\program.tcl}
+  -source {<path>\DFX\tcl\program.tcl}

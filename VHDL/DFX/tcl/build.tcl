@@ -11,9 +11,9 @@
 #
 ####################################################################################
 #
-# source -notrace {A:/Philip/Work/VHDL/Public/VHDL/DFX/tcl/build.tcl}
+# source -notrace {<path>/DFX/tcl/build.tcl}
 
-set src_dir {A:/Philip/Work/VHDL/Public/VHDL/DFX/products}
+set src_dir {<path>/DFX/products}
 
 # Delete all previous products
 set fs [glob -nocomplain $src_dir/*]
@@ -65,5 +65,5 @@ foreach rm {2 3 4} {
 
 # 
 # # PLL woes
-# reset_target all [get_files  A:/Philip/Work/VHDL/DFX/ip/pll/pll.xci]
+# reset_target all [get_files  <path>/DFX/ip/pll/pll.xci]
 # config_ip_cache -clear_output_repo
