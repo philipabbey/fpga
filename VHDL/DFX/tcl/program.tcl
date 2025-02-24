@@ -12,9 +12,9 @@
 ####################################################################################
 #
 # Run this from a Vivado TCL Shell. Do not use the normal GUI as 'gets stdin' causes a lock-up.
-# i.e. C:\Xilinx\Vivado\2023.2\bin\vivado.bat -mode tcl -source {A:/Philip/Work/VHDL/Public/VHDL/DFX/tcl/program.tcl}
+# i.e. C:\Xilinx\Vivado\<ver>\bin\vivado.bat -mode tcl -source {<path>/VHDL/DFX/tcl/program.tcl}
 
-set prods {<path>/DFX/products}
+set prods "../products"
 
 # Suppress "INFO: [Labtools 27-1434] Device xc7z010 (JTAG device index = 1) is programmed with a design that has no supported debug core(s) in it."
 set_msg_config -suppress -id {Labtools 27-1434}
