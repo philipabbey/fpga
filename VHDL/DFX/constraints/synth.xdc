@@ -11,7 +11,8 @@
 #
 ####################################################################################
 
-create_clock -period 8.000 -name clk_port -waveform {0.000 4.000} -add [get_ports clk_port]
+# The input clock will be defined by the MCMM IP's PLL
+#create_clock -period 8.000 -name clk_port -waveform {0.000 4.000} -add [get_ports clk_port]
 
 # This is essential to prevent interface changes that prevent RMs being stitched into the static image later
 set_property KEEP_HIERARCHY true [get_cells {reconfig_rp}]

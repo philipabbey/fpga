@@ -14,7 +14,7 @@
 # Run this from a Vivado TCL Shell. Do not use the normal GUI as 'gets stdin' causes a lock-up.
 # i.e. C:\Xilinx\Vivado\<ver>\bin\vivado.bat -mode tcl -source {<path>/VHDL/DFX/tcl/program.tcl}
 
-set prods "../products"
+set prod_dir "../products"
 
 # Suppress "INFO: [Labtools 27-1434] Device xc7z010 (JTAG device index = 1) is programmed with a design that has no supported debug core(s) in it."
 set_msg_config -suppress -id {Labtools 27-1434}
@@ -44,23 +44,23 @@ current_hw_device [get_hw_devices xc7z010_1]
 refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xc7z010_1] 0]
 
 # Full / Initial
-program "$prods/initial.bit"
+program "$prod_dir/initial.bit"
 pause "Initial BIT file loaded, Enter to continue"
 
 foreach rm {2 3 4} {
   # Partial Reconfigure
-  program "$prods/rm${rm}.bit"
+  program "$prod_dir/rm${rm}.bit"
   pause "Partial BIT file RM${rm} loaded, Enter to continue"
 }
 
 foreach rm {1 2 3 4} {
   # Partial Reconfigure
-  program "$prods/rm${rm}.bit"
+  program "$prod_dir/rm${rm}.bit"
   pause "Partial BIT file RM${rm} loaded, Enter to continue"
 }
 
 # Static Revert gives "F" hex, nets must float high
-program "$prods/static.bit"
+program "$prod_dir/static.bit"
 puts "Static BIT file with black box"
 pause "THE END, Enter to exit"
 
@@ -68,6 +68,6 @@ close_hw_manager
 exit
 
 # # Seems to be an RM1 equivalent - Same file size
-# program "$prods/initial_pblock_rp_partial.bit"
+# program "$prod_dir/initial_pblock_rp_partial.bit"
 # # Gives "3", no idea what this is supposed to be from or for.
-# program "$prods/static_pblock_rp_partial.bit"
+# program "$prod_dir/static_pblock_rp_partial.bit"
