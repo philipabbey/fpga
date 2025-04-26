@@ -11,7 +11,7 @@
 --
 -------------------------------------------------------------------------------------
 
-entity test_zybo_z7_10 is
+entity test_pl is
 end entity;
 
 
@@ -21,7 +21,7 @@ library std;
 library local;
   use local.testbench_pkg.all;
 
-architecture test of test_zybo_z7_10 is
+architecture test of test_pl is
 
   signal clk      : std_logic                    := '0';
   signal sw       : std_logic_vector(3 downto 0) := "0000";
@@ -34,7 +34,7 @@ begin
 
   clkgen : clock(clk, 8 ns);
 
-  dut : entity work.zybo_z7_10
+  dut : entity work.pl
     generic map (
       sim_g => true
     )
@@ -53,14 +53,16 @@ begin
     btn <= "0000";
     -- Wait for PLL to lock
     wait_nr_ticks(clk, 100);
+
     -- Hold the value from the RM in the static partition
-    btn  <= "0001";
+    btn <= "0001";
     wait_nr_ticks(clk, 10);
-    btn  <= "0000";
+    btn <= "0000";
     wait_nr_ticks(clk, 40);
-    
+
     --stop_clocks;
     -- PLL IP Core won't stop creating events, must use 'stop' instead of 'stop_clocks'.
+    report "WARNING - This is not a self checking test bench";
     std.env.stop;
     wait;
   end process;

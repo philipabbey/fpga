@@ -31,13 +31,17 @@ if not exist modelsim.ini vmap -c
 
 rem Convert back slashes to forward slashes
 vmap others %SIM:\=/%/modelsim.ini
+
+vcom -quiet -2008 -work xil_defaultlib ^
+  %SRC%\ip\pll\pll_sim_netlist.vhdl
+
 vcom -quiet -2008 ^
   %SRC%\ip\pll\pll_sim_netlist.vhdl ^
   %SRC%\src\retime.vhdl ^
   %SRC%\src\reconfig_fn.vhdl ^
   %SRC%\src\dual_seven_seg_display.vhdl ^
-  %SRC%\src\zybo_z7_10.vhdl ^
-  %SRC%\sim\test_zybo_z7_10.vhdl
+  %SRC%\src\pl.vhdl ^
+  %SRC%\sim\test_pl.vhdl
 set ec=%ERRORLEVEL%
 
 echo.
@@ -45,7 +49,7 @@ echo ========================================================
 echo To run the simulation in ModelSim:
 echo.
 echo   cd {%DEST%}
-echo   vsim work.test_zybo_z7_10 -voptargs="+acc" -t ps
+echo   vsim work.test_pl -voptargs="+acc" -t ps
 echo.
 echo ========================================================
 echo.

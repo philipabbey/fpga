@@ -10,8 +10,8 @@
 -- so ensure the switches are off when using the buttons.
 --
 -- References:
---  * https://digilent.com/reference/programmable-logic/zybo-z7/reference-manual
---  * https://digilent.com/reference/programmable-logic/zybo-z7/start
+--  * https://digilent.com/reference/programmable-logic/zybo/reference-manual
+--  * https://digilent.com/reference/programmable-logic/zybo/start
 --  * https://digilent.com/reference/programmable-logic/guides/installing-vivado-and-vitis
 --
 -- J D Abbey & P A Abbey, 18 October 2022
@@ -21,7 +21,7 @@
 library ieee;
   use ieee.std_logic_1164.all;
 
-entity zybo_z7_10 is
+entity pl is
   generic(
     sim_g    : boolean := false;
     rm_num_g : natural := 1
@@ -37,17 +37,9 @@ entity zybo_z7_10 is
 end entity;
 
 
-architecture rtl of zybo_z7_10 is
+library xil_defaultlib;
 
-  -- When using configurations this must be instantiated via a component rather
-  -- than entity work.pll or Vivado bleats.
-  component pll
-    port (
-      clk_in  : in  std_logic;
-      clk_out : out std_logic;
-      locked  : out std_logic
-    );
-  end component;
+architecture rtl of pl is
 
   component reconfig_rm is
     generic(
@@ -79,23 +71,26 @@ architecture rtl of zybo_z7_10 is
 
   constant divide_c : positive := divide(sim_g);
 
-  signal clk       : std_logic                     := '0';
-  signal reset     : std_logic                     := '1';
-  signal locked    : std_logic;
-  signal rst_reg   : std_logic_vector(3 downto 0)  := (others => '1');
-  signal sw_r      : std_logic_vector(sw'range)    := (others => '0');
-  signal btn_r     : std_logic_vector(btn'range)   := (others => '0');
-  signal buttons   : std_logic_vector(btn'range)   := (others => '0');
-  signal incr      : std_logic                     := '0';
-  signal count     : natural range 0 to divide_c-1 := 0;
-  signal display   : std_logic_vector(3 downto 0)  := (others => '0');
-  signal display_l : std_logic_vector(3 downto 0)  := (others => '0');
-  signal sevseg0   : std_logic_vector(6 downto 0)  := (others => '0');
-  signal sevseg1   : std_logic_vector(6 downto 0)  := (others => '0');
+  signal clk          : std_logic                     := '0';
+  signal reset        : std_logic                     := '1';
+  signal locked       : std_logic;
+  signal rst_reg      : std_logic_vector(3 downto 0)  := (others => '1');
+  signal sw_r         : std_logic_vector(sw'range)    := (others => '0');
+  signal btn_r        : std_logic_vector(btn'range)   := (others => '0');
+  signal buttons      : std_logic_vector(btn'range)   := (others => '0');
+  signal incr         : std_logic                     := '0';
+  signal count        : natural range 0 to divide_c-1 := 0;
+  signal display      : std_logic_vector(3 downto 0)  := (others => '0');
+  signal display_l    : std_logic_vector(3 downto 0)  := (others => '0');
+  signal sevseg0      : std_logic_vector(6 downto 0)  := (others => '0');
+  signal sevseg1      : std_logic_vector(6 downto 0)  := (others => '0');
+  signal led_i        : std_logic_vector(3 downto 0)  := (others => '0');
+  signal sevseg_i     : std_logic_vector(6 downto 0)  := (others => '0');
+  signal disp_sel_i   : std_logic                     := '0';
 
 begin
 
-  pll_i : pll
+  pll_i : entity xil_defaultlib.pll
     port map (
       -- Clock in ports
       clk_in  => clk_port,
@@ -173,7 +168,7 @@ begin
       reset   => reset,
       incr    => incr,
       buttons => "0000",
-      leds    => led,
+      leds    => led_i,
       display => display
     );
 
@@ -263,29 +258,18 @@ begin
       reset    => reset,
       sevseg0  => sevseg0, -- left
       sevseg1  => sevseg1, -- right
-      disp_sel => disp_sel,
-      sevseg   => sevseg
+      disp_sel => disp_sel_i,
+      sevseg   => sevseg_i
     );
 
+  -- To enable IOB packing and timing closure
+  process(clk)
+  begin
+    if rising_edge(clk) then
+      disp_sel <= disp_sel_i;
+      sevseg   <= sevseg_i;
+      led      <= led_i;
+    end if;
+  end process;
+
 end architecture;
-
-
--- A configuration is the static partition + a reconfigurable module
--- Vivado does not play nicely with VHDL configurations, it tends to muck up the
--- IP bindings, e.g. for PLL in our case.
-
---configuration conf1 of zybo_z7_10 is
---  for rtl
---    for reconfig_rp : reconfig_rm
---      use entity work.reconfig_rm(rm1);
---    end for;
---  end for;
---end configuration;
---
---configuration conf2 of zybo_z7_10 is
---  for rtl
---    for reconfig_rp : reconfig_rm
---      use entity work.reconfig_rm(rm2);
---    end for;
---  end for;
---end configuration;

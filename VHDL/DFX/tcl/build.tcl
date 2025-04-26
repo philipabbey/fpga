@@ -21,7 +21,7 @@ if {[llength $fs] > 0} {
   file delete {*}$fs
 }
 
-set_property top zybo_z7_10 [current_fileset]
+set_property top pl [current_fileset]
 set_property generic rm_num_g=1 [current_fileset]
 reset_run synth_1
 launch_runs synth_1 -jobs 14
@@ -44,6 +44,7 @@ write_checkpoint -force "$prod_dir/static.dcp"
 write_bitstream -force "$prod_dir/static.bit"
 
 foreach rm {2 3 4} {
+  current_project dfx
   set_property generic rm_num_g=$rm [current_fileset]
   reset_run synth_1
   launch_runs synth_1 -jobs 14
@@ -55,7 +56,7 @@ foreach rm {2 3 4} {
   add_files "$prod_dir/static.dcp"
   add_files "$prod_dir/synth_rm${rm}.dcp"
   set_property SCOPED_TO_CELLS {reconfig_rp} [get_files "$prod_dir/synth_rm${rm}.dcp"]
-  link_design -top {zybo_z7_10} -part xc7z010clg400-1 -reconfig_partitions {reconfig_rm}
+  link_design -top {pl} -part xc7z010clg400-1 -reconfig_partitions {reconfig_rm}
   opt_design
   place_design
   route_design
