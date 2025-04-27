@@ -16,7 +16,7 @@
 set vivado_install {C:\Xilinx\Vivado\2023.2}
 # Sometimes we want to paste the commands into Vivado outside the script.
 if {[info script] == ""} {
-  set prod_dir {A:/Philip/Work/VHDL/Public/VHDL/DFX_PS/products}
+  set prod_dir {Drive:/Path/.../VHDL/DFX_PS/products}
   set script "build.tcl"
 } else {
   set prod_dir [file dirname [file dirname [file normalize [info script]]]]/products
