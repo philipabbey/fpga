@@ -1,0 +1,10 @@
+# All files in this directory
+*
+
+# Except for
+
+# Subdirectories
+!*/
+
+# Files
+!.gitignore
