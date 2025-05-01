@@ -5,7 +5,7 @@ A minimal design to demonstrate DFX on a Zybo (Z7 or legacy) development board. 
 * TCL compilation scripts, and 
 * a TCL demonstration script to show the partial reconfiguration of the FPGA.
 
-Please read the blog post [Dynamic Function eXchange with ICAP]() for an explanation of how the code works in detail.
+Please read the blog post [Dynamic Function eXchange with ICAP](https://blog.abbey1.org.uk/index.php/technology/dynamic-function-exchange-with-icap) for an explanation of how the code works in detail.
 
 ## Compilation
 
