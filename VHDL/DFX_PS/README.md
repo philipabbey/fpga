@@ -1,11 +1,11 @@
-# Dynamic Function eXchange with PS (DFX_PS)
+# Dynamic Function eXchange with ICAP
 
 A minimal design to demonstrate DFX on a Zybo (Z7 or legacy) development board. This includes:
 * a code structure,
 * TCL compilation scripts, and 
 * a TCL demonstration script to show the partial reconfiguration of the FPGA.
 
-Please read the blog post [Dynamic Function eXchange with PS]() for an explanation of how the code works in detail.
+Please read the blog post [Dynamic Function eXchange with ICAP]() for an explanation of how the code works in detail.
 
 ## Compilation
 

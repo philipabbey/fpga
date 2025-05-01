@@ -22,14 +22,18 @@ if {[info script] == ""} {
   set prod_dir [file dirname [file dirname [file normalize [info script]]]]/products
   set script [file tail [file normalize [info script]]]
 }
-# One of the 'reconfig_action' architectures 'by_value' uses XPM ROM so that BIT code
-# can be inserted after place & route by 'updatemem'.
-#set xpm_rom 1
 set first_rm 0
 set subsequent_rms [list 1 2 3 4]
 # Needs to match the VHDL code in 'reconfig_action'.
 # Number of 32-bit words in ROM
 set rom_addr_bits 12
+
+if {[string match *products/rm_all_comp.mem [get_files *rm_all_comp.mem]]} {
+  update_files \
+    -to_files ${prod_dir}/rm_all_comp.mem -filesets [get_filesets *] \
+    -from_files [file normalize ${prod_dir}/../src/rm_all_comp.mem]
+  puts "WARNING: \[$script\] Replaced 'rm_all_comp.mem' for building."
+}
 
 # Delete all previous products
 set fs [glob -nocomplain $prod_dir/*]
@@ -125,7 +129,7 @@ set block_diag [get_files -filter {FILE_TYPE == "Block Designs"}]
 set proj_dir [get_property DIRECTORY [get_projects dfx_ps_legacy]]
 set proj_stem ${proj_dir}/[lindex [file split [get_property DIRECTORY [get_projects dfx_ps_legacy]]] end]
 
-# Need to manage hang-over DCP files. Just remove them?
+# Need to manage hang-over DCP files.
 remove_files -quiet -fileset utils_1 ${proj_stem}.srcs/utils_1/imports/synth_1/ps_pl_wrapper.dcp
 if {[file exists ${proj_stem}.srcs/utils_1/imports/synth_1/ps_pl_wrapper.dcp]} {
   file delete -force ${proj_stem}.srcs/utils_1/imports/synth_1/ps_pl_wrapper.dcp
@@ -279,7 +283,6 @@ foreach rm $subsequent_rms {
     puts "INFO: \[$script\] RM${ip_rm}, file '${rm_file}' size set to [file size $rm_file]"
     lappend mem_file_list $rm_file
     incr ip_rm
-    puts "ip_rm = ${ip_rm}"
   } else {
     puts "ERROR: \[$script\] File '${rm_file}' not found."
   }

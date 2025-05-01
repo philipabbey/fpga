@@ -37,6 +37,10 @@ library xpm;
 library xil_defaultlib;
 library local;
   use local.rtl_pkg.reverse;
+-- synthesis translate_off
+library std;
+  use std.textio.all;
+-- synthesis translate_on
 
 architecture by_dfx_ip of reconfig_action is
 
@@ -149,6 +153,20 @@ begin
     );
 
     ri <= reverse(icap_o(31 downto 24)) & reverse(icap_o(23 downto 16)) & reverse(icap_o(15 downto 8)) & reverse(icap_o(7 downto 0));
+
+    -- synthesis translate_off
+--    process(clk)
+--      file fh    : text open write_mode is "bitstream.txt";
+--      variable l : line;
+--    begin
+--      if rising_edge(clk) then
+--        if csib = '0' and icap_rdwrb = '0' then
+--          write(l, "RM" & to_string(ieee.numeric_std_unsigned.to_integer(rom_num)) & " 0x" & to_hstring(ri));
+--          writeline(fh, l);
+--        end if;
+--      end if;
+--    end process;
+    -- synthesis translate_on
 
 --  component dfx_controller
 --    port (

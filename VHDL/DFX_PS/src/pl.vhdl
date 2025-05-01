@@ -91,6 +91,7 @@ architecture rtl of pl is
   signal led_i        : std_logic_vector(3 downto 0)  := (others => '0');
   signal sevseg_i     : std_logic_vector(6 downto 0)  := (others => '0');
   signal disp_sel_i   : std_logic                     := '0';
+  signal reset_rp     : std_logic                     := '0';
 
   -- Needs to be here as this part of the design is synthesised *before* the constraints
   -- for the top level are applied.
@@ -186,7 +187,7 @@ begin
     )
     port map (
       clk     => clk,
-      reset   => reset,
+      reset   => reset or reset_rp,
       incr    => incr,
       buttons => buttons,
       leds    => open,
@@ -313,6 +314,7 @@ begin
       clk         => icap_clk,
       reset       => icap_reset,
       start       => icap_start,
+      reset_rp    => reset_rp,
       programming => led_i(3),
       error       => led_i(2),
       rom_num     => led_i(1 downto 0),

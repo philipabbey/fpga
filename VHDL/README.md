@@ -68,13 +68,16 @@ Testing Vivado's control set remapping ability in order to increase packing dens
  * [Practical Control Set Reduction](https://blog.abbey1.org.uk/index.php/technology/practical-control-set-reduction)
 
 
-## Dynamic Function eXchange (DFX)
+## Dynamic Function eXchange (DFX), and also with ICAP
 
 ### Description
-A minimal design to demonstrate DFX on a Zybo Z7 development board.
+A minimal design to demonstrate DFX on a Zybo Legacy development board.
+1. Without PS uses partial reconfiguration over JTAG
+2. With PS uses the ICAP interface so the FPGA reprogrammes itself from internal BlockRAM.
 
 ### References:
  * [Dynamic Function eXchange](https://blog.abbey1.org.uk/index.php/technology/dynamic-function-exchange)
+ * [Dynamic Function eXchange with ICAP](https://blog.abbey1.org.uk/index.php/technology/dynamic-function-exchange-with-icap)
 
 
 ## Fast Fourier Transform (FFT)
