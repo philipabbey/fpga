@@ -317,8 +317,7 @@ begin
       reset_rp    => reset_rp,
       programming => led_i(3),
       error       => led_i(2),
-      rom_num     => led_i(1 downto 0),
-      conf_osc    => open
+      rom_num     => led_i(1 downto 0)
     );
 
   -- To enable IOB packing and timing closure

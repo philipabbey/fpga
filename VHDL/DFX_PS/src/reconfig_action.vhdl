@@ -25,8 +25,7 @@ entity reconfig_action is
     reset_rp    : out std_logic;
     programming : out std_logic := '0';
     error       : out std_logic := '0';
-    rom_num     : out std_logic_vector(1 downto 0);
-    conf_osc    : out std_logic
+    rom_num     : out std_logic_vector(1 downto 0)
   );
 end entity;
 
