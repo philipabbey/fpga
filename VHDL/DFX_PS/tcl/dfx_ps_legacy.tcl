@@ -1,4 +1,17 @@
-# Setup the requird paths here:
+####################################################################################
+#
+#  Distributed under MIT Licence
+#    See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+#
+####################################################################################
+#
+# Vivado project creation script for DFX_PS.
+#
+# P A Abbey, 30 April 2025
+#
+####################################################################################
+
+# Setup the required paths here:
 # Where is the 'https://github.com/philipabbey/fpga' repo located?
 set repo_path {Drive:/path/.../VHDL/Public}
 # Where do you want the Vivado project created?

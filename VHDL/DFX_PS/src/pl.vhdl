@@ -73,7 +73,6 @@ architecture rtl of pl is
 
   signal clk          : std_logic                     := '0';
   signal reset        : std_logic                     := '1';
-  signal icap_reset   : std_logic                     := '1';
   signal locked       : std_logic;
   signal rst_reg      : std_logic_vector(3 downto 0)  := (others => '1');
   signal sw_r         : std_logic_vector(sw'range)    := (others => '0');
@@ -85,9 +84,6 @@ architecture rtl of pl is
   signal display_l    : std_logic_vector(3 downto 0)  := (others => '0');
   signal sevseg0      : std_logic_vector(6 downto 0)  := (others => '0');
   signal sevseg1      : std_logic_vector(6 downto 0)  := (others => '0');
-  signal icap_clk     : std_logic;
-  signal icap_rst_reg : std_logic_vector(3 downto 0)  := (others => '1');
-  signal icap_start   : std_logic;
   signal led_i        : std_logic_vector(3 downto 0)  := (others => '0');
   signal sevseg_i     : std_logic_vector(6 downto 0)  := (others => '0');
   signal disp_sel_i   : std_logic                     := '0';
@@ -110,7 +106,6 @@ begin
       clk_in   => clk_port,
       -- Clock out ports
       clk_out  => clk,
-      clk_out2 => icap_clk,
       -- Status and control signals
       locked   => locked
     );
@@ -124,13 +119,6 @@ begin
   begin
     if rising_edge(clk) then
       (reset, rst_reg) <= rst_reg & not locked;
-    end if;
-  end process;
-
-  process(icap_clk)
-  begin
-    if rising_edge(icap_clk) then
-      (icap_reset, icap_rst_reg) <= icap_rst_reg & not locked;
     end if;
   end process;
 
@@ -294,26 +282,14 @@ begin
   end process;
 
 
-  -- Double retime buttons and switches
-  retime_btn_icap : entity work.retime
-    generic map (
-      num_bits => 1
-    )
-    port map (
-      clk          => icap_clk,
-      reset        => icap_reset,
-      flags_in(0)  => buttons(3),
-      flags_out(0) => icap_start
-    );
-
-  reconfig_action_i : entity work.reconfig_action(by_dfx_ip) -- by_ref_fsm, by_ref_rom, or by_dfx_ip
+  reconfig_action_i : entity work.reconfig_action(by_dfx_ip)
     generic map(
       sim_g => sim_g
     )
     port map (
-      clk         => icap_clk,
-      reset       => icap_reset,
-      start       => icap_start,
+      clk         => clk,
+      reset       => reset,
+      start       => buttons(3),
       reset_rp    => reset_rp,
       programming => led_i(3),
       error       => led_i(2),
@@ -321,9 +297,9 @@ begin
     );
 
   -- To enable IOB packing and timing closure
-  process(icap_clk)
+  process(clk)
   begin
-    if rising_edge(icap_clk) then
+    if rising_edge(clk) then
       led <= led_i;
     end if;
   end process;
