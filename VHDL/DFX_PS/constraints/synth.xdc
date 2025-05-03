@@ -13,7 +13,6 @@
 
 # The input clock will be defined by the MCMM IP's PLL
 #create_clock -period 8.000 -name clk_port -waveform {0.000 4.000} -add [get_ports clk_port]
-#create_clock -period 15.384 -name cfgmclk -add [get_pins {ps_pl_i/vhdl_conv_i/U0/wrapper_i/reconfig_action_i/startup_i/CFGMCLK}]
 
 # This is essential to prevent interface changes that prevent RMs being stitched into the static image later
 # This is not working inside a block diagram. Might be better to use SCOPED_TO_REF constraints (No!), or attributes instead
@@ -28,8 +27,9 @@ set_output_delay -clock [get_clocks clk_port] -max 0.100 [get_ports {disp_sel {s
 set_output_delay -clock [get_clocks clk_port] -min -0.100 [get_ports {disp_sel {sevseg[*]}}]
 #set_output_delay -clock [get_clocks cfgmclk] -max 0.100 [get_ports {led[*]}]
 #set_output_delay -clock [get_clocks cfgmclk] -min -0.100 [get_ports {led[*]}]
-set_output_delay -clock [get_clocks clk_port] -max 0.100 [get_ports {led[*]}]
-set_output_delay -clock [get_clocks clk_port] -min -0.100 [get_ports {led[*]}]
+set icap_clk [get_clocks -of_objects [get_nets {ps_pl_i/vhdl_conv_i/U0/wrapper_i/icap_clk}]]
+set_output_delay -clock $icap_clk -max 0.100 [get_ports {led[*]}]
+set_output_delay -clock $icap_clk -min -0.100 [get_ports {led[*]}]
 
-# XXX Pack the final register into the IOB? Keep this auto to avoid hold time violations
+# Pack the final register into the IOB? Keep this auto to avoid hold time violations
 set_property IOB TRUE [get_ports {{led[*]} disp_sel {sevseg[*]}}]
