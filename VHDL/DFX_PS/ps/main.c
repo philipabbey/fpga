@@ -1,3 +1,16 @@
+//-----------------------------------------------------------------------------------
+//
+// Distributed under MIT Licence
+//   See https://github.com/philipabbey/fpga/blob/main/LICENCE.
+//
+//-----------------------------------------------------------------------------------
+//
+// C code for the PS to enable the ICAP interface.
+//
+// P A Abbey, 8 March 2025
+//
+//-----------------------------------------------------------------------------------
+
 #include "sleep.h"
 #include "xil_printf.h"
 #include <xil_io.h>
