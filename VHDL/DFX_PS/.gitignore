@@ -1,6 +1,9 @@
 # Subdirectories
 tcl/.Xil/
 tcl/hd_visual/
+tcl/boot_image.cmd
+tcl/flash.cmd
+tcl/rom.bif
 
 # Files
 vivado.log

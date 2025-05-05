@@ -92,6 +92,7 @@ if { $list_projs eq "" } {
    ]
 
    create_project dfx_ps_legacy $proj_dir -part xc7z010clg400-1
+   set_property BOARD_PART digilentinc.com:zybo:part0:2.0 [current_project]
    add_files -norecurse [list \
      $repo_path/VHDL/DFX_PS/ip/pll/pll.xci \
      $repo_path/VHDL/DFX_PS/ip/dfx_controller/dfx_controller.xci \
