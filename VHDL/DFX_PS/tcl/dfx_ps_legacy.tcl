@@ -13,9 +13,9 @@
 
 # Setup the required paths here:
 # Where is the 'https://github.com/philipabbey/fpga' repo located?
-set repo_path {Drive:/path/.../VHDL/Public}
+set repo_path [file normalize {Drive:/path/.../VHDL/Public}]
 # Where do you want the Vivado project created?
-set proj_dir {Drive:/path/.../Vivado/dfx_demo}
+set proj_dir [file normalize {Drive:/path/.../Vivado/dfx_demo}]
 
 ################################################################
 # This is a generated script based on design: ps_pl
@@ -87,7 +87,7 @@ if { $list_projs eq "" } {
    set vhdl_sim_files [list \
      $repo_path/VHDL/DFX_PS/sim/test_pl.vhdl \
    ]
-   set repo_path/VHDL/Local_vhdl [list \
+   set local_vhdl_files [list \
      $repo_path/VHDL/Local/rtl_pkg.vhdl \
    ]
 
@@ -100,12 +100,12 @@ if { $list_projs eq "" } {
    ]
    add_files -norecurse $vhdl2008_src_files
    add_files -norecurse $vhdl1993_src_files
-   add_files -norecurse $repo_path/VHDL/Local_vhdl
+   add_files -norecurse $local_vhdl_files
    set_property library work [get_files $vhdl2008_src_files]
    set_property library work [get_files $vhdl1993_src_files]
-   set_property library local [get_files $repo_path/VHDL/Local_vhdl]
+   set_property library local [get_files $local_vhdl_files]
    set_property file_type {VHDL 2008} [get_files $vhdl2008_src_files]
-   set_property file_type {VHDL 2008} [get_files $repo_path/VHDL/Local_vhdl]
+   set_property file_type {VHDL 2008} [get_files $local_vhdl_files]
    add_files -fileset constrs_1 -norecurse [list \
      $repo_path/VHDL/DFX_PS/constraints/Zybo-Master.xdc \
      $repo_path/VHDL/DFX_PS/constraints/impl.xdc \
@@ -898,9 +898,6 @@ proc create_root_design { parentCell } {
 ##################################################################
 
 create_root_design ""
-
-
-common::send_gid_msg -ssname BD::TCL -id 2053 -severity "WARNING" "This Tcl script was generated from a block design that has not been validated. It is possible that design <$design_name> may result in errors during validation."
 
 set_property target_language VHDL [current_project]
 set wrapper [make_wrapper -files [get_files *ps_pl.bd] -top]
