@@ -73,11 +73,13 @@ Testing Vivado's control set remapping ability in order to increase packing dens
 ### Description
 A minimal design to demonstrate DFX on a Zybo Legacy development board.
 1. Without PS uses partial reconfiguration over JTAG
-2. With PS uses the ICAP interface so the FPGA reprogrammes itself from internal BlockRAM.
+2. With PS uses the ICAP interface so the FPGA reconfigures itself from internal BlockRAM.
+3. With software triggering the reconfiguration and fetching the DFX Controller's state.
 
 ### References:
  * [Dynamic Function eXchange](https://blog.abbey1.org.uk/index.php/technology/dynamic-function-exchange)
  * [Dynamic Function eXchange with ICAP](https://blog.abbey1.org.uk/index.php/technology/dynamic-function-exchange-with-icap)
+ * [Dynamic Function eXchange with ICAP Driven by Software](https://blog.abbey1.org.uk/index.php/technology/dynamic-function-exchange-with-icap-driven-by-software)
 
 
 ## Fast Fourier Transform (FFT)

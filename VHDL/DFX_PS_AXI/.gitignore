@@ -1,0 +1,19 @@
+# Subdirectories
+tcl/.Xil/
+tcl/hd_visual/
+tcl/boot_image.cmd
+tcl/flash.cmd
+tcl/rom.bif
+
+# Files
+vivado.log
+tcl/bootgen_log.txt
+tcl/clockInfo.txt
+
+# Except for
+
+# Subdirectories
+!*/products
+
+# Files
+!.gitignore

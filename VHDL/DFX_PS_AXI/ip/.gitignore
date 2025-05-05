@@ -1,0 +1,11 @@
+# Only interested in XCI files
+*
+
+# Except for
+
+# Subdirectories
+!*/
+
+# Files
+!.gitignore
+!**/*.xci
