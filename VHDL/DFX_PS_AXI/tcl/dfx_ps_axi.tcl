@@ -13,9 +13,9 @@
 
 # Setup the required paths here:
 # Where is the 'https://github.com/philipabbey/fpga' repo located?
-set repo_path {Drive:/path/.../VHDL/Public}
+set repo_path [file normalize {Drive:/path/.../VHDL/Public}]
 # Where do you want the Vivado project created?
-set proj_dir {Drive:/path/.../Vivado/dfx_demo}
+set proj_dir [file normalize {Drive:/path/.../Vivado/dfx_demo}]
 
 ################################################################
 # This is a generated script based on design: ps_pl
@@ -75,46 +75,45 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 set list_projs [get_projects -quiet]
 if { $list_projs eq "" } {
    set vhdl2008_src_files [list \
-     $repo_path/VHDL/DFX_PS/src/reconfig_fn.vhdl \
-     $repo_path/VHDL/DFX_PS/src/reconfig_action.vhdl \
-     $repo_path/VHDL/DFX_PS/src/retime.vhdl \
-     $repo_path/VHDL/DFX_PS/src/dual_seven_seg_display.vhdl \
-     $repo_path/VHDL/DFX_PS/src/pl.vhdl \
+     $repo_path/VHDL/DFX_PS_AXI/src/reconfig_fn.vhdl \
+     $repo_path/VHDL/DFX_PS_AXI/src/reconfig_action.vhdl \
+     $repo_path/VHDL/DFX_PS_AXI/src/retime.vhdl \
+     $repo_path/VHDL/DFX_PS_AXI/src/dual_seven_seg_display.vhdl \
+     $repo_path/VHDL/DFX_PS_AXI/src/pl.vhdl \
    ]
    set vhdl1993_src_files [list \
-     $repo_path/VHDL/DFX_PS/src/vhdl2018_1993_conv.vhdl \
+     $repo_path/VHDL/DFX_PS_AXI/src/vhdl2018_1993_conv.vhdl \
    ]
    set vhdl_sim_files [list \
-     $repo_path/VHDL/DFX_PS/sim/test_pl.vhdl \
+     $repo_path/VHDL/DFX_PS_AXI/sim/test_pl.vhdl \
    ]
-   set repo_path/VHDL/Local_vhdl [list \
+   set local_vhdl_files [list \
      $repo_path/VHDL/Local/rtl_pkg.vhdl \
    ]
 
    create_project dfx_ps_axi $proj_dir -part xc7z010clg400-1
    set_property BOARD_PART digilentinc.com:zybo:part0:2.0 [current_project]
    add_files -norecurse [list \
-     $repo_path/VHDL/DFX_PS/ip/pll/pll.xci \
-     $repo_path/VHDL/DFX_PS/ip/dfx_controller/dfx_controller.xci \
-     $repo_path/VHDL/DFX_PS/ip/axi_bram/axi_bram.xci \
+     $repo_path/VHDL/DFX_PS_AXI/ip/dfx_controller/dfx_controller.xci \
+     $repo_path/VHDL/DFX_PS_AXI/ip/axi_bram/axi_bram.xci \
    ]
    add_files -norecurse $vhdl2008_src_files
    add_files -norecurse $vhdl1993_src_files
-   add_files -norecurse $repo_path/VHDL/Local_vhdl
+   add_files -norecurse $local_vhdl_files
    set_property library work [get_files $vhdl2008_src_files]
    set_property library work [get_files $vhdl1993_src_files]
-   set_property library local [get_files $repo_path/VHDL/Local_vhdl]
+   set_property library local [get_files $local_vhdl_files]
    set_property file_type {VHDL 2008} [get_files $vhdl2008_src_files]
-   set_property file_type {VHDL 2008} [get_files $repo_path/VHDL/Local_vhdl]
+   set_property file_type {VHDL 2008} [get_files $local_vhdl_files]
    add_files -fileset constrs_1 -norecurse [list \
-     $repo_path/VHDL/DFX_PS/constraints/Zybo-Master.xdc \
-     $repo_path/VHDL/DFX_PS/constraints/impl.xdc \
-     $repo_path/VHDL/DFX_PS/constraints/managed.xdc \
-     $repo_path/VHDL/DFX_PS/constraints/synth.xdc \
+     $repo_path/VHDL/DFX_PS_AXI/constraints/Zybo-Master.xdc \
+     $repo_path/VHDL/DFX_PS_AXI/constraints/impl.xdc \
+     $repo_path/VHDL/DFX_PS_AXI/constraints/managed.xdc \
+     $repo_path/VHDL/DFX_PS_AXI/constraints/synth.xdc \
    ]
-   set_property target_constrs_file $repo_path/VHDL/DFX_PS/constraints/managed.xdc [current_fileset -constrset]
-   set_property USED_IN_SYNTHESIS 0 [get_files -all $repo_path/VHDL/DFX_PS/constraints/impl.xdc]
-   add_files -norecurse $repo_path/VHDL/DFX_PS/src/rm_all_comp.mem
+   set_property target_constrs_file $repo_path/VHDL/DFX_PS_AXI/constraints/managed.xdc [current_fileset -constrset]
+   set_property USED_IN_SYNTHESIS 0 [get_files -all $repo_path/VHDL/DFX_PS_AXI/constraints/impl.xdc]
+   add_files -norecurse $repo_path/VHDL/DFX_PS_AXI/src/rm_all_comp.mem
    add_files -fileset sim_1 -norecurse $vhdl_sim_files
    set_property library work [get_files $vhdl_sim_files]
    set_property file_type {VHDL 2008} [get_files $vhdl_sim_files]
@@ -912,4 +911,7 @@ proc create_root_design { parentCell } {
 
 create_root_design ""
 
-
+set_property target_language VHDL [current_project]
+set wrapper [make_wrapper -files [get_files *ps_pl.bd] -top]
+add_files -norecurse $wrapper
+set_property top ps_pl_wrapper [current_fileset]
