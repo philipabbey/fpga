@@ -161,7 +161,7 @@ set ec=%ERRORLEVEL%
 echo.
 echo =====================================================================
 echo.
-echo The sumulation does not work in QuestaSim, use Vivado's vsim instead.
+echo The simulation does not work in QuestaSim, use Vivado's vsim instead.
 echo.
 echo =====================================================================
 echo.
