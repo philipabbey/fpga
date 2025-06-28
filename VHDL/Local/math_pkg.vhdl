@@ -126,7 +126,7 @@ package math_pkg is
   --
   -- Example results:
   --
-  --   v  base   log_b(v) Return(r)  b^r
+  --   n  base   log_b(n) Return(r)  b^r
   -- ------------------------------------
   --   4  2        2.00      2         4
   --   7  2        2.81      3         8
@@ -141,15 +141,15 @@ package math_pkg is
   --
   function ceil_log(
     constant n    : positive;
-    constant base : positive := 2
-  ) return positive;
+    constant base : integer range 2 to integer'high := 2
+  ) return natural;
 
 
   -- Return the floor(log(n, base)), i.e. round down the result of log(n, base).
   --
   function floor_log(
     constant n    : positive;
-    constant base : positive := 2
+    constant base : integer range 2 to integer'high := 2
   ) return natural;
 
 
@@ -276,7 +276,7 @@ package body math_pkg is
   -- https://stackoverflow.com/questions/44717034/function-clogb2-generated-by-vivado-cant-synthesize-with-loop-limit-error
   function ceil_log(
     constant n    : positive;
-    constant base : positive := 2
+    constant base : integer range 2 to integer'high := 2
   ) return natural is
   begin
     return natural(ceil(log(real(n), real(base))));
@@ -285,7 +285,7 @@ package body math_pkg is
 
   function floor_log(
     constant n    : positive;
-    constant base : positive := 2
+    constant base : integer range 2 to integer'high := 2
   ) return natural is
   begin
     return natural(floor(log(real(n), real(base))));
