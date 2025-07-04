@@ -59,9 +59,9 @@ begin
 
         when "01" => -- Insert, need alt_valid
           if alt_ready = '1' and alt_valid = '1' then
-            m_axi_data <= alt_data;
+            m_axi_data  <= alt_data;
+            m_axi_valid <= alt_valid;
           end if;
-          m_axi_valid <= alt_valid;
 
         when "11" => -- Pass / Swap, dependent on alt_valid
           if m_axi_ready = '1' or m_axi_valid = '0' then
