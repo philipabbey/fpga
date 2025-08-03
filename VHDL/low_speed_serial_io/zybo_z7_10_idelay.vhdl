@@ -51,7 +51,6 @@ architecture idelay of zybo_z7_10 is
   signal reset_ref      : std_logic                                       := '1';
   signal locked         : std_logic;
   signal locked_clk     : std_logic;
-  signal locked_ref     : std_logic;
   signal locked_clk_ref : std_logic;
   signal rx_enable_rx   : std_logic;
   signal rx_locked      : std_logic;
@@ -65,12 +64,10 @@ architecture idelay of zybo_z7_10 is
   signal check          : std_logic_vector(rx'range)                      := (others => '1');
   signal state          : state_t                                         := waiting;
   signal idelay         : std_logic_vector(4 downto 0)                    := (others => '0');
-  signal idelay_d       : natural range 0 to 31                           := 0;
+  signal idelay_last    : natural range 0 to 31                           := 0;
   signal idelay_ld      : std_logic                                       := '0';
   signal idelay_ldd     : std_logic                                       := '0';
   signal idelay_mux     : local.rtl_pkg.slv_arr_t(2 downto 0)(4 downto 0) := (others => (others => '0'));
-  signal save_cnt       : std_logic                                       := '0';
-  signal save_cnt_d     : std_logic                                       := '0';
   signal counting       : std_logic                                       := '0';
   signal counting_d     : std_logic                                       := '0';
   signal prbs_cnt       : natural range 0 to prbs_cnt_max_c-1             := 0;
@@ -81,11 +78,27 @@ architecture idelay of zybo_z7_10 is
   signal check_gated    : std_logic_vector(rx'range);
   signal empty          : std_logic_vector(0 to 1)                        := (others => '1');
   signal wrong          : count_vector(2 downto 0)                        := (others => 0);
-  signal wrong_r        : count_vector(2 downto 0)                        := (others => 0);
   signal total_idelay   : total_vector(2 downto 0)                        := (others => 0);
 
   attribute IODELAY_GROUP : STRING;
   attribute IODELAY_GROUP of idelayctrl_i: label is "rx_data";
+
+  attribute MARK_DEBUG : string;
+  attribute MARK_DEBUG of rx_r         : signal is "TRUE";
+  attribute MARK_DEBUG of tx           : signal is "TRUE";
+  attribute MARK_DEBUG of check        : signal is "TRUE";
+  attribute MARK_DEBUG of check_gated  : signal is "TRUE";
+  attribute MARK_DEBUG of prbs_cnt     : signal is "TRUE";
+  attribute MARK_DEBUG of wrong        : signal is "TRUE";
+  attribute MARK_DEBUG of total_idelay : signal is "TRUE";
+  attribute MARK_DEBUG of idelay       : signal is "TRUE";
+  attribute MARK_DEBUG of idelay_mux   : signal is "TRUE";
+  attribute MARK_DEBUG of idelay_ld    : signal is "TRUE";
+  attribute MARK_DEBUG of idelay_ldd   : signal is "TRUE";
+  attribute MARK_DEBUG of counting     : signal is "TRUE";
+  attribute MARK_DEBUG of state        : signal is "TRUE";
+  attribute MARK_DEBUG of buttons      : signal is "TRUE";
+  attribute MARK_DEBUG of led          : signal is "TRUE";
 
 begin
 
@@ -231,22 +244,18 @@ begin
   begin
     if rising_edge(clk) then
       if reset = '1' or buttons(3) = '0' then
-        state     <= waiting;
-        idelay    <= (others => '0');
-        idelay_ld <= '0';
-        save_cnt  <= '0';
-        prbs_cnt  <= 0;
-        counting  <= '0';
-        idelay_d  <= 0;
+        state       <= waiting;
+        idelay      <= (others => '0');
+        idelay_ld   <= '0';
+        prbs_cnt    <= 0;
+        counting    <= '0';
+        idelay_last <= 0;
         if reset = '1' then
           idelay_mux <= (others => (others => '0'));
         end if;
       else
-        idelay_d <= to_integer(idelay);
-
         -- Default assignments
         idelay_ld <= '0';
-        save_cnt  <= '0';
         for i in idelay_mux'range loop
           idelay_mux(i) <= idelay;
         end loop;
@@ -256,7 +265,6 @@ begin
           when waiting =>
             if empty(0) = '0' then
               idelay_ld <= '1';
-              save_cnt  <= '1';
               counting  <= '1';
               state     <= training;
             end if;
@@ -264,7 +272,6 @@ begin
           when training =>
             if prbs_cnt = prbs_cnt_max_c-1 then
               prbs_cnt  <= 0;
-              save_cnt  <= '1';
               idelay_ld <= '1';
               if idelay = idelay_max_c then
                 idelay   <= (others => '0');
@@ -273,6 +280,7 @@ begin
               else
                 idelay <= idelay + 1;
               end if;
+              idelay_last <= to_integer(idelay);
             else
               prbs_cnt <= prbs_cnt + 1;
             end if;
@@ -302,11 +310,9 @@ begin
       if reset = '1' then
         idelay_ldd <= '0';
         counting_d <= '0';
-        save_cnt_d <= '0';
       else
         idelay_ldd <= idelay_ld;
         counting_d <= counting;
-        save_cnt_d <= save_cnt;
       end if;
     end if;
   end process;
@@ -395,7 +401,6 @@ begin
         led                              <= "1000";
         empty(empty'low+1 to empty'high) <= (others => '1');
         wrong                            <= (others => 0);
-        wrong_r                          <= (others => 0);
       else
         empty(empty'low+1 to empty'high) <= empty(empty'low to empty'high-1);
 
@@ -408,19 +413,14 @@ begin
             led(1) <= '1';
           end if;
 
-          if save_cnt_d = '1' then
-            wrong_r   <= wrong;
-          end if;
-
           if counting_d = '1' then
             for i in check_gated'range loop
               if rx_gated(i) = check_gated(i) then
-                if save_cnt_d = '1' then
+                if idelay_ldd = '1' then
                   wrong(i) <= 0;
-                else
                 end if;
               else
-                if save_cnt_d = '1' then
+                if idelay_ldd = '1' then
                   wrong(i) <= 1;
                 else
                   wrong(i) <= wrong(i) + 1;
@@ -440,9 +440,11 @@ begin
   end process;
 
 
-  w_g : for i in wrong_r'range generate
+  w_g : for i in wrong'range generate
 
     signal state_qty : state_qty_t := waiting;
+
+    attribute MARK_DEBUG of state_qty : signal is "TRUE";
 
   begin
     process(clk)
@@ -452,34 +454,34 @@ begin
           state_qty       <= waiting;
           total_idelay(i) <= 0;
         else
-          if save_cnt_d = '1' then
+          if idelay_ldd = '1' then
             case state_qty is
 
               when waiting =>
-                if wrong_r(i) = 0 then
+                if wrong(i) = 0 then
                   state_qty       <= good;
-                  total_idelay(i) <= idelay_d;
+                  total_idelay(i) <= idelay_last;
                 else
                   state_qty <= bads;
                 end if;
 
               when bads =>
-                if wrong_r(i) = 0 then
+                if wrong(i) = 0 then
                   state_qty       <= good;
-                  total_idelay(i) <= idelay_d;
+                  total_idelay(i) <= idelay_last;
                 end if;
 
               when good =>
-                if wrong_r(i) /= 0 then
+                if wrong(i) /= 0 then
                   state_qty       <= bade;
-                  total_idelay(i) <= total_idelay(i) + idelay_d;
-                elsif idelay_d = 31 then
+                  total_idelay(i) <= total_idelay(i) + idelay_last;
+                elsif idelay_last = 31 then
                   state_qty       <= complete;
                   total_idelay(i) <= total_idelay(i) + 31;
                 end if;
 
               when bade =>
-                if idelay_d = 31 then
+                if idelay_last = 31 then
                   state_qty <= complete;
                 end if;
 
