@@ -19,7 +19,7 @@ set ip_dest_file $src/ip
 
 # Clock speed (MHz) for the Low Speed Serial IO under test
 # Minimum is supposedly 10 MHz, but synthesis struggled with that value due to jitter setting. 20 MHz was allowed.
-set lssio_freq 100.000
+set lssio_freq 109.000
 # RX Clock PLL Phase shift, degrees. Adds ($lssio_phase / 360) * (1000 / $lssio_freq) ns delay
 #set lssio_phase 137.700
 # IDELAY-based capture, 78 ps per increment + 600 ps constant delay.
