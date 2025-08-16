@@ -25,7 +25,9 @@ set lssio_freq 109.000
 # IDELAY-based capture, 78 ps per increment + 600 ps constant delay.
 # * Range:   0.6 - 3.018 ns variation.
 # * Average: 1.809 ns
-set lssio_phase [expr (5.707 * $lssio_freq * 360 / 1000) - 1.809]
+# Set experimentally
+set lssio_phase 200
+
 puts "Rx PLL Phase set to '$lssio_phase'."
 
 foreach ip_inst {fifo_rx pll pll_lssio} {

@@ -458,10 +458,7 @@ begin
             case state_qty is
 
               when waiting =>
-                if wrong(i) = 0 then
-                  state_qty       <= good;
-                  total_idelay(i) <= idelay_last;
-                else
+                if empty(0) = '0' then
                   state_qty <= bads;
                 end if;
 

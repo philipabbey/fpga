@@ -19,7 +19,7 @@ set ip_dest_file $src/ip
 
 # Clock speed (MHz) for the Low Speed Serial IO under test
 # Minimum is supposedly 10 MHz, but synthesis struggled with that value due to jitter setting. 20 MHz was allowed.
-set lssio_freq 100.000
+set lssio_freq 109.000
 
 # All with "CONFIG.CLKOUT1_REQUESTED_PHASE {180.000}"
 
@@ -48,9 +48,9 @@ set lssio_freq 100.000
 # Alter PLL phase to eye of data
 # set lssio_freq 64.000 (should work)
 
-#set lssio_phase 137.700
 # RX Clock PLL Phase shift, degrees. Adds ($lssio_phase / 360) * (1000 / $lssio_freq) ns delay
-set lssio_phase [expr 5.707 * $lssio_freq * 360 / 1000]
+set lssio_phase 206
+
 puts "Rx PLL Phase set to '$lssio_phase'."
 
 # PMOD JD
