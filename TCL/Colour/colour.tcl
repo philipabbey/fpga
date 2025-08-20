@@ -70,9 +70,9 @@ proc colour_selected_primitives_by_clock_source {{cells {}}} {
           foreach f [all_fanin $cp] {
             foreach p [get_pins $f -quiet] {
               # First item is a pin, second and subsequent are nets, often elsewhere in the design
-              set n [lindex [get_nets -of_objects $p -quiet] 0]
-              if {[llength $n] > 0} {
-                highlight_objects -color_index $clksrcarr($clksrc) $n
+              set n [all_fanin -flat [lindex [get_nets -of_objects $p -quiet] 0]]
+              foreach net $n {
+                highlight_objects -color_index $clksrcarr($clksrc) [get_nets $net]
               }
             }
           }
@@ -84,7 +84,7 @@ proc colour_selected_primitives_by_clock_source {{cells {}}} {
           }
           if {[get_property ASYNC_REG $c] == 1} {
             # RGB for Black
-            mark_objects -color red $c
+            mark_objects -rgb {0 0 0} $c
           }
         }
       }
@@ -92,4 +92,3 @@ proc colour_selected_primitives_by_clock_source {{cells {}}} {
   }
   return $unhighlightable
 }
-
